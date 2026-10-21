@@ -251,6 +251,74 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 .grid tfoot td{position:sticky;bottom:0;background:#FCF4F8;font-weight:700;z-index:2}
 .grid tfoot td:first-child{z-index:3;background:#FCF4F8}
 .grid tbody tr:hover td:first-child{background:#FFF6FA}
+
+/* =================== মোবাইল =================== */
+.mob{display:none}
+.mrow{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center;padding:10px 6px;border-top:1px solid #F4E5ED;color:inherit;text-decoration:none}
+.mrow:first-child{border-top:0}
+.mrow.top{background:#FFF8E1;border-radius:12px}
+.mrow.mine{background:#FFE3EF;border-radius:12px;box-shadow:inset 4px 0 0 var(--pink)}
+.mrow.tot{background:#FCF4F8;border-radius:12px}
+.mr-r{text-align:center;font:800 16px var(--fh);color:var(--deep)}
+.mr-r .rk{font-size:17px}
+.mr-n{font:700 15px/1.3 var(--fh);color:var(--plum)}
+.mr-s{font-size:12px;color:var(--mut);line-height:1.35;margin-top:1px}
+.mr-k{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.pl{font-size:10.5px;font-weight:600;padding:1px 5px;border-radius:6px;background:#F6EEF2;color:var(--ink);white-space:nowrap}
+.pl.hi{background:#E2F5F1;color:var(--ok)}.pl.lo{background:#FFF0E0;color:var(--low)}
+.mr-sc{text-align:right;min-width:62px}.mr-sc b{font:800 19px var(--fh);color:var(--pink)}.mr-sc .bar{min-width:56px}
+.mc{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fff}
+.mc-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.mc-h b{font:800 16px var(--fh);color:var(--plum)}
+.mc-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.mc-g div{background:#FCF6F9;border-radius:10px;padding:6px 8px}.mc-g span{display:block;font-size:11px;color:var(--mut)}.mc-g b{font:700 14px var(--fh)}
+.mc-l{font-size:13px;margin-top:6px}.mc-l>span{font-weight:700;color:var(--deep)}.mc-l small{display:block}
+.mine-grid.det{grid-template-columns:minmax(220px,280px) 1fr;align-items:center}
+@media (max-width:700px){
+  .desk{display:none!important}.mob{display:block}
+  .wrap{padding:10px 10px 30px}
+  .panel{padding:14px;border-radius:18px;margin:12px 0}
+  h2{font-size:19px}
+  .ph{margin-bottom:8px}.ph .mut{font-size:12px}
+  .hero{padding:14px 16px;border-radius:20px;gap:10px}
+  .hero h1{font-size:21px}.badge{padding:5px 8px;border-radius:14px}.badge img{height:42px}
+  .hero .side{width:100%;justify-content:space-between;margin-left:0}
+  .hero .whoh{flex-direction:row;align-items:center;gap:6px;flex-wrap:wrap}
+  nav.tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  nav.tabs a{white-space:nowrap;min-height:40px;padding:6px 14px;font-size:14px}
+  .qbar{padding:8px 12px;min-height:46px;margin-top:10px}.qbar .qi{font-size:18px}
+  .mine-grid,.mine-grid.det{grid-template-columns:1fr;gap:12px}
+  .scorebox{padding:16px 14px}
+  .sb-name{font-size:23px}.sb-name.om{font-size:26px}
+  .ring{width:136px;height:136px;margin:4px auto 8px}.ring>div{width:110px;height:110px}.ring b{font-size:34px}
+  .kpis b{font-size:19px}.kpis span{font-size:11px}
+  .race{padding:14px}.rbig{font-size:18px}.rbig b{font-size:25px}
+  .levers{gap:6px}.lever{font-size:12px}
+  .kgrid{grid-template-columns:1fr 1fr;gap:8px}.kt{padding:8px 10px}.kt-p{font-size:16px}.kt-f{flex-direction:column;gap:0}
+  .champs,.battle,.cards{display:grid;grid-auto-flow:column;grid-auto-columns:80%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  .champs>*,.battle>*,.cards>*{scroll-snap-align:start}
+  .cards{grid-auto-columns:72%}
+  .card b.big{font-size:28px}.omn{font-size:19px}
+  .mot{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px}.stat b{font-size:22px}
+  .podium{gap:6px;margin:8px 0 12px}.pd .medal{font-size:26px}.pd .pn{font-size:12.5px}.pd .ps{font-size:17px}.pnote{font-size:10.5px}
+  .p1 .step{height:64px}.p2 .step{height:46px}.p3 .step{height:36px}.pd .step{font-size:17px}
+  .filters{gap:10px}.filters>div{flex:1 1 100%}
+  .reward{font-size:14px;padding:8px 12px}
+  .dhh{font-size:16px;margin:16px 0 6px}
+  .how{padding:12px 14px}.how li{font-size:13.5px}
+  .grid{max-height:68vh}.grid tbody td:first-child,.grid thead th:first-child,.grid tfoot td:first-child{min-width:150px;max-width:170px}
+  .grid thead th{min-width:84px;font-size:12px}
+  .badges{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.bd{flex:0 0 auto}
+}
+@media (max-width:380px){.kgrid{grid-template-columns:1fr}.mc-g{grid-template-columns:1fr 1fr}}
+.mine-grid>*,.mot>*,.kgrid>*,.cards>*,.battle>*,.champs>*{min-width:0}
+
+@media (max-width:700px){
+  .hero .sp{display:none}
+  .msf>div:nth-child(1),.msf>div:nth-child(2){flex:1 1 calc(50% - 5px)}
+  .msf select{font-size:13px;padding:6px 8px}
+  .grid td.l small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mrow .mr-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
 </style>
 </head>
 <body>
@@ -272,7 +340,7 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 <section id="app" hidden>
   <div id="hdr"></div>
   <nav class="tabs" id="stabs" aria-label="রিপোর্ট"></nav>
-  <div class="panel filters">
+  <div class="panel filters msf">
     <div><label for="fdh">🏢 ডিএইচ</label><select id="fdh"></select></div>
     <div><label for="fdss">👥 টিম / ডিএসএস</label><select id="fdss"></select></div>
     <div><label for="fq">🔎 খুঁজুন (নাম)</label><input id="fq" placeholder="ডিএসও / টিম / ডিএসএস"></div>
@@ -287,7 +355,7 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
     <div class="grid" id="gw"><table id="tb"></table></div>
     <div class="tiny mut" style="margin-top:6px">কলামের নিচের ঘরে লিখে ফিল্টার করুন — লেখা দিয়ে খোঁজা যায়, সংখ্যায় যেমন <b>&gt;100</b>, <b>&lt;=50</b>, <b>0</b>, <b>10-20</b>। শিরোনামে ক্লিক করলে সাজানো (sort) হয়।</div>
   </div>
-  <div class="panel"><h2>ℹ️ কোন সংখ্যা কীভাবে</h2><div id="leg" class="mut"></div></div>
+  <details class="panel"><summary style="cursor:pointer"><h2 style="display:inline">ℹ️ কোন সংখ্যা কীভাবে</h2></summary><div id="leg" class="mut" style="margin-top:8px"></div></details>
 </section>
 </div>
 <script>
@@ -630,6 +698,7 @@ function match(val, f, isNum) {
   }
   return String(val == null ? '' : val).toLowerCase().includes(f.toLowerCase());
 }
+let _w = innerWidth < 700; addEventListener('resize', () => { const n = innerWidth < 700; if (n !== _w) { _w = n; if (D && who && !$('#app').hidden) draw(); } });
 const fmtCell = (v, c) => v == null ? '—' : c.pct ? (Math.round(v * 10) / 10) + '%' : c.avg ? GC.nd(v) : GC.nf(v);
 
 function draw() {
@@ -652,8 +721,13 @@ function draw() {
     D.ra.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss)).sort((a, b) => a.dh.localeCompare(b.dh) || a.dss.localeCompare(b.dss) || a.name.localeCompare(b.name))
       .forEach(x => rows.push({ k: [tc(x.name), x.wallet, (x.team || '') + (x.team ? ' (' + tc(x.dss) + ')' : tc(x.dss)), x.dh], r: src.dso(x), mine: x.dh === my }));
   }
-  rows.forEach(x => x.cells = src.cols.map(c => c.get(x.r)));
-  if (q) rows = rows.filter(x => x.k.join(' ').toLowerCase().includes(q));
+  rows.forEach(x => { x.cells = src.cols.map(c => c.get(x.r)); x.full = x.k; });
+  const fullLead = lead;
+  if (innerWidth < 700 && lead.length > 1) {                       // মোবাইল: নাম কলাম একটিতে
+    rows.forEach(x => { x.sub = x.full.slice(1).filter((v, i, arr) => v && !(ed && i === arr.length - 1)).join(' · '); x.k = [x.full[0]]; });
+    lead = [lead[0]];
+  }
+  if (q) rows = rows.filter(x => x.full.join(' ').toLowerCase().includes(q));
   rows = rows.filter(x => x.k.every((v, i) => match(v, colF['k' + i], false)) && x.cells.every((v, i) => match(v, colF['c' + i], true)));
   if (sortBy) { const { key, dir } = sortBy; rows.sort((a, b) => { const va = key[0] === 'k' ? a.k[+key.slice(1)] : a.cells[+key.slice(1)], vb = key[0] === 'k' ? b.k[+key.slice(1)] : b.cells[+key.slice(1)]; return (typeof va === 'number' || typeof vb === 'number' ? ((va ?? -Infinity) - (vb ?? -Infinity)) : String(va).localeCompare(String(vb))) * dir; }); }
   const tot = rows.filter(x => !x.muted || true).reduce((a, x) => src.add(a, x.r), {});
@@ -665,14 +739,14 @@ function draw() {
   const allCols = [...lead.map((n, i) => ({ key: 'k' + i, name: n, l: true })), ...src.cols.map((c, i) => ({ key: 'c' + i, name: c.name }))];
   let h = `<thead><tr>${allCols.map(c => `<th class="${c.l ? 'l' : ''}" data-sort="${c.key}" title="সাজাতে ক্লিক করুন">${esc(c.name)}${arrow(c.key)}</th>`).join('')}</tr>
     <tr class="frow">${allCols.map(c => `<th class="${c.l ? 'l' : ''}"><input data-f="${c.key}" value="${esc(colF[c.key] || '')}" placeholder="ফিল্টার" aria-label="${esc(c.name)} ফিল্টার"></th>`).join('')}</tr></thead><tbody>`;
-  rows.forEach(x => h += `<tr class="${x.mine && level !== 'dso' ? 'mine' : ''}" ${x.muted ? 'style="opacity:.75"' : ''}>${x.k.map((v, i) => `<td class="l">${i ? `<small>${esc(v)}</small>` : `<b>${esc(v)}</b>`}</td>`).join('')}${x.cells.map((v, i) => `<td>${fmtCell(v, src.cols[i])}</td>`).join('')}</tr>`);
+  rows.forEach(x => h += `<tr class="${x.mine && level !== 'dso' ? 'mine' : ''}" ${x.muted ? 'style="opacity:.75"' : ''}>${x.k.map((v, i) => `<td class="l">${i ? `<small>${esc(v)}</small>` : `<b>${esc(v)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ''}`}</td>`).join('')}${x.cells.map((v, i) => `<td>${fmtCell(v, src.cols[i])}</td>`).join('')}</tr>`);
   h += `</tbody><tfoot><tr class="tot"><td class="l">মোট (ফিল্টার অনুযায়ী)</td>${lead.slice(1).map(() => '<td></td>').join('')}${totCells.map((v, i) => `<td>${fmtCell(v, src.cols[i])}</td>`).join('')}</tr></tfoot>`;
   const keep = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
   $('#tb').innerHTML = h;
   document.querySelectorAll('#tb th[data-sort]').forEach(th => th.onclick = () => { const k = th.dataset.sort; sortBy = sortBy && sortBy.key === k ? (sortBy.dir > 0 ? { key: k, dir: -1 } : null) : { key: k, dir: 1 }; draw(); });
   document.querySelectorAll('#tb input[data-f]').forEach(inp => inp.oninput = () => { colF[inp.dataset.f] = inp.value; draw(); });
   if (keep) { const el = document.querySelector(`#tb input[data-f="${keep}"]`); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }
-  view = { allCols, rows, totCells, src };
+  view = { allCols: [...fullLead.map((n, i) => ({ key: 'k' + i, name: n })), ...src.cols.map((c, i) => ({ key: 'c' + i, name: c.name }))], rows, totCells, src };
   $('#leg').innerHTML = src.legend() + '<p>এজেন্টের আরএ ধরা হয়েছে সর্বশেষ TRX রিপোর্ট থেকে। টার্গেট ফাইলে নেই এমন আরএ “অনির্ধারিত আরএ” হিসেবে ডিএইচ-এর মোটে যোগ হয়।</p>';
 }
 const OPN = { '=': '=', '!=': '≠', '>': '>', '>=': '≥', '<': '<', '<=': '≤', in: 'এর যেকোনো একটি', notin: 'এর কোনোটিই নয়', contains: 'ধারণ করে', empty: 'খালি', notempty: 'খালি নয়' };
@@ -686,7 +760,7 @@ $('#xl').onclick = () => {
   const go = () => {
     const { allCols, rows, totCells, src } = view;
     const aoa = [allCols.map(c => c.name)];
-    rows.forEach(x => aoa.push([...x.k, ...x.cells.map((v, i) => v == null ? '' : src.cols[i].pct || src.cols[i].avg ? Math.round(v * 10) / 10 : v)]));
+    rows.forEach(x => aoa.push([...x.full, ...x.cells.map((v, i) => v == null ? '' : src.cols[i].pct || src.cols[i].avg ? Math.round(v * 10) / 10 : v)]));
     aoa.push(['মোট', ...Array(allCols.length - src.cols.length - 1).fill(''), ...totCells.map((v, i) => v == null ? '' : src.cols[i].pct || src.cols[i].avg ? Math.round(v * 10) / 10 : v)]);
     const ws = XLSX.utils.aoa_to_sheet(aoa);
     ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: aoa.length - 2, c: allCols.length - 1 } }) };
