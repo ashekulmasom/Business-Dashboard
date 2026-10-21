@@ -6,19 +6,19 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Admin · Achievers’ Club</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:wght@400;700&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 <style>
-/* ---- ফন্ট: রিপোজিটরিতে font-title.ttf (শিরোনাম ও সংখ্যা) ও font-body.ttf (লেখা) রাখলে সেগুলো ব্যবহার হবে ---- */
-@font-face{font-family:"ACTitle";src:url("font-title.woff2") format("woff2"),url("font-title.ttf") format("truetype");font-display:swap}
+/* ---- ফন্ট: ইংরেজি = Calibri (ফোনে Carlito); বাংলা = একটি ফন্ট পরিবার — রিপোজিটরিতে font-bangla.ttf (সাধারণ) ও font-bangla-bold.ttf (বোল্ড) রাখুন ---- */
+@font-face{font-family:"ACBangla";src:url("font-bangla.woff2") format("woff2"),url("font-bangla.ttf") format("truetype");font-weight:400;font-display:swap;unicode-range:U+0980-09FF,U+200C-200D,U+25CC}
 /* ইংরেজি লেখা ও সংখ্যা: কম্পিউটারে থাকা Calibri, না থাকলে (ফোনে) Carlito — একই মাপের ফ্রি ফন্ট */
 @font-face{font-family:"ACLatin";src:local("Calibri"),local("Calibri Regular");font-weight:400;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
 @font-face{font-family:"ACLatin";src:local("Calibri Bold"),local("Calibri-Bold");font-weight:700;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
-@font-face{font-family:"ACBody";src:url("font-body.woff2") format("woff2"),url("font-body.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"ACBangla";src:url("font-bangla-bold.woff2") format("woff2"),url("font-bangla-bold.ttf") format("truetype"),url("font-bangla.ttf") format("truetype");font-weight:700;font-display:swap;unicode-range:U+0980-09FF,U+200C-200D,U+25CC}
 :root{
   --pink:#E2136E;--pink2:#FF4F9A;--deep:#7A0C43;--plum:#3B0A26;--gold:#F2B705;--gold2:#FFE08A;
   --bg:#FBF5F8;--card:#FFFFFF;--line:#F1DCE7;--ink:#24121C;--mut:#6B5561;--ok:#0B7A6E;--low:#A34A00;
-  --fh:"ACLatin","Carlito","ACTitle","Baloo Da 2","Hind Siliguri",system-ui,sans-serif;
-  --fb:"ACLatin","Carlito","ACBody","Hind Siliguri","Noto Sans Bengali",system-ui,"Segoe UI",sans-serif;
+  --fh:"ACLatin","Carlito","ACBangla","Hind Siliguri",sans-serif;
+  --fb:"ACLatin","Carlito","ACBangla","Hind Siliguri",sans-serif;
   --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
 }
 *{box-sizing:border-box}
@@ -219,6 +219,24 @@ footer.ft a{color:var(--mut)}
 .bt-n{font:800 17px/1.25 var(--fh);color:var(--plum);padding-right:44px;letter-spacing:.02em}
 .bt-s{font:800 28px/1.1 var(--fh);color:var(--pink);margin-top:6px}.bt-s small{font:500 12px var(--fb);color:var(--mut)}
 .bt-f{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--mut);margin-top:3px}
+
+.sb-name.om{font-size:32px;font-weight:800;color:#FFE58A}
+.omn{font:800 22px/1.2 var(--fh);color:var(--plum);margin:4px 0 2px}
+b.omt{font:800 17px var(--fh);color:var(--plum)}
+.tier.medal{font:800 15px/1.3 var(--fh);padding:5px 14px;background:rgba(255,255,255,.22)}
+
+/* ---- অনুপ্রেরণার বার (প্রতি ৫ সেকেন্ডে নতুন উক্তি) ---- */
+.qbar{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:10px 16px;border-radius:16px;background:linear-gradient(90deg,#FFF4D6,#FFE7F2);border:1px solid #F7D9A0;min-height:52px;overflow:hidden}
+.qbar .qi{font-size:22px;flex:0 0 auto}
+.qbar .qt{font:700 17px/1.4 var(--fh);color:var(--plum);transition:opacity .45s ease,transform .45s ease}
+.qbar .qt.out{opacity:0;transform:translateY(8px)}
+.qbar .qd{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
+.qbar .qd i{width:6px;height:6px;border-radius:50%;background:#E9C3D6}.qbar .qd i.on{background:var(--pink)}
+.hero .whoh{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:13px;color:#fff}
+.hero .whoh .chip{background:rgba(255,255,255,.2);color:#fff}
+.mot{grid-template-columns:1fr 1fr}
+@media (max-width:560px){.qbar .qd{display:none}.qbar .qt{font-size:15px}.hero .whoh{align-items:flex-start}}
+@media (max-width:560px){.mot{grid-template-columns:1fr}}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -291,6 +309,9 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <h3 style="margin-top:16px">BZP (A2M + D2C) monthly target — OM (per DH, in Taka)</h3>
     <div class="tiny">Enter the BZP target given by HQ (A2M and D2C combined). Achievement = A2M report TRX_AMT + D2C report D2C_TRX_AMOUNT. If left empty, the A2M target from the target file is used.</div>
     <div class="row" id="d2cIn"></div>
+    <h3 style="margin-top:16px">Operation Manager (OM) Names</h3>
+    <div class="tiny">The OM’s name is shown in big bold text on the OM score card, DH cards and the OM table.</div>
+    <div class="row" id="omIn"></div>
     <h3 style="margin-top:16px">DSS Team Names & Login</h3>
     <div class="tiny">Team name is shown on the leaderboards (e.g. CHOWRASTA TIGERS). DSS can log in with their DSS ID (from the target file); optionally enter a wallet number so they can log in with it too. If DSS IDs are not shown, upload this month’s target file once more.</div>
     <div class="row" id="dssIn"></div>
@@ -302,6 +323,16 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
   <p class="mut">Publishing replaces this month’s data files in the GitHub repository (root folder). New numbers appear on the site within 1–2 minutes.</p>
   <div class="btns"><button id="pub" type="button" disabled>Publish to GitHub</button><button id="dl" type="button" class="ghost" disabled>Download files</button></div>
   <div id="msg" style="margin-top:12px;font-weight:600"></div>
+</section>
+
+<section class="panel">
+  <details id="quoteBox">
+    <summary>💬 Inspiring Quotes</summary>
+    <p class="mut">These quotes rotate on every page (a new one every 5 seconds). Write one quote per line. Leave empty to use the built-in quotes.</p>
+    <textarea id="qtext" rows="10" style="min-height:220px;line-height:1.7"></textarea>
+    <div class="btns"><button type="button" id="qsave">Save & publish quotes</button><button type="button" class="ghost" id="qdef">Load built-in quotes</button></div>
+    <div id="qmsg" class="mut" style="margin-top:8px"></div>
+  </details>
 </section>
 
 <section class="panel">
@@ -1049,7 +1080,7 @@ $('#con').onclick = async () => {
     IDX = (await ghRead('index.json')) || { months: [], latest: '' };
     IDX.months = IDX.months || [];
     $('#main').hidden = false; $('#nav').hidden = false; $('#s1').hidden = true;
-    monthOptions();
+    monthOptions(); renderQuotes();
     await loadMonth($('#mon').value);
   } catch (e) { $('#m1').className = 'bad'; $('#m1').textContent = e.message; }
 };
@@ -1164,6 +1195,9 @@ function renderCfg() {
   $('#savCnt').value = S.W.cfg.savCnt != null ? S.W.cfg.savCnt : 10;
   $('#d2cIn').innerHTML = S.W.dh.map(d => `<div><label>${esc(d.name)}</label><input type="number" min="0" class="d2c" data-n="${esc(d.name)}" value="${S.W.cfg.bzp[d.name] || ''}" placeholder="e.g. 32189000"></div>`).join('') || '<div class="mut">DH list appears after the target file is uploaded.</div>';
   document.querySelectorAll('.d2c').forEach(i => i.onchange = () => { S.W.cfg.bzp[i.dataset.n] = +i.value || 0; E.aggregate(S); S.dirty.data = true; });
+  S.W.cfg.om = S.W.cfg.om || {};
+  $('#omIn').innerHTML = S.W.dh.map(d => `<div><label>${esc(d.name)}${d.ma ? ' <span class="tiny">· MA ' + esc(d.ma) + '</span>' : ''}</label><input class="omname" data-n="${esc(d.name)}" value="${esc(S.W.cfg.om[d.name] || '')}" placeholder="OM name"></div>`).join('') || '<div class="mut">DH list appears after the target file is uploaded.</div>';
+  document.querySelectorAll('.omname').forEach(i => i.onchange = () => { S.W.cfg.om[i.dataset.n] = i.value.trim(); S.dirty.data = true; });
   $('#dssIn').innerHTML = S.W.teams.map((t, i) => `<div style="flex:1 1 300px;border:1px solid var(--line);border-radius:12px;padding:10px"><label>${esc(t.dss)} <span class="tiny">· ${esc(t.dh)}${t.id ? ' · ID ' + esc(t.id) : ''}</span></label><input class="dsst" data-i="${i}" value="${esc(t.team || '')}" placeholder="Team name" style="margin-bottom:6px"><input inputmode="numeric" class="dssw" data-i="${i}" value="${esc(t.w || '')}" placeholder="Login wallet 01XXXXXXXXX (optional)"></div>`).join('') || '<div class="mut">DSS list appears after the target file is uploaded.</div>';
   document.querySelectorAll('.dsst').forEach(i => i.onchange = () => { S.W.teams[+i.dataset.i].team = i.value.trim().toUpperCase(); i.value = S.W.teams[+i.dataset.i].team; S.dirty.data = true; });
   document.querySelectorAll('.dssw').forEach(i => i.onchange = () => { const w = E.w11(i.value); S.W.teams[+i.dataset.i].w = w; i.value = w; S.dirty.data = true; });
@@ -1199,6 +1233,34 @@ $('#dl').onclick = () => {
   $('#msg').className = 'mut'; $('#msg').textContent = 'Upload the downloaded files to the root folder of the GitHub repository.';
 };
 addEventListener('beforeunload', e => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- অনুপ্রেরণার উক্তি ---------- */
+const QUOTES = [
+  'প্রতিদিনের ছোট অর্জনই মাস শেষে বড় সাফল্য।',
+  'আজকের পরিশ্রম, কালকের র‍্যাঙ্ক।',
+  'টার্গেট শুধু একটা সংখ্যা — আপনি তার চেয়ে বড়।',
+  'একটা বাড়তি ভিজিট, একটা বাড়তি রেজিস্ট্রেশন — পার্থক্য এখানেই।',
+  'চ্যাম্পিয়নরা থামে না, তারা গতি বাড়ায়।',
+  'দল জিতলে সবাই জেতে — পাশের সহকর্মীকেও সাথে নিন।',
+  'আজ যেখানে আছেন, কাল তার চেয়ে এক ধাপ ওপরে।',
+  'ধারাবাহিকতাই সেরা কৌশল।',
+  'প্রতিটি এজেন্ট ভিজিট একটি নতুন সুযোগ।',
+  'শুরুটা ভালো হলে শেষটা আরও ভালো হয়।',
+  'সংখ্যা কথা বলে — আজ আপনার সংখ্যাকে কথা বলতে দিন।',
+  'শীর্ষে জায়গা সবসময় খালি থাকে — এবার আপনার পালা।'
+];
+function renderQuotes() { const q = (IDX.quotes && IDX.quotes.length) ? IDX.quotes : QUOTES; $('#qtext').value = q.join('\n'); }
+$('#qdef').onclick = () => { $('#qtext').value = QUOTES.join('\n'); };
+$('#qsave').onclick = async () => {
+  const list = $('#qtext').value.split('\n').map(s => s.trim()).filter(Boolean);
+  const m = $('#qmsg'); m.className = 'mut'; m.textContent = 'Publishing quotes…';
+  try {
+    const cur = (await ghRead('index.json')) || { v: 1, months: [], latest: '' };
+    cur.quotes = list; IDX.quotes = list;
+    await ghPut('index.json', cur, 'Update quotes');
+    m.className = 'ok'; m.textContent = `Published ${list.length} quotes. The site updates in 1–2 minutes.`;
+  } catch (e) { m.className = 'bad'; m.textContent = e.message; }
+};
 
 /* =====================================================================
    মার্কেট সার্ভিস ক্রাইটেরিয়া
