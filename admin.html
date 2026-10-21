@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>অ্যাডমিন · Achievers’ Club</title>
+<title>Admin · Achievers’ Club</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:wght@400;700&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 <style>
@@ -22,6 +22,7 @@
   --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;color:var(--ink);font:400 16px/1.6 var(--fb);background:var(--bg);min-height:100vh;
   background-image:radial-gradient(900px 400px at 0% -10%,#FFE1EF 0,transparent 60%),radial-gradient(700px 360px at 100% 0%,#FFF1CF 0,transparent 55%)}
@@ -167,6 +168,9 @@ footer.ft a{color:var(--mut)}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:560px){.hero h1{font-size:24px}.badge img{height:54px}.hero{padding:18px}.hero .side{margin-left:0}.panel{padding:16px}.ring{width:150px;height:150px}.ring>div{width:122px;height:122px}}
+
+.pnote{font-size:12px;color:var(--deep);font-weight:600;line-height:1.35;margin:2px 4px 4px}
+.reward{border-radius:16px;padding:10px 16px;margin-bottom:10px;background:linear-gradient(90deg,#FFF3C4,#FFE3F0);border:1px solid #F2C94C;font:700 16px var(--fh);color:var(--plum);text-align:center}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -193,89 +197,89 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
 <body>
 <div class="wrap">
 <img class="logo" src="logo.jpg" alt="Achievers’ Club">
-<div class="mut" style="color:var(--pink);font-weight:600">⚙️ অ্যাডমিন · প্রাইভেট পেজ</div>
-<h1>📤 রিপোর্ট আপলোড ও প্রকাশ</h1>
-<nav class="tabs" id="nav" hidden><a href="index.html?as=admin">🏆 Achievers’ Club দেখুন</a><a href="service.html?as=admin">🛠️ Market Service দেখুন</a><a href="admin.html" class="on">⚙️ অ্যাডমিন</a></nav>
+<div class="mut" style="color:var(--pink);font-weight:600">⚙️ Admin · Private page</div>
+<h1>📤 Upload & Publish Reports</h1>
+<nav class="tabs" id="nav" hidden><a href="index.html?as=admin">🏆 View Achievers’ Club</a><a href="service.html?as=admin">🛠️ View Market Service</a><a href="admin.html" class="on">⚙️ Admin</a></nav>
 
 <section class="panel" id="s1">
-  <h2>১. অ্যাডমিন সাইন-ইন</h2>
-  <label for="tk">অ্যাক্সেস টোকেন</label>
-  <input id="tk" type="password" autocomplete="off" placeholder="github_pat_…">
-  <p class="mut">রিপোজিটরি: <b id="repoName"></b> · শুধু রিপোজিটরির মালিক (লেখার অনুমতিসহ টোকেন) ডেটা প্রকাশ করতে পারবেন। টোকেন শুধু এই ব্রাউজারেই থাকে।</p>
-  <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="rem" style="width:auto;min-height:0"> এই কম্পিউটারে মনে রাখুন</label>
-  <div class="btns"><button id="con" type="button">অ্যাডমিন হিসেবে সাইন ইন</button></div>
+  <h2>1. Admin Sign-in</h2>
+  <label for="tk">Access Token</label>
+  <input id="tk" type="password" autocomplete="off" placeholder="Paste your access token">
+  <p class="mut">Repository: <b id="repoName"></b> · Only the repository owner (a token with write access) can publish data. The token stays in this browser only.</p>
+  <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="rem" style="width:auto;min-height:0"> Remember on this computer</label>
+  <div class="btns"><button id="con" type="button">Sign in as Admin</button></div>
   <div id="m1" class="bad" style="margin-top:8px"></div>
 </section>
 
 <div id="main" hidden>
 <section class="panel">
-  <h2>২. কোন মাসের রিপোর্ট বানাচ্ছেন?</h2>
-  <div class="row"><div><label for="mon">রিপোর্টের মাস</label><select id="mon"></select></div></div>
+  <h2>2. Which month are you preparing?</h2>
+  <div class="row"><div><label for="mon">Report month</label><select id="mon"></select></div></div>
   <p class="mut" id="mst" style="margin-top:8px"></p>
-  <p class="tiny">উদাহরণ: অক্টোবরে বসে সেপ্টেম্বরের ফাইনাল রিপোর্ট বানাতে “Sep” বেছে নিন, তারপর সেপ্টেম্বরের ফাইল দিন। TRX রিপোর্টের তারিখ দেখে সাইট নিজেই বোঝে কোনটা এই মাসের আর কোনটা গত মাসের (LMTD)।</p>
+  <p class="tiny">Example: to prepare September’s final report in October, choose “Sep”, then upload September’s files. The site reads the TRX report date to tell which file is this month and which is last month (LMTD).</p>
 </section>
 
 <section class="panel">
-  <h2>৩. রিপোর্ট আপলোড করুন</h2>
-  <p class="mut">যেকোনো রিপোর্ট, যেকোনো ক্রমে, একসাথে বা আলাদা দিনে দিন। কোনটা কী রিপোর্ট, সাইট কলামের নাম দেখে চেনে (কলাম জায়গা বদলালেও সমস্যা নেই)। মাসের শুরুতে প্রথমে RA-DSS টার্গেট ফাইল দিন। প্রতিদিন: সর্বশেষ TRX + REG + UBP; গ্রোথের জন্য গত মাসের একই তারিখের TRX একবার।</p>
-  <div id="drop" tabindex="0" role="button" aria-label="রিপোর্ট ফাইল বেছে নিন">
-    <b>📂 এখানে ফাইল টেনে আনুন, অথবা ক্লিক করে বেছে নিন</b>
-    <div class="mut">একসাথে অনেকগুলো ফাইল দেওয়া যায় (.xlsx / .xls / .xlsb / .csv)</div>
+  <h2>3. Upload Reports</h2>
+  <p class="mut">Upload any reports, in any order, together or on different days. The site identifies each report by its column names (shuffled columns are fine). At the start of the month, upload the RA-DSS Target File first. Daily: latest TRX + REG + UBP. For growth: last month’s TRX report of the same date, once.</p>
+  <div id="drop" tabindex="0" role="button" aria-label="Choose report files">
+    <b>📂 Drag files here, or click to choose</b>
+    <div class="mut">You can add many files at once (.xlsx / .xls / .xlsb / .csv)</div>
     <input id="file" type="file" multiple accept=".xlsx,.xls,.xlsb,.csv" hidden>
   </div>
   <div id="files"></div>
 </section>
 
 <section class="panel">
-  <h2>৪. কোন রিপোর্ট কোন তারিখ পর্যন্ত</h2>
+  <h2>4. Report Status (data till)</h2>
   <div class="scroll"><table id="slots"></table></div>
 </section>
 
 <section class="panel">
   <details>
-    <summary>🎯 টার্গেট সেটিংস</summary>
-    <div class="row"><div><label for="savCnt">SAV-CNT: প্রতি ডিএসও মাসিক টার্গেট</label><input id="savCnt" type="number" min="0" step="1"></div></div>
-    <div class="tiny" style="margin-top:6px">ডিএসএস টার্গেট = ডিএসও সংখ্যা × এই সংখ্যা। ওএম-এর SAV-CNT টার্গেট Savings রিপোর্টের MA Wise শিটে থাকলে সেখান থেকেই নেওয়া হয়।</div>
-    <h3 style="margin-top:16px">D2C মাসিক টার্গেট (ডিএইচ অনুযায়ী, টাকায়)</h3>
-    <div class="tiny">ওএম-এর BZP টার্গেট = A2M টার্গেট + D2C টার্গেট। খালি রাখলে শুধু A2M টার্গেট ধরা হবে।</div>
+    <summary>🎯 Target Settings</summary>
+    <div class="row"><div><label for="savCnt">SAV-CNT: monthly target per DSO</label><input id="savCnt" type="number" min="0" step="1"></div></div>
+    <div class="tiny" style="margin-top:6px">DSS target = number of DSOs × this value. The OM’s SAV-CNT target is taken from the Savings report’s MA Wise sheet when available.</div>
+    <h3 style="margin-top:16px">BZP (A2M + D2C) monthly target — OM (per DH, in Taka)</h3>
+    <div class="tiny">Enter the BZP target given by HQ (A2M and D2C combined). Achievement = A2M report TRX_AMT + D2C report D2C_TRX_AMOUNT. If left empty, the A2M target from the target file is used.</div>
     <div class="row" id="d2cIn"></div>
-    <h3 style="margin-top:16px">ডিএসএস লগইন</h3>
-    <div class="tiny">ডিএসএস তাদের DSS ID (টার্গেট ফাইল থেকে) দিয়ে ঢুকতে পারেন। চাইলে নিচে প্রত্যেক ডিএসএস-এর একটি ওয়ালেট নম্বর দিন — তাহলে সেই ওয়ালেট দিয়েও ঢুকতে পারবেন। DSS ID না দেখালে এই মাসের টার্গেট ফাইল আরেকবার আপলোড করুন।</div>
+    <h3 style="margin-top:16px">DSS Login</h3>
+    <div class="tiny">DSS can log in with their DSS ID (from the target file). Optionally enter a wallet number for each DSS below so they can log in with it too. If DSS IDs are not shown, upload this month’s target file once more.</div>
     <div class="row" id="dssIn"></div>
   </details>
 </section>
 
 <section class="panel">
-  <h2>৫. প্রকাশ করুন</h2>
-  <p class="mut">প্রকাশ করলে GitHub রিপোজিটরিতে (মূল ফোল্ডারে) এই মাসের ফাইল বদলে যাবে। এক-দুই মিনিটের মধ্যে সাইটে নতুন সংখ্যা দেখা যাবে।</p>
-  <div class="btns"><button id="pub" type="button" disabled>GitHub-এ প্রকাশ করুন</button><button id="dl" type="button" class="ghost" disabled>ফাইলগুলো ডাউনলোড করুন</button></div>
+  <h2>5. Publish</h2>
+  <p class="mut">Publishing replaces this month’s data files in the GitHub repository (root folder). New numbers appear on the site within 1–2 minutes.</p>
+  <div class="btns"><button id="pub" type="button" disabled>Publish to GitHub</button><button id="dl" type="button" class="ghost" disabled>Download files</button></div>
   <div id="msg" style="margin-top:12px;font-weight:600"></div>
 </section>
 
 <section class="panel">
   <details id="critBox">
-    <summary>🧩 মার্কেট সার্ভিস ক্রাইটেরিয়া (অতিরিক্ত অপশন — নিয়মিত কাজে লাগে না)</summary>
-    <p class="mut">এখানে নতুন ট্র্যাকিং ক্রাইটেরিয়া যোগ করুন বা বিদ্যমানগুলো বদলান। প্রতিটি ক্রাইটেরিয়া এজেন্ট-ভিত্তিক শর্ত দিয়ে গোনে (বা যোগ করে), তারপর ডিএসও → ডিএসএস → ডিএইচ অনুযায়ী Market Service পেজে দেখায়। ফিল্ডের নাম: <b>DTR:</b> = TRX রিপোর্টের কলাম, <b>REG:</b>, <b>UBP:</b>, <b>R78:</b>, <b>B2BID:</b>, <b>X:</b> (অন্য রিপোর্ট), <b>CALC:</b> = হিসাব করা ফিল্ড।</p>
+    <summary>🧩 Market Service Criteria (additional option — not needed for regular work)</summary>
+    <p class="mut">Add new tracking criteria here or change existing ones. Each criterion counts (or sums) agents matching your conditions, then shows the result by DSO → DSS → DH on the Market Service page. Field prefixes: <b>DTR:</b> = TRX report columns, <b>REG:</b>, <b>UBP:</b>, <b>R78:</b>, <b>B2BID:</b>, <b>X:</b> (other report), <b>CALC:</b> = calculated fields.</p>
     <div id="cmsg" class="mut"></div>
     <div class="scroll"><table id="clist"></table></div>
-    <div class="btns"><button type="button" id="cadd">➕ নতুন ক্রাইটেরিয়া</button><button type="button" class="ghost" id="cdef">↺ ডিফল্টে ফিরুন</button></div>
+    <div class="btns"><button type="button" id="cadd">➕ New criterion</button><button type="button" class="ghost" id="cdef">↺ Reset to defaults</button></div>
     <div id="ced" class="rc" hidden>
-      <h3 id="cedT">ক্রাইটেরিয়া</h3>
+      <h3 id="cedT">Criterion</h3>
       <div class="row">
-        <div style="flex:2 1 260px"><label for="cn">নাম</label><input id="cn" placeholder="যেমন: Star Agent with Zero B2B"></div>
-        <div><label for="ck">ধরন</label><select id="ck"><option value="count">এজেন্ট গোনা (Count)</option><option value="sum">একটি ফিল্ডের যোগফল (Sum)</option><option value="pct">শতাংশ (A ÷ B × 100)</option></select></div>
+        <div style="flex:2 1 260px"><label for="cn">Name</label><input id="cn" placeholder="e.g. Star Agent with Zero B2B"></div>
+        <div><label for="ck">Type</label><select id="ck"><option value="count">Count of agents</option><option value="sum">Sum of a field</option><option value="pct">Percentage (A ÷ B × 100)</option></select></div>
       </div>
       <div id="cCondBox">
-        <label style="margin-top:12px">শর্ত (সবগুলো মিলতে হবে)</label>
+        <label style="margin-top:12px">Conditions (all must match)</label>
         <div id="conds"></div>
-        <div class="btns"><button type="button" class="ghost sm" id="cplus">+ শর্ত যোগ</button></div>
+        <div class="btns"><button type="button" class="ghost sm" id="cplus">+ Add condition</button></div>
       </div>
-      <div id="cSumBox" class="row" hidden><div><label for="csf">কোন ফিল্ডের যোগফল</label><input id="csf" list="flist" placeholder="যেমন DTR:MTD CI AMT"></div></div>
+      <div id="cSumBox" class="row" hidden><div><label for="csf">Field to sum</label><input id="csf" list="flist" placeholder="e.g. DTR:MTD CI AMT"></div></div>
       <div id="cPctBox" class="row" hidden>
-        <div><label for="cnum">লব (A)</label><select id="cnum"></select></div>
-        <div><label for="cden">হর (B)</label><select id="cden"></select></div>
+        <div><label for="cnum">Numerator (A)</label><select id="cnum"></select></div>
+        <div><label for="cden">Denominator (B)</label><select id="cden"></select></div>
       </div>
-      <div class="btns"><button type="button" id="csave">সংরক্ষণ</button><button type="button" class="ghost" id="ccan">বাতিল</button></div>
+      <div class="btns"><button type="button" id="csave">Save</button><button type="button" class="ghost" id="ccan">Cancel</button></div>
       <div id="cerr" class="bad"></div>
     </div>
     <datalist id="flist"></datalist><datalist id="vlist"></datalist>
@@ -390,17 +394,17 @@ const dataRows = (aoa, h) => aoa.slice(h.hi + 1).filter(r => r && r.some(c => c 
 
 /* ---------- রিপোর্টের ধরন ---------- */
 const SLOTS = [
-  { id: 'target', label: 'RA-DSS টার্গেট ফাইল', freq: 'মাসে একবার' },
-  { id: 'dtr', label: 'TRX — Daily Transaction Report (সর্বশেষ দিন)', freq: 'প্রতিদিন' },
-  { id: 'lmdtr', label: 'LMTD TRX — গত মাসের একই তারিখের TRX রিপোর্ট', freq: 'মাসে একবার (গ্রোথের জন্য)' },
-  { id: 'reg', label: 'REG — Daily Acquisition Report', freq: 'প্রতিদিন' },
-  { id: 'ubp', label: 'UBP — Assisted Bill Pay (Agent Wise)', freq: 'প্রতিদিন' },
-  { id: 'sav', label: 'SAVINGS — Savings Ref. Report', freq: 'HQ থেকে পেলে' },
-  { id: 'a2m', label: 'A2M রিপোর্ট', freq: 'HQ থেকে পেলে' },
-  { id: 'd2c', label: 'D2C রিপোর্ট', freq: 'HQ থেকে পেলে' },
-  { id: 'r78', label: 'REPORT 78 (Agent Wise) — মার্কেট সার্ভিস', freq: 'ঐচ্ছিক', svc: true },
-  { id: 'b2bid', label: 'B2B TRX ID Wise — মার্কেট সার্ভিস', freq: 'ঐচ্ছিক', svc: true },
-  { id: 'agentx', label: 'অন্য যেকোনো এজেন্ট-ভিত্তিক রিপোর্ট — মার্কেট সার্ভিস', freq: 'ঐচ্ছিক', svc: true }
+  { id: 'target', label: 'RA-DSS Target File', freq: 'Once a month' },
+  { id: 'dtr', label: 'TRX — Daily Transaction Report (latest day)', freq: 'Daily' },
+  { id: 'lmdtr', label: 'LMTD TRX — last month TRX report, same date', freq: 'Once a month (for growth)' },
+  { id: 'reg', label: 'REG — Daily Acquisition Report', freq: 'Daily' },
+  { id: 'ubp', label: 'UBP — Assisted Bill Pay (Agent Wise)', freq: 'Daily' },
+  { id: 'sav', label: 'SAVINGS — Savings Ref. Report', freq: 'When received from HQ' },
+  { id: 'a2m', label: 'A2M Report', freq: 'When received from HQ' },
+  { id: 'd2c', label: 'D2C Report', freq: 'When received from HQ' },
+  { id: 'r78', label: 'REPORT 78 (Agent Wise) — Market Service', freq: 'Optional', svc: true },
+  { id: 'b2bid', label: 'B2B TRX ID Wise — Market Service', freq: 'Optional', svc: true },
+  { id: 'agentx', label: 'Any other agent-wise report — Market Service', freq: 'Optional', svc: true }
 ];
 const SIG = [
   ['dtr', ['trx date', 'ra wallet', 'agent wallet', 'mtd ci amt', 'mtd co amt']],
@@ -451,14 +455,15 @@ function read(data, name, type) {
 
 /* ---------- অবস্থা (একটি মাসের) ---------- */
 function emptyW(month) {
-  return { v: 2, month, updated: '', tillDate: '', tills: {}, cfg: { savCnt: 10, d2c: {} }, ra: [], teams: [], dh: [], territory: { v: {} } };
+  return { v: 2, month, updated: '', tillDate: '', tills: {}, cfg: { savCnt: 10, bzp: {} }, ra: [], teams: [], dh: [], territory: { v: {} } };
 }
 function newState(month) {
   return { month, W: emptyW(month), AM: new Map(), amDate: '', src: {}, crit: defaultCrit(), svc: null, fields: [], dirty: { data: false, am: false, svc: false } };
 }
 function fixW(W, month) {
   W = Object.assign(emptyW(month), W || {});
-  W.tills = W.tills || {}; W.cfg = Object.assign({ savCnt: 10, d2c: {} }, W.cfg || {}); W.cfg.d2c = W.cfg.d2c || {};
+  W.tills = W.tills || {}; W.cfg = Object.assign({ savCnt: 10 }, W.cfg || {});
+  W.cfg.bzp = W.cfg.bzp || W.cfg.d2c || {}; delete W.cfg.d2c;          // আগে "D2C টার্গেট" ঘরে দেওয়া সংখ্যাই আসলে BZP টার্গেট
   W.territory = W.territory || { v: {} };
   return W;
 }
@@ -505,12 +510,12 @@ function setX(S, key, xm) {          // আরএ-তে না মেলা এ
   S.W.dh.forEach(d => { d.x = d.x || {}; const v = xm ? (xm.get(d.name) || 0) : 0; d.x[key] = v; s += v; });
   return s;
 }
-const need = S => { if (!S.W.ra.length) throw new Error('আগে এই মাসের RA-DSS টার্গেট ফাইল দিন, নইলে ডিএসও মেলানো যাবে না।'); };
+const need = S => { if (!S.W.ra.length) throw new Error('Upload this month\'s RA-DSS Target File first — DSOs cannot be matched without it.'); };
 const dhOfCol = i => r => up(r[i]);
 
 function aggregate(S) {
   const W = S.W;
-  W.cfg = W.cfg || { savCnt: 10, d2c: {} }; W.cfg.d2c = W.cfg.d2c || {};
+  W.cfg = W.cfg || { savCnt: 10 }; W.cfg.bzp = W.cfg.bzp || W.cfg.d2c || {}; delete W.cfg.d2c;
   const P = ['t', 'r', 'vo', 'c', 'u', 'a2m'], F = ['trg', 'ach', 'lm'];
   W.ra.forEach(x => { x.v = x.v || {}; x.v.c = x.v.c || {}; x.v.c.trg = +W.cfg.savCnt || 0; });
   const sum = (arr, p, f) => { let s = 0, any = false; arr.forEach(x => { const v = x.v && x.v[p] && x.v[p][f]; if (v != null) { s += v; any = true; } }); return any ? s : null; };
@@ -528,24 +533,25 @@ function aggregate(S) {
       if (ex) v = (v || 0) + ex;
       set(d, p, f, v);
     }));
-    const t = +W.cfg.d2c[d.name];
-    set(d, 'd2c', 'trg', t > 0 ? t : null);
+    const t = +W.cfg.bzp[d.name];                       // ওএম-এর BZP (A2M+D2C) মাসিক টার্গেট — একটিই সংখ্যা
+    set(d, 'bzp', 'trg', t > 0 ? t : null);
+    if (d.v.d2c) delete d.v.d2c.trg;
     set(d, 'd2c', 'ach', d.d2cAch == null ? null : d.d2cAch);
   });
   W.territory = { v: {} };
-  [...P, 'd2c'].forEach(p => F.forEach(f => set(W.territory, p, f, sum(W.dh, p, f))));
+  [...P, 'd2c', 'bzp'].forEach(p => F.forEach(f => set(W.territory, p, f, sum(W.dh, p, f))));
 }
 
 /* ---------- মাস যাচাই ---------- */
 function clipTill(S, t, lines, label) {
   const M = S.month;
-  if (!t) { t = addDays(today(), -1); if (t > endOfMonth(M)) t = endOfMonth(M); lines.push(L('n', `${label}: ফাইলের নামে তারিখ নেই, ${t} ধরা হয়েছে — ভুল হলে নিচে ঠিক করুন`)); return t; }
+  if (!t) { t = addDays(today(), -1); if (t > endOfMonth(M)) t = endOfMonth(M); lines.push(L('n', `${label}: no date in the file name, assumed ${t} — correct it below if wrong`)); return t; }
   if (ym(t) !== M) {
     const nt = t > endOfMonth(M) ? endOfMonth(M) : t;
-    lines.push(L('warn', `ফাইলের তারিখ ${t}, কিন্তু নির্বাচিত মাস ${M}। ${nt !== t ? `Till ${nt} (মাসের শেষ দিন) ধরা হয়েছে।` : ''} রিপোর্টটি সত্যিই ${M}-এর কিনা দেখে নিন, দরকারে তারিখ ঠিক করুন।`));
+    lines.push(L('warn', `File date is ${t}, but the selected month is ${M}. ${nt !== t ? `Till set to ${nt} (last day of month). ` : ''}Please check the report really belongs to ${M}, and correct the date if needed.`));
     return nt;
   }
-  lines.push(L('n', `ডেটা Till ${t} ধরা হয়েছে — ভুল হলে নিচে ঠিক করুন`));
+  lines.push(L('n', `Data till ${t} — correct it below if wrong`));
   return t;
 }
 
@@ -559,10 +565,10 @@ function sheetBy(wb, name) {
 }
 H.target = async (S, j) => {
   const RAs = sheetBy(j.wb, 'RA'), DSSs = sheetBy(j.wb, 'DSS');
-  if (!RAs) throw new Error('"RA" শিট পাওয়া যায়নি।');
+  if (!RAs) throw new Error('"RA" sheet not found.');
   const lines = [];
   const fm = monthFromName(j.name);
-  if (fm && fm !== S.month) lines.push(L('warn', `ফাইলের নাম অনুযায়ী এটি ${fm}-এর টার্গেট, কিন্তু নির্বাচিত মাস ${S.month}। ভুল হলে ওপরে মাস বদলে আবার দিন।`));
+  if (fm && fm !== S.month) lines.push(L('warn', `By its file name this is the ${fm} target, but the selected month is ${S.month}. If wrong, change the month above and upload again.`));
   const canon = new Map(); const cn = n => { const t = String(n == null ? '' : n).replace(/\s+/g, ' ').trim(); const k = up(t); if (!canon.has(k)) canon.set(k, t); return canon.get(k); };
   const tg = (sh, row) => { const v = {}; for (const p in COL) { const i = sh.ix(COL[p]); if (i < 0) continue; const n = toNum(row[i]); if (n != null) v[p] = n; } return v; };
   const teams = new Map(), dhMA = new Map();
@@ -587,7 +593,7 @@ H.target = async (S, j) => {
     const k = dh + '\u0001' + up(ds); if (!teams.has(k)) teams.set(k, { dh, dss: ds, v: {} });
     const tid = String(r[RAs.ix('dss id')] == null ? '' : r[RAs.ix('dss id')]).trim(); if (tid && !teams.get(k).id) teams.get(k).id = tid;
   });
-  if (!ra.length) throw new Error('কোনো ডিএসও সারি পাওয়া যায়নি।');
+  if (!ra.length) throw new Error('No DSO rows found.');
   const oldD = new Map((S.W.dh || []).map(x => [x.name, x]));
   const dmap = new Map();
   [...ra.map(x => x.dh), ...[...teams.values()].map(t => t.dh)].forEach(n => {
@@ -600,9 +606,9 @@ H.target = async (S, j) => {
   S.W.ra = ra; S.W.teams = [...teams.values()]; S.W.dh = [...dmap.values()];
   S.W.tills.target = S.month;
   aggregate(S);
-  lines.unshift(L('ok', `${ra.length} জন ডিএসও, ${S.W.teams.length}টি ডিএসএস টিম, ${S.W.dh.length}টি ডিএইচ (${S.W.dh.map(d => d.ma ? d.name + ' — MA ' + d.ma : d.name).join('; ')})`));
-  lines.push(DSSs ? L('ok', 'ডিএসএস টার্গেট "DSS" শিট থেকে, ওএম টার্গেট ডিএসএস-দের যোগফল') : L('warn', '"DSS" শিট নেই — ডিএসএস টার্গেট ডিএসও-দের যোগফল ধরা হয়েছে'));
-  if (skip) lines.push(L('warn', `${skip}টি সারি বাদ গেছে (ওয়ালেট নেই বা ডুপ্লিকেট)`));
+  lines.unshift(L('ok', `${ra.length} DSOs, ${S.W.teams.length} DSS teams, ${S.W.dh.length} DHs (${S.W.dh.map(d => d.ma ? d.name + ' — MA ' + d.ma : d.name).join('; ')})`));
+  lines.push(DSSs ? L('ok', 'DSS targets taken from the "DSS" sheet; OM targets = sum of DSS') : L('warn', 'No "DSS" sheet — DSS targets = sum of their DSOs'));
+  if (skip) lines.push(L('warn', `${skip} rows skipped (missing or duplicate wallet)`));
   return { lines, till: S.month };
 };
 
@@ -625,14 +631,14 @@ H.dtr = async (S, j) => {
   rows.forEach(r => { const k = N(r[ri]); if (!k) return; m.set(k, (m.get(k) || 0) + num0(r[ci]) + num0(r[oi])); });
   const s = setAll(S, 't', 'ach', m);
   aggregate(S);
-  const lines = [L('ok', `TRX ${date}: ${rows.length}টি এজেন্ট · ${s.hit}/${S.W.ra.length} জন ডিএসও-র MTD TRX (CI+CO) বসেছে · মোট ${fmt(s.sum)}`)];
-  if (s.outside) lines.push(L('warn', `${s.outside}টি আরএ ওয়ালেট টার্গেট ফাইলে নেই (মোট ${fmt(s.outV)}) — বাদ দেওয়া হয়েছে`));
+  const lines = [L('ok', `TRX ${date}: ${rows.length} agents · MTD TRX (CI+CO) set for ${s.hit}/${S.W.ra.length} DSOs · total ${fmt(s.sum)}`)];
+  if (s.outside) lines.push(L('warn', `${s.outside} RA wallets are not in the target file (total ${fmt(s.outV)}) — excluded`));
   // নতুন এজেন্ট-আরএ ম্যাপ (সর্বশেষ TRX রিপোর্ট থেকে, পুরোনোটা বাদ)
   const pr = rows.filter(r => N(r[ai]) && N(r[ri]));
   const hh = await hashAll(pr.map(r => r[ai]));
   S.AM = new Map(); pr.forEach((r, i) => S.AM.set(hh[i], N(r[ri])));
   S.amDate = date; S.dirty.am = true;
-  lines.push(L('ok', `এজেন্ট-আরএ ম্যাপ এই রিপোর্ট থেকে নতুন করে নেওয়া হলো (${S.AM.size}টি এজেন্ট) — UBP, A2M, SAVINGS, LMTD এই ম্যাপ দিয়ে মেলানো হবে`));
+  lines.push(L('ok', `Agent→RA mapping refreshed from this report (${S.AM.size} agents) — UBP, A2M, SAVINGS and LMTD will be matched with it`));
   keepSrc(S, 'dtr', j.det, { date });
   return { lines, till: date };
 };
@@ -646,10 +652,10 @@ H.lmdtr = async (S, j) => {
   const s = setAll(S, 't', 'lm', r.m.v);
   setX(S, 't.lm', r.x.v);
   aggregate(S);
-  const lines = [L('ok', `LMTD TRX ${date}: ${rows.length}টি এজেন্ট · মোট ${fmt(s.sum)} (সর্বশেষ এজেন্ট-আরএ ম্যাপ অনুযায়ী)`)];
-  if (!S.AM.size) lines.push(L('warn', 'এজেন্ট-আরএ ম্যাপ নেই — গত মাসের রিপোর্টের আরএ ধরা হয়েছে। আগে সর্বশেষ TRX রিপোর্ট দিন।'));
+  const lines = [L('ok', `LMTD TRX ${date}: ${rows.length} agents · total ${fmt(s.sum)} (using the latest agent→RA mapping)`)];
+  if (!S.AM.size) lines.push(L('warn', 'No agent→RA mapping yet — used the RA from last month\'s report. Upload the latest TRX report first.'));
   const main = S.W.tills.dtr;
-  if (main && main.slice(8) !== date.slice(8)) lines.push(L('warn', `সর্বশেষ TRX ${main}, কিন্তু এই LMTD ফাইল ${date} — একই তারিখের (দিন) হলে তুলনা সঠিক হয়`));
+  if (main && main.slice(8) !== date.slice(8)) lines.push(L('warn', `Latest TRX is ${main}, but this LMTD file is ${date} — the comparison is accurate only for the same day of month`));
   return { lines, till: date };
 };
 /* REG: D0 Pin Change & CI Count (Both) */
@@ -659,12 +665,12 @@ H.reg = async (S, j) => {
   const ri = h.ix('ra wallet');
   let vi = h.ix('d0 pin change & ci count (both)');
   const lines = [];
-  if (vi < 0) { vi = h.ix('mtd registration'); lines.push(L('warn', '"D0 Pin Change & CI Count (Both)" কলাম নেই — MTD Registration ধরা হয়েছে')); }
+  if (vi < 0) { vi = h.ix('mtd registration'); lines.push(L('warn', '"D0 Pin Change & CI Count (Both)" column missing — used MTD Registration instead')); }
   const m = new Map(); rows.forEach(r => { const k = N(r[ri]); if (!k) return; m.set(k, (m.get(k) || 0) + num0(r[vi])); });
   const s = setAll(S, 'r', 'ach', m);
   aggregate(S);
-  lines.unshift(L('ok', `${rows.length}টি এজেন্ট সারি · ${s.hit}/${S.W.ra.length} জন ডিএসও-র REG (D0 Pin Change & CI Both) বসেছে · মোট ${fmt(s.sum)}`));
-  if (s.outside) lines.push(L('warn', `${s.outside}টি আরএ ওয়ালেট টার্গেট ফাইলে নেই — বাদ দেওয়া হয়েছে`));
+  lines.unshift(L('ok', `${rows.length} agent rows · REG (D0 Pin Change & CI Both) set for ${s.hit}/${S.W.ra.length} DSOs · total ${fmt(s.sum)}`));
+  if (s.outside) lines.push(L('warn', `${s.outside} RA wallets are not in the target file — excluded`));
   keepSrc(S, 'reg', j.det);
   return { lines, till: clipTill(S, dateFromName(j.name), lines, 'REG') };
 };
@@ -677,10 +683,10 @@ H.ubp = async (S, j) => {
   const s = setAll(S, 'u', 'ach', r.m.a); setAll(S, 'u', 'lm', r.m.l);
   const xa = setX(S, 'u.ach', r.x.a); setX(S, 'u.lm', r.x.l);
   aggregate(S);
-  const lines = [L('ok', `${r.n}টি এজেন্ট · ${s.hit}/${S.W.ra.length} জন ডিএসও-র UBP (MTD বিল পে কাউন্ট) বসেছে · মোট ${fmt(s.sum)}`)];
-  if (!S.AM.size) lines.push(L('bad', 'এজেন্ট-আরএ ম্যাপ নেই — আগে সর্বশেষ TRX রিপোর্ট দিন, তারপর UBP আবার দিন'));
-  if (r.un) lines.push(L('warn', `${r.un}টি এজেন্ট কোনো আরএ-র সাথে মেলেনি — তাদের ${fmt(xa)} সরাসরি ডিএইচ-এ যোগ হয়েছে`));
-  if (s.outside) lines.push(L('warn', `${s.outside}টি এজেন্ট টার্গেট ফাইলের বাইরের আরএ-র (মোট ${fmt(s.outV)}) — বাদ`));
+  const lines = [L('ok', `${r.n} agents · UBP (MTD bill pay count) set for ${s.hit}/${S.W.ra.length} DSOs · total ${fmt(s.sum)}`)];
+  if (!S.AM.size) lines.push(L('bad', 'No agent→RA mapping — upload the latest TRX report first, then upload UBP again'));
+  if (r.un) lines.push(L('warn', `${r.un} agents did not match any RA — their ${fmt(xa)} was added directly to the DH`));
+  if (s.outside) lines.push(L('warn', `${s.outside} agents belong to RAs outside the target file (total ${fmt(s.outV)}) — excluded`));
   keepSrc(S, 'ubp', j.det);
   return { lines, till: clipTill(S, dateFromName(j.name), lines, 'UBP'), warn: !!r.un };
 };
@@ -692,7 +698,7 @@ H.sav = async (S, j) => {
   let vi = h.ix('instalment volume');
   const lines = [];
   if (vi < 0) { vi = h.ixAny(['installment volume', 'instalment_volume']); }
-  if (vi < 0) throw new Error('"Instalment Volume" কলাম পাওয়া যায়নি।');
+  if (vi < 0) throw new Error('"Instalment Volume" column not found.');
   const odi = h.ix('saving_opn_date'), di = h.ixAny(['ma name', 'distributor']);
   let other = 0;
   const inMonth = r => { if (odi < 0) return true; const d = parseDate(r[odi]); if (d && ym(d) !== S.month) { other++; return false; } return true; };
@@ -708,12 +714,12 @@ H.sav = async (S, j) => {
     if (mh) {
       const got = [];
       dataRows(a, mh).forEach(x => { const d = S.W.dh.find(y => y.name === up(x[mh.ix('distributor')])); const t = toNum(x[mh.ix('total new customer count target')]); if (d && t != null) { d.tt = d.tt || {}; d.tt.c = t; got.push(`${d.name}: ${t}`); } });
-      if (got.length) { aggregate(S); lines.push(L('ok', `ওএম-এর SAV-CNT টার্গেট HQ-র MA Wise শিট থেকে: ${got.join('; ')} (ডিএসও/ডিএসএস টার্গেট = সেটিংসের সংখ্যা × ডিএসও)`)); }
+      if (got.length) { aggregate(S); lines.push(L('ok', `OM SAV-CNT targets taken from HQ's MA Wise sheet: ${got.join('; ')} (DSO/DSS targets = settings value × DSOs)`)); }
     }
   }
-  lines.unshift(L('ok', `${r.n}টি নতুন সেভিংস (NEW_CUSTOMER_STATUS = Y) · SAV-VOL মোট ${fmt(s1.sum)} · SAV-CNT মোট ${fmt(s2.sum)}`));
-  if (other) lines.push(L('n', `${other}টি অন্য মাসের সেভিংস বাদ দেওয়া হয়েছে`));
-  if (r.un) lines.push(L('warn', `${r.un}টি এজেন্ট কোনো আরএ-র সাথে মেলেনি — সরাসরি ডিএইচ-এ যোগ হয়েছে`));
+  lines.unshift(L('ok', `${r.n} new savings (NEW_CUSTOMER_STATUS = Y) · SAV-VOL total ${fmt(s1.sum)} · SAV-CNT total ${fmt(s2.sum)}`));
+  if (other) lines.push(L('n', `${other} savings from other months excluded`));
+  if (r.un) lines.push(L('warn', `${r.un} agents did not match any RA — added directly to the DH`));
   let t = dateFromName(j.name);
   if (!t && odi >= 0) { let mx = ''; rows.forEach(x => { const d = parseDate(x[odi]); if (d && ym(d) === S.month && d > mx) mx = d; }); t = mx; }
   return { lines, till: clipTill(S, t, lines, 'SAVINGS'), warn: !!r.un };
@@ -728,9 +734,9 @@ H.a2m = async (S, j) => {
   const r = await byAgent(S, rows, ai, { v: x => num0(x[vi]) }, { filter: inMonth, dhOf: di >= 0 ? dhOfCol(di) : null });
   const s = setAll(S, 'a2m', 'ach', r.m.v); const xs = setX(S, 'a2m.ach', r.x.v);
   aggregate(S);
-  const lines = [L('ok', `${r.n}টি সারি · A2M (TRX_AMT) মোট ${fmt(s.sum + xs)} · ${s.hit} জন ডিএসও`)];
-  if (other) lines.push(L('n', `${other}টি অন্য মাসের সারি বাদ`));
-  if (r.un) lines.push(L('warn', `${r.un}টি সারির এজেন্ট কোনো আরএ-র সাথে মেলেনি — সরাসরি ডিএইচ-এ যোগ হয়েছে`));
+  const lines = [L('ok', `${r.n} rows · A2M (TRX_AMT) total ${fmt(s.sum + xs)} · ${s.hit} DSOs`)];
+  if (other) lines.push(L('n', `${other} rows from other months excluded`));
+  if (r.un) lines.push(L('warn', `${r.un} rows' agents did not match any RA — added directly to the DH`));
   return { lines, till: clipTill(S, dateFromName(j.name), lines, 'A2M'), warn: !!r.un };
 };
 /* D2C: D2C_TRX_AMOUNT — ডিএইচ পর্যায়ে, শুধু ওএম-এর BZP-তে */
@@ -750,16 +756,16 @@ H.d2c = async (S, j) => {
   let hit = 0, sum = 0;
   S.W.dh.forEach(d => { const v = m.get(d.name) || 0; d.d2cAch = v; if (v > 0) hit++; sum += v; });
   aggregate(S);
-  const lines = [L('ok', `${rows.length}টি সারি · D2C মোট ${fmt(sum)} (${hit}টি ডিএইচ) — শুধু ওএম-এর BZP (A2M+D2C)-তে যোগ হয়`)];
-  if (other) lines.push(L('n', `${other}টি অন্য মাসের সারি বাদ`));
-  const nm = [...m.keys()].filter(k => !S.W.dh.some(d => d.name === k)); if (nm.length) lines.push(L('warn', `ডিএইচ মেলেনি: ${nm.join(', ')}`));
-  if (!S.W.dh.some(d => +S.W.cfg.d2c[d.name] > 0)) lines.push(L('warn', 'D2C টার্গেট দেওয়া নেই — "টার্গেট সেটিংস"-এ ডিএইচ অনুযায়ী দিন, নইলে BZP টার্গেটে শুধু A2M টার্গেট ধরা হবে'));
+  const lines = [L('ok', `${rows.length} rows · D2C total ${fmt(sum)} (${hit} DHs) — counts only in the OM's BZP (A2M+D2C)`)];
+  if (other) lines.push(L('n', `${other} rows from other months excluded`));
+  const nm = [...m.keys()].filter(k => !S.W.dh.some(d => d.name === k)); if (nm.length) lines.push(L('warn', `DH not matched: ${nm.join(', ')}`));
+  if (!S.W.dh.some(d => +S.W.cfg.bzp[d.name] > 0)) lines.push(L('warn', 'No BZP target set — enter the BZP (A2M+D2C) target per DH under "Target Settings", otherwise the A2M target from the target file is used'));
   return { lines, till: clipTill(S, dateFromName(j.name) || mx, lines, 'D2C') };
 };
 /* মার্কেট সার্ভিস সোর্স */
 H.r78 = async (S, j) => {
   keepSrc(S, 'r78', j.det);
-  const lines = [L('ok', `${S.src.r78.rows.length}টি এজেন্ট — "R78:" নামে সব কলাম ক্রাইটেরিয়াতে ব্যবহার করা যাবে`)];
+  const lines = [L('ok', `${S.src.r78.rows.length} agents — all columns are available in criteria as "R78:"`)];
   return { lines, till: clipTill(S, dateFromName(j.name), lines, 'R78') };
 };
 H.b2bid = async (S, j) => {
@@ -777,13 +783,13 @@ H.b2bid = async (S, j) => {
   const cols = [...types].sort().flatMap(t => [t + ' CNT', t + ' AMT']);
   const names = ['AG WLT', 'RA WLT', 'Distributor', ...cols];
   S.src.b2bid = { names, rows: [...m.values()].map(o => [o.a, o.ra, o.dh, ...cols.map(c => o.f[c] || 0)]) };
-  const lines = [L('ok', `${rows.length}টি B2B ট্রানজেকশন, ${m.size}টি এজেন্ট — "B2BID:" নামে (${cols.join(', ')}) ক্রাইটেরিয়াতে ব্যবহার করা যাবে`)];
+  const lines = [L('ok', `${rows.length} B2B transactions, ${m.size} agents — available in criteria as "B2BID:" (${cols.join(', ')})`)];
   return { lines, till: clipTill(S, dateFromName(j.name) || mx, lines, 'B2B') };
 };
 H.agentx = async (S, j) => {
   keepSrc(S, 'agentx', j.det, { file: j.name });
-  const lines = [L('ok', `${S.src.agentx.rows.length}টি সারি — "X:" নামে সব কলাম ক্রাইটেরিয়াতে ব্যবহার করা যাবে`)];
-  return { lines, till: clipTill(S, dateFromName(j.name), lines, 'ফাইল') };
+  const lines = [L('ok', `${S.src.agentx.rows.length} rows — all columns are available in criteria as "X:"`)];
+  return { lines, till: clipTill(S, dateFromName(j.name), lines, 'File') };
 };
 
 /* ---------- একসাথে দেওয়া ফাইল বাছাই ---------- */
@@ -811,14 +817,14 @@ async function run(S, j) {
     if (j.forced) {
       const base = j.forced === 'lmdtr' ? 'dtr' : j.forced;
       const d = detectAs(j.wb, base);
-      if (!d) throw new Error('এই ফাইলে ওই রিপোর্টের প্রয়োজনীয় কলাম পাওয়া যায়নি।');
+      if (!d) throw new Error('This file does not have the columns required for that report type.');
       j.det = d; j.slot = j.forced;
       if (base === 'dtr') j.date = dtrDate(d);
     }
-    if (j.slot === 'dtrold') { j.lines = [L('n', `এটি ${j.date}-এর TRX রিপোর্ট; এই মাসের আরও নতুন রিপোর্ট (${S.W.tills.dtr || 'এই ব্যাচে'}) আছে, তাই এটি লাগবে না।`)]; j.state = 'done'; return j; }
-    if (j.slot === 'badmonth') { j.lines = [L('bad', `এই TRX রিপোর্ট ${j.date}-এর। নির্বাচিত মাস ${S.month} — শুধু এই মাসের রিপোর্ট বা গত মাসের (${prevMonth(S.month)}) LMTD রিপোর্ট নেওয়া হয়। মাস ঠিক করুন।`)]; j.state = 'err'; return j; }
-    if (!H[j.slot]) { j.lines = [L('bad', 'এই ফাইলটি চেনা যায়নি। ধরন বেছে দিন।')]; j.state = 'err'; return j; }
-    if (j.slot === 'lmdtr' && ym(j.date) !== prevMonth(S.month)) j.lines.push(L('warn', `এই ফাইল ${j.date}-এর, গত মাস (${prevMonth(S.month)})-এর নয়`));
+    if (j.slot === 'dtrold') { j.lines = [L('n', `This is the ${j.date} TRX report; a newer one for this month exists (${S.W.tills.dtr || 'in this batch'}), so it is not needed.`)]; j.state = 'done'; return j; }
+    if (j.slot === 'badmonth') { j.lines = [L('bad', `This TRX report is for ${j.date}. Selected month is ${S.month} — only this month's report or last month's (${prevMonth(S.month)}) LMTD report is accepted. Check the month.`)]; j.state = 'err'; return j; }
+    if (!H[j.slot]) { j.lines = [L('bad', 'File type not recognised. Please choose the type.')]; j.state = 'err'; return j; }
+    if (j.slot === 'lmdtr' && ym(j.date) !== prevMonth(S.month)) j.lines.push(L('warn', `This file is for ${j.date}, not last month (${prevMonth(S.month)})`));
     const r = await H[j.slot](S, j);
     j.lines = j.lines.concat(r.lines);
     if (r.till) { j.till = r.till; S.W.tills[j.slot] = r.till; }
@@ -859,7 +865,7 @@ function defaultCrit() {
     { id: 'trz', name: 'TRX Agent but Zero B2B', kind: 'count', conds: [{ f: 'DTR:CATEGORY CODE', op: 'in', v: '1,17' }, { f: 'CALC:LD TRX AMT (CI+CO)', op: '>=', v: '20000' }, { f: 'CALC:LD NET B2B AMT (RECV-SEND)', op: '=', v: '0' }], show: true }
   ];
 }
-const OPS = [['=', '='], ['!=', '≠'], ['>', '>'], ['>=', '≥'], ['<', '<'], ['<=', '≤'], ['in', 'এর যেকোনো একটি (কমা দিয়ে)'], ['notin', 'এর কোনোটিই নয়'], ['contains', 'ধারণ করে'], ['empty', 'খালি'], ['notempty', 'খালি নয়']];
+const OPS = [['=', '='], ['!=', '≠'], ['>', '>'], ['>=', '≥'], ['<', '<'], ['<=', '≤'], ['in', 'is any of (comma separated)'], ['notin', 'is none of'], ['contains', 'contains'], ['empty', 'is empty'], ['notempty', 'is not empty']];
 function test(f, c) {
   const raw = c.f in CALC ? CALC[c.f](f) : f[c.f];
   const sv = up(raw), cv = up(c.v);
@@ -882,8 +888,8 @@ function test(f, c) {
 function describe(c, all) {
   if (c.kind === 'pct') { const n = (all || []).find(x => x.id === c.num), d = (all || []).find(x => x.id === c.den); return `${n ? n.name : c.num} ÷ ${d ? d.name : c.den} × 100`; }
   const op = o => (OPS.find(x => x[0] === o) || [o, o])[1];
-  const cs = (c.conds || []).map(x => `${x.f} ${op(x.op)}${['empty', 'notempty'].includes(x.op) ? '' : ' ' + x.v}`).join(' এবং ');
-  return (c.kind === 'sum' ? `যোগফল: ${c.sumField}` : 'এজেন্ট সংখ্যা') + (cs ? ` — যেখানে ${cs}` : ' — সব এজেন্ট');
+  const cs = (c.conds || []).map(x => `${x.f} ${op(x.op)}${['empty', 'notempty'].includes(x.op) ? '' : ' ' + x.v}`).join(' AND ');
+  return (c.kind === 'sum' ? `Sum of ${c.sumField}` : 'Count of agents') + (cs ? ` — where ${cs}` : ' — all agents');
 }
 /* সব সোর্স জুড়ে এজেন্ট-ভিত্তিক রেকর্ড */
 function agents(S) {
@@ -968,12 +974,12 @@ const IDB = {
 async function ghRead(path) {
   const r = await fetch(`${API}/contents/${path}?t=${Date.now()}`, { headers: hdr('application/vnd.github.raw+json'), cache: 'no-store' });
   if (r.status === 404) return null;
-  if (!r.ok) throw new Error(path + ' পড়া যায়নি (' + r.status + ')');
+  if (!r.ok) throw new Error('Could not read ' + path + ' (' + r.status + ')');
   return JSON.parse(await r.text());
 }
 async function ghPut(path, obj, msg) {
   let sha; const g = await fetch(`${API}/contents/${path}?t=${Date.now()}`, { headers: hdr(), cache: 'no-store' });
-  if (g.ok) sha = (await g.json()).sha; else if (g.status !== 404) throw new Error(path + ' পড়া যায়নি');
+  if (g.ok) sha = (await g.json()).sha; else if (g.status !== 404) throw new Error('Could not read ' + path);
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
   const p = await fetch(`${API}/contents/${path}`, { method: 'PUT', headers: { ...hdr(), 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, content, sha }) });
   const j = await p.json(); if (!p.ok) throw new Error((j.message || 'Publish failed') + ' (' + path + ')');
@@ -986,8 +992,8 @@ $('#con').onclick = async () => {
   $('#m1').textContent = '';
   try {
     const r = await fetch(API, { headers: hdr() }); const j = await r.json();
-    if (!r.ok) throw new Error(j.message || 'সাইন ইন হয়নি');
-    if (!(j.permissions && j.permissions.push)) throw new Error('এই টোকেন দিয়ে রিপোজিটরিতে লেখা যাবে না। Contents: Read and write অনুমতি দিন।');
+    if (!r.ok) throw new Error(j.message || 'Sign-in failed');
+    if (!(j.permissions && j.permissions.push)) throw new Error('This token cannot write to the repository. Give it Contents: Read and write permission.');
     if ($('#rem').checked) store('gt', tk()); else store('gt', null);
     try { sessionStorage.setItem('gcd_admin', '1'); } catch (e) { }
     IDX = (await ghRead('index.json')) || { months: [], latest: '' };
@@ -1004,21 +1010,22 @@ function monthOptions() {
   const set = new Set(IDX.months);
   let m = E.ym(E.today()); for (let i = 0; i < 13; i++) { set.add(m); m = E.prevMonth(m); }
   const list = [...set].sort().reverse();
-  $('#mon').innerHTML = list.map(x => `<option value="${x}" ${x === cur ? 'selected' : ''}>${monLabel(x)}${IDX.months.includes(x) ? ' · প্রকাশিত' : ''}</option>`).join('');
+  $('#mon').innerHTML = list.map(x => `<option value="${x}" ${x === cur ? 'selected' : ''}>${monLabel(x)}${IDX.months.includes(x) ? ' · published' : ''}</option>`).join('');
   $('#mon').dataset.v = cur;
 }
 $('#mon').onchange = async e => {
-  if (dirty() && !confirm('এই মাসের পরিবর্তন এখনও প্রকাশ করা হয়নি। তবুও মাস বদলাবেন?')) { e.target.value = e.target.dataset.v; return; }
+  if (dirty() && !confirm('Changes for this month have not been published yet. Change month anyway?')) { e.target.value = e.target.dataset.v; return; }
   e.target.dataset.v = e.target.value;
   await loadMonth(e.target.value);
 };
 async function loadMonth(m) {
-  $('#mst').textContent = 'লোড হচ্ছে…';
+  $('#mst').textContent = 'Loading…';
   S = E.newState(m); jobs = [];
   try {
     const W = await ghRead(`${m}.json`);
     S.W = E.fixW(W, m);
-    if (!W && IDX.latest && IDX.latest !== m) { const L = await ghRead(`${IDX.latest}.json`).catch(() => null); if (L && L.cfg) S.W.cfg = JSON.parse(JSON.stringify(L.cfg)); }
+    if (!W && IDX.latest && IDX.latest !== m) { const L = await ghRead(`${IDX.latest}.json`).catch(() => null); if (L && L.cfg) S.W.cfg = E.fixW({ cfg: JSON.parse(JSON.stringify(L.cfg)) }, m).cfg; }
+    if (S.W.ra.length) E.aggregate(S);
     const am = await ghRead(`${m}-agentmap.json`).catch(() => null);
     if (am && am.m) { S.AM = new Map(Object.entries(am.m)); S.amDate = am.date || ''; }
     const sv = await ghRead(`${m}-service.json`).catch(() => null);
@@ -1027,7 +1034,7 @@ async function loadMonth(m) {
     const src = await IDB.get('src:' + m);
     if (src) { S.src = src; S.fields = E.agents(S).fields; }
     S.dirty = { data: false, am: false, svc: false }; idxDirty = false;
-    $('#mst').innerHTML = W ? `<span class="ok">${monLabel(m)}-এর প্রকাশিত ডেটা লোড হয়েছে:</span> TRX Till ${esc(S.W.tills.dtr || '—')} · ${S.W.ra.length} জন ডিএসও · ${S.W.dh.length}টি ডিএইচ।${src ? ' এই কম্পিউটারে এজেন্ট-ভিত্তিক রিপোর্টও আছে।' : ''}` : `<span class="warn">${monLabel(m)}-এর কোনো ডেটা এখনও প্রকাশ হয়নি।</span> প্রথমে এই মাসের RA-DSS টার্গেট ফাইল দিন।`;
+    $('#mst').innerHTML = W ? `<span class="ok">Published data for ${monLabel(m)} loaded:</span> TRX till ${esc(S.W.tills.dtr || '—')} · ${S.W.ra.length} DSOs · ${S.W.dh.length} DHs.${src ? ' Agent-wise reports are also saved on this computer.' : ''}` : `<span class="warn">No data published for ${monLabel(m)} yet.</span> Upload this month’s RA-DSS Target File first.`;
   } catch (e) { $('#mst').innerHTML = `<span class="bad">${esc(e.message)}</span>`; }
   renderAll();
 }
@@ -1046,10 +1053,10 @@ async function handle(files) {
   if (!files.length || !S) return;
   const batch = [];
   for (const f of files) {
-    const ph = { id: ++jid, name: f.name, lines: [['n', 'পড়া হচ্ছে… অপেক্ষা করুন।']], state: '' };
+    const ph = { id: ++jid, name: f.name, lines: [['n', 'Reading… please wait.']], state: '' };
     jobs.unshift(ph); renderFiles();
     try { const j = E.read(await f.arrayBuffer(), f.name); Object.assign(ph, j, { id: ph.id }); batch.push(ph); }
-    catch (e) { ph.lines = [['bad', 'ফাইল পড়া যায়নি: ' + e.message]]; ph.state = 'err'; }
+    catch (e) { ph.lines = [['bad', 'Could not read file: ' + e.message]]; ph.state = 'err'; }
     renderFiles();
   }
   E.classify(S, batch);
@@ -1064,18 +1071,18 @@ async function rerun(j) {
 }
 
 /* ---------- স্ক্রিন ---------- */
-const li = ([c, t]) => `<li>${c === 'n' ? '<span class="mut">ℹ️</span>' : `<span class="${c}">${c === 'ok' ? 'ঠিক আছে' : c === 'warn' ? 'সতর্কতা' : 'সমস্যা'}:</span>`} ${esc(t)}</li>`;
-const TYPE_OPTS = [['', 'নিজে চিনুক'], ...E.SLOTS.map(s => [s.id, s.label])];
+const li = ([c, t]) => `<li>${c === 'n' ? '<span class="mut">ℹ️</span>' : `<span class="${c}">${c === 'ok' ? 'OK' : c === 'warn' ? 'Warning' : 'Problem'}:</span>`} ${esc(t)}</li>`;
+const TYPE_OPTS = [['', 'Auto-detect'], ...E.SLOTS.map(s => [s.id, s.label])];
 function renderAll() { renderFiles(); renderSlots(); renderCfg(); renderCrit(); finish(); }
 function finish() { const ok = !!(S && S.W.ra.length); $('#pub').disabled = !ok; $('#dl').disabled = !ok; }
 function renderFiles() {
   $('#files').innerHTML = jobs.map(j => {
     const slot = E.SLOTS.find(s => s.id === j.slot);
-    const lab = slot ? slot.label : j.slot === 'dtrold' ? 'পুরোনো TRX রিপোর্ট' : j.slot === 'badmonth' ? 'অন্য মাসের TRX রিপোর্ট' : 'চেনা যায়নি';
+    const lab = slot ? slot.label : j.slot === 'dtrold' ? 'Older TRX report' : j.slot === 'badmonth' ? 'TRX report of another month' : 'Not recognised';
     return `<div class="rc ${j.state || ''}" data-j="${j.id}"><h3>${esc(j.name)}</h3>
-    <div class="mut">চেনা গেছে: <b>${esc(lab)}</b>${j.date ? ' · রিপোর্টের তারিখ ' + esc(j.date) : ''}</div>
-    ${j.wb ? `<div class="row"><div><label>ধরন বদলান</label><select class="ty">${TYPE_OPTS.map(([v, l]) => `<option value="${v}" ${(j.forced || '') === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
-    <div><label>ডেটা Till তারিখ</label><input type="date" class="tl" value="${esc(j.till || '')}" ${slot && slot.id !== 'target' ? '' : 'disabled'}></div></div>` : ''}
+    <div class="mut">Detected: <b>${esc(lab)}</b>${j.date ? ' · report date ' + esc(j.date) : ''}</div>
+    ${j.wb ? `<div class="row"><div><label>Change type</label><select class="ty">${TYPE_OPTS.map(([v, l]) => `<option value="${v}" ${(j.forced || '') === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
+    <div><label>Data till date</label><input type="date" class="tl" value="${esc(j.till || '')}" ${slot && slot.id !== 'target' ? '' : 'disabled'}></div></div>` : ''}
     <ul class="ln">${(j.lines || []).map(li).join('')}</ul></div>`;
   }).join('');
   document.querySelectorAll('#files .rc').forEach(el => {
@@ -1092,12 +1099,12 @@ function renderSlots() {
   if (!S) return;
   const T = S.W.tills, main = T.dtr || '';
   const day = s => Math.round((new Date(main + 'T00:00:00Z') - new Date(s + 'T00:00:00Z')) / 864e5);
-  $('#slots').innerHTML = '<tr><th>রিপোর্ট</th><th>কখন দেবেন</th><th>ডেটা Till</th><th>অবস্থা</th></tr>' + E.SLOTS.map(s => {
+  $('#slots').innerHTML = '<tr><th>Report</th><th>When to upload</th><th>Data till</th><th>Status</th></tr>' + E.SLOTS.map(s => {
     const t = s.id === 'target' ? (S.W.ra.length ? 'loaded' : '') : (T[s.id] || '');
-    let b = '<span class="b n">এখনও নেই</span>';
+    let b = '<span class="b n">Not yet</span>';
     if (t) {
-      if (s.id === 'target' || s.id === 'lmdtr' || s.svc || !main) b = '<span class="b g">✓ আছে</span>';
-      else { const d = day(t); b = d <= 0 ? '<span class="b g">✓ সর্বশেষ</span>' : `<span class="b y">${d} দিন আগের</span>`; }
+      if (s.id === 'target' || s.id === 'lmdtr' || s.svc || !main) b = '<span class="b g">✓ Loaded</span>';
+      else { const d = day(t); b = d <= 0 ? '<span class="b g">✓ Latest</span>' : `<span class="b y">${d} day(s) old</span>`; }
     }
     return `<tr><td>${esc(s.label)}</td><td class="mut">${esc(s.freq)}</td><td>${esc(s.id === 'target' ? '' : T[s.id] || '')}</td><td>${b}</td></tr>`;
   }).join('');
@@ -1105,9 +1112,9 @@ function renderSlots() {
 function renderCfg() {
   if (!S) return;
   $('#savCnt').value = S.W.cfg.savCnt != null ? S.W.cfg.savCnt : 10;
-  $('#d2cIn').innerHTML = S.W.dh.map(d => `<div><label>${esc(d.name)}</label><input type="number" min="0" class="d2c" data-n="${esc(d.name)}" value="${S.W.cfg.d2c[d.name] || ''}" placeholder="যেমন 5000000"></div>`).join('') || '<div class="mut">টার্গেট ফাইল দিলে ডিএইচ তালিকা আসবে।</div>';
-  document.querySelectorAll('.d2c').forEach(i => i.onchange = () => { S.W.cfg.d2c[i.dataset.n] = +i.value || 0; E.aggregate(S); S.dirty.data = true; });
-  $('#dssIn').innerHTML = S.W.teams.map((t, i) => `<div><label>${esc(t.dss)} <span class="tiny">· ${esc(t.dh)}${t.id ? ' · ID ' + esc(t.id) : ''}</span></label><input inputmode="numeric" class="dssw" data-i="${i}" value="${esc(t.w || '')}" placeholder="01XXXXXXXXX (ঐচ্ছিক)"></div>`).join('') || '<div class="mut">টার্গেট ফাইল দিলে ডিএসএস তালিকা আসবে।</div>';
+  $('#d2cIn').innerHTML = S.W.dh.map(d => `<div><label>${esc(d.name)}</label><input type="number" min="0" class="d2c" data-n="${esc(d.name)}" value="${S.W.cfg.bzp[d.name] || ''}" placeholder="e.g. 32189000"></div>`).join('') || '<div class="mut">DH list appears after the target file is uploaded.</div>';
+  document.querySelectorAll('.d2c').forEach(i => i.onchange = () => { S.W.cfg.bzp[i.dataset.n] = +i.value || 0; E.aggregate(S); S.dirty.data = true; });
+  $('#dssIn').innerHTML = S.W.teams.map((t, i) => `<div><label>${esc(t.dss)} <span class="tiny">· ${esc(t.dh)}${t.id ? ' · ID ' + esc(t.id) : ''}</span></label><input inputmode="numeric" class="dssw" data-i="${i}" value="${esc(t.w || '')}" placeholder="01XXXXXXXXX (optional)"></div>`).join('') || '<div class="mut">DSS list appears after the target file is uploaded.</div>';
   document.querySelectorAll('.dssw').forEach(i => i.onchange = () => { const w = E.w11(i.value); S.W.teams[+i.dataset.i].w = w; i.value = w; S.dirty.data = true; });
 }
 $('#savCnt').onchange = e => { S.W.cfg.savCnt = +e.target.value || 0; if (S.W.ra.length) E.aggregate(S); S.dirty.data = true; };
@@ -1124,21 +1131,21 @@ function bundle() {
   return out;
 }
 $('#pub').onclick = async () => {
-  const m = $('#msg'); m.className = ''; m.textContent = 'প্রকাশ হচ্ছে…'; $('#pub').disabled = true;
+  const m = $('#msg'); m.className = ''; m.textContent = 'Publishing…'; $('#pub').disabled = true;
   try {
-    for (const [p, o] of bundle()) { m.textContent = 'প্রকাশ হচ্ছে… ' + p; await ghPut(p, o, `Update ${p} (${S.W.tills.dtr || S.month})`); }
+    for (const [p, o] of bundle()) { m.textContent = 'Publishing… ' + p; await ghPut(p, o, `Update ${p} (${S.W.tills.dtr || S.month})`); }
     S.dirty = { data: false, am: false, svc: false }; idxDirty = false;
     monthOptions(); $('#mon').value = S.month; $('#mon').dataset.v = S.month;
-    m.className = 'ok'; m.textContent = `প্রকাশ হয়েছে (${monLabel(S.month)})! এক-দুই মিনিটে সাইট আপডেট হবে।`;
+    m.className = 'ok'; m.textContent = `Published (${monLabel(S.month)})! The site will update in 1–2 minutes.`;
   } catch (e) {
     m.className = 'bad';
-    m.textContent = (/not accessible|Forbidden|Bad credentials|Not Found|Resource/i.test(e.message) ? 'টোকেনটি ' + OWNER + '/' + REPO + ' রিপোজিটরিতে লিখতে পারছে না। GitHub-এ টোকেনের Repository access-এ ' + REPO + ' বেছে নিন এবং Contents = Read and write দিন। (GitHub: ' + e.message + ') ' : e.message + ' ') + 'বিকল্প: ফাইলগুলো ডাউনলোড করে GitHub রিপোজিটরিতে (মূল ফোল্ডারে) আপলোড করুন।';
+    m.textContent = (/not accessible|Forbidden|Bad credentials|Not Found|Resource/i.test(e.message) ? 'The token cannot write to ' + OWNER + '/' + REPO + '. In the token settings, add ' + REPO + ' under Repository access and set Contents = Read and write. (GitHub: ' + e.message + ') ' : e.message + ' ') + 'Alternative: download the files and upload them to the repository root folder.';
   }
   $('#pub').disabled = false;
 };
 $('#dl').onclick = () => {
   bundle().forEach(([p, o], i) => setTimeout(() => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(o)], { type: 'application/json' })); a.download = p.split('/').pop(); a.click(); }, i * 400));
-  $('#msg').className = 'mut'; $('#msg').textContent = 'ডাউনলোড হওয়া ফাইলগুলো GitHub রিপোজিটরির মূল ফোল্ডারে আপলোড করুন।';
+  $('#msg').className = 'mut'; $('#msg').textContent = 'Upload the downloaded files to the root folder of the GitHub repository.';
 };
 addEventListener('beforeunload', e => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
 
@@ -1154,11 +1161,11 @@ function renderCrit() {
   if (!S) return;
   const tot = (S.svc && S.svc.tot) || {};
   const pv = c => { if (!S.svc) return '—'; if (c.kind === 'pct') { const d = tot[c.den] || 0; return d ? (Math.round((tot[c.num] || 0) / d * 1000) / 10) + '%' : '—'; } return E.fmt(tot[c.id] || 0); };
-  $('#clist').innerHTML = '<tr><th>#</th><th>নাম ও শর্ত</th><th>টেরিটরি মোট</th><th>দেখাবে</th><th></th></tr>' + S.crit.map((c, i) => `<tr>
+  $('#clist').innerHTML = '<tr><th>#</th><th>Name & conditions</th><th>Territory total</th><th>Show</th><th></th></tr>' + S.crit.map((c, i) => `<tr>
     <td>${i + 1}</td><td><b>${esc(c.name)}</b><div class="tiny">${esc(E.describe(c, S.crit))}</div></td><td>${pv(c)}</td>
-    <td><input type="checkbox" data-show="${i}" ${c.show !== false ? 'checked' : ''} style="width:auto;min-height:0" aria-label="দেখাবে"></td>
-    <td style="white-space:nowrap"><button class="ghost sm" data-ed="${i}" type="button">সম্পাদনা</button> <button class="ghost sm" data-up="${i}" type="button" aria-label="ওপরে">↑</button> <button class="ghost sm" data-dn="${i}" type="button" aria-label="নিচে">↓</button> <button class="ghost sm" data-del="${i}" type="button">মুছুন</button></td></tr>`).join('');
-  $('#cmsg').innerHTML = S.src && S.src.dtr ? `এই কম্পিউটারে ${esc(S.src.dtr.date || '')}-এর TRX রিপোর্ট আছে — ক্রাইটেরিয়া বদলালে সঙ্গে সঙ্গে আবার হিসাব হবে।` : '<span class="warn">এই কম্পিউটারে এই মাসের TRX রিপোর্ট নেই। ক্রাইটেরিয়া বদলানোর পর হিসাবের জন্য সর্বশেষ TRX রিপোর্ট (এবং দরকারি অন্য রিপোর্ট) আবার আপলোড করুন।</span>';
+    <td><input type="checkbox" data-show="${i}" ${c.show !== false ? 'checked' : ''} style="width:auto;min-height:0" aria-label="Show"></td>
+    <td style="white-space:nowrap"><button class="ghost sm" data-ed="${i}" type="button">Edit</button> <button class="ghost sm" data-up="${i}" type="button" aria-label="Move up">↑</button> <button class="ghost sm" data-dn="${i}" type="button" aria-label="Move down">↓</button> <button class="ghost sm" data-del="${i}" type="button">Delete</button></td></tr>`).join('');
+  $('#cmsg').innerHTML = S.src && S.src.dtr ? `The ${esc(S.src.dtr.date || '')} TRX report is saved on this computer — criteria changes are recalculated instantly.` : '<span class="warn">This month’s TRX report is not on this computer. After changing criteria, upload the latest TRX report (and any other needed reports) again to recalculate.</span>';
   $('#flist').innerHTML = fieldList().map(f => `<option value="${esc(f.f)}">`).join('');
   const changed = () => { idxDirty = true; if (S.src && Object.keys(S.src).length) E.computeService(S); renderCrit(); };
   document.querySelectorAll('[data-show]').forEach(b => b.onchange = () => { S.crit[+b.dataset.show].show = b.checked; changed(); });
@@ -1166,14 +1173,14 @@ function renderCrit() {
   document.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => { const i = +b.dataset.dn; if (i < S.crit.length - 1) { [S.crit[i + 1], S.crit[i]] = [S.crit[i], S.crit[i + 1]]; changed(); } });
   document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
     const c = S.crit[+b.dataset.del];
-    if (S.crit.some(x => x.kind === 'pct' && (x.num === c.id || x.den === c.id))) { alert('এই ক্রাইটেরিয়া একটি শতাংশ ক্রাইটেরিয়াতে ব্যবহৃত হচ্ছে — আগে সেটি মুছুন বা বদলান।'); return; }
-    if (confirm(`"${c.name}" মুছে ফেলবেন?`)) { S.crit.splice(+b.dataset.del, 1); changed(); }
+    if (S.crit.some(x => x.kind === 'pct' && (x.num === c.id || x.den === c.id))) { alert('This criterion is used in a percentage criterion — delete or change that one first.'); return; }
+    if (confirm(`Delete "${c.name}"?`)) { S.crit.splice(+b.dataset.del, 1); changed(); }
   });
   document.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => openEd(+b.dataset.ed));
   window._critChanged = changed;
 }
 $('#cadd').onclick = () => openEd(-1);
-$('#cdef').onclick = () => { if (confirm('সব ক্রাইটেরিয়া ডিফল্টে ফিরবে। নিশ্চিত?')) { S.crit = E.defaultCrit(); window._critChanged(); } };
+$('#cdef').onclick = () => { if (confirm('All criteria will be reset to defaults. Are you sure?')) { S.crit = E.defaultCrit(); window._critChanged(); } };
 $('#ccan').onclick = () => { $('#ced').hidden = true; editing = null; };
 $('#ck').onchange = kindUI;
 $('#cplus').onclick = () => addCond({ f: '', op: '=', v: '' });
@@ -1183,10 +1190,10 @@ function kindUI() {
 }
 function addCond(c) {
   const d = document.createElement('div'); d.className = 'cond';
-  d.innerHTML = `<input class="cfi" list="flist" placeholder="ফিল্ড, যেমন DTR:AGENT STATUS" value="${esc(c.f)}" aria-label="ফিল্ড">
-    <select class="co" aria-label="শর্ত">${E.OPS.map(([v, l]) => `<option value="${v}" ${v === c.op ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
-    <input class="cv" list="vlist" placeholder="মান" value="${esc(c.v)}" aria-label="মান">
-    <button type="button" class="ghost sm" aria-label="শর্ত মুছুন">✕</button>`;
+  d.innerHTML = `<input class="cfi" list="flist" placeholder="Field, e.g. DTR:AGENT STATUS" value="${esc(c.f)}" aria-label="Field">
+    <select class="co" aria-label="Condition">${E.OPS.map(([v, l]) => `<option value="${v}" ${v === c.op ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+    <input class="cv" list="vlist" placeholder="Value" value="${esc(c.v)}" aria-label="Value">
+    <button type="button" class="ghost sm" aria-label="Remove condition">✕</button>`;
   d.querySelector('button').onclick = () => d.remove();
   d.querySelector('.cv').onfocus = () => { const f = fieldList().find(x => x.f === d.querySelector('.cfi').value); $('#vlist').innerHTML = (f ? f.vals : []).map(v => `<option value="${esc(v)}">`).join(''); };
   $('#conds').appendChild(d);
@@ -1194,7 +1201,7 @@ function addCond(c) {
 function openEd(i) {
   editing = i;
   const c = i >= 0 ? S.crit[i] : { name: '', kind: 'count', conds: [{ f: 'DTR:CATEGORY CODE', op: 'in', v: '1,17' }, { f: 'DTR:AGENT STATUS', op: '=', v: 'ACTIVE' }] };
-  $('#cedT').textContent = i >= 0 ? 'ক্রাইটেরিয়া সম্পাদনা' : 'নতুন ক্রাইটেরিয়া';
+  $('#cedT').textContent = i >= 0 ? 'Edit criterion' : 'New criterion';
   $('#cn').value = c.name; $('#ck').value = c.kind; $('#csf').value = c.sumField || '';
   const base = S.crit.filter(x => x.kind !== 'pct' && x !== S.crit[i]);
   const opts = sel => base.map(x => `<option value="${esc(x.id)}" ${x.id === sel ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
@@ -1204,15 +1211,15 @@ function openEd(i) {
 }
 $('#csave').onclick = () => {
   const name = $('#cn').value.trim(), kind = $('#ck').value;
-  if (!name) { $('#cerr').textContent = 'নাম দিন।'; return; }
+  if (!name) { $('#cerr').textContent = 'Enter a name.'; return; }
   const c = editing >= 0 ? S.crit[editing] : { id: 'c' + Date.now().toString(36), show: true };
   c.name = name; c.kind = kind;
   if (kind === 'pct') {
     c.num = $('#cnum').value; c.den = $('#cden').value; delete c.conds; delete c.sumField;
-    if (!c.num || !c.den) { $('#cerr').textContent = 'লব ও হর বেছে নিন।'; return; }
+    if (!c.num || !c.den) { $('#cerr').textContent = 'Choose numerator and denominator.'; return; }
   } else {
     c.conds = [...document.querySelectorAll('#conds .cond')].map(d => ({ f: d.querySelector('.cfi').value.trim(), op: d.querySelector('.co').value, v: d.querySelector('.cv').value.trim() })).filter(x => x.f);
-    if (kind === 'sum') { c.sumField = $('#csf').value.trim(); if (!c.sumField) { $('#cerr').textContent = 'কোন ফিল্ডের যোগফল, সেটি দিন।'; return; } } else delete c.sumField;
+    if (kind === 'sum') { c.sumField = $('#csf').value.trim(); if (!c.sumField) { $('#cerr').textContent = 'Enter the field to sum.'; return; } } else delete c.sumField;
     delete c.num; delete c.den;
   }
   if (editing < 0) S.crit.push(c);
