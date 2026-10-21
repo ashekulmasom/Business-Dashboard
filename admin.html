@@ -9,20 +9,24 @@
 :root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif}
-.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 60px}
 img.logo{height:90px;width:auto;mix-blend-mode:multiply;display:block}
-h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}
+h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}
 .mut{color:var(--mut);font-size:13px}
 .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:16px}
+.rc{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;background:#FFFBFD}
+.rc.done{border-color:#7CC4BC;background:#F4FBFA}
 label{display:block;font-weight:600;margin-bottom:6px}
-input[type=password],input[type=text]{width:100%;min-height:48px;border:1px solid #8A6A7B;border-radius:8px;padding:10px 12px;font:inherit}
-input[type=file]{width:100%;padding:28px;border:2px dashed #8A6A7B;border-radius:12px;background:#FFF8FB}
+input[type=password],input[type=text],input[type=date],select{width:100%;min-height:44px;border:1px solid #8A6A7B;border-radius:8px;padding:8px 12px;font:inherit;background:#fff}
+input[type=file]{width:100%;padding:14px;border:2px dashed #8A6A7B;border-radius:12px;background:#FFF8FB}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}.row>div{flex:1 1 180px}
 button{min-height:48px;border-radius:8px;padding:10px 22px;font:600 15px inherit;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;margin:12px 10px 0 0}
 button.ghost{background:#fff;color:var(--pink)}
 button:disabled{opacity:.5;cursor:not-allowed}
-ul{list-style:none;padding:0;margin:0}li{margin:6px 0}
+ul{list-style:none;padding:0;margin:8px 0 0}li{margin:4px 0}
 .ok{color:var(--ok);font-weight:600}.warn{color:var(--low);font-weight:600}.bad{color:#B00020;font-weight:600}
 #msg{margin-top:14px;font-weight:600}
+.tag{display:inline-block;font-size:11px;background:#FBE0EE;color:#A80B52;border-radius:999px;padding:0 8px;margin-left:6px;font-weight:600}
 </style>
 </head>
 <body>
@@ -43,14 +47,19 @@ ul{list-style:none;padding:0;margin:0}li{margin:6px 0}
 </section>
 
 <section class="panel" id="s2" hidden>
-<h2>২. দৈনিক ওয়ার্কবুক আপলোড করুন</h2>
-<label for="file" class="mut" style="font-weight:400">বিজনেস ট্র্যাকার ফাইল (.xlsb, .xlsx বা .xls)। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</label>
-<input id="file" type="file" accept=".xlsb,.xlsx,.xls">
-<ul id="chk" style="margin-top:14px"></ul>
+<h2>২. নিয়মিত রিপোর্ট আপলোড করুন</h2>
+<p class="mut">প্রতিটি রিপোর্টের নিচে <b>ডেটার তারিখ (Till)</b> ঠিক করে দিন। যে রিপোর্টগুলো আজ পাননি সেগুলো বাদ দিন — আগের ডেটা অপরিবর্তিত থাকবে। ফাইল দিলে কলাম নিজে বেছে নেওয়া হবে; ভুল হলে ড্রপডাউন থেকে বদলান। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</p>
+<div id="reps"></div>
+</section>
+
+<section class="panel" id="s2b" hidden>
+<h2>৩. মার্কেট সার্ভিস চেক রিপোর্ট (অতিরিক্ত)</h2>
+<p class="mut">এগুলো আলাদা ফাইল হিসেবে সংরক্ষণ হয় (স্কোরে যুক্ত হয় না)।</p>
+<div id="svc"></div>
 </section>
 
 <section class="panel" id="s3" hidden>
-<h2>৩. প্রকাশ করুন</h2>
+<h2>৪. প্রকাশ করুন</h2>
 <p class="mut">প্রকাশ করলে GitHub-এর data.json বদলে যাবে। এক-দুই মিনিটের মধ্যে সাইটে নতুন সংখ্যা দেখা যাবে।</p>
 <button id="pub" type="button" disabled>GitHub-এ প্রকাশ করুন</button>
 <button id="dl" type="button" class="ghost" disabled>data.json ডাউনলোড করুন</button>
@@ -62,11 +71,47 @@ ul{list-style:none;padding:0;margin:0}li{margin:6px 0}
 const OWNER='ashekulmasom',REPO='Gazipur-Central-Dashboard',PATH='data.json';
 const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
 const $=s=>document.querySelector(s);
-let OUT=null;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const up=s=>String(s==null?'':s).replace(/\s+/g,' ').trim().toUpperCase();
 const tk=()=>$('#tk').value.trim();
 const hdr=()=>({Authorization:'Bearer '+tk(),Accept:'application/vnd.github+json'});
+const today=()=>new Date().toISOString().slice(0,10);
+const num=v=>typeof v==='number'&&isFinite(v);
+const normW=w=>{w=String(w==null?'':w).replace(/[^\d]/g,'');if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
+
+/* ===== রিপোর্টের তালিকা =====
+   t: [{p: প্যারামিটার কী, f: ach | ld | lm, l: লেবেল, re: কলাম অনুমানের প্যাটার্ন}] */
+const REPS=[
+ {id:'ac',label:'বিজনেস ট্র্যাকার (AC শিট) — স্কোর ও অর্জন %',main:true},
+ {id:'dtr',label:'DAILY TRX REPORT – DTR',t:[{p:'t',f:'ach',l:'TRX (MTD অর্জন)',re:/trx|txn|trans|count/i}]},
+ {id:'lddtr',label:'LD-DTR (গতকাল)',t:[{p:'t',f:'ld',l:'TRX (গতকাল)',re:/trx|txn|trans|count/i}]},
+ {id:'lmdtr',label:'LM DTR (গত মাস)',t:[{p:'t',f:'lm',l:'TRX (গত মাস)',re:/trx|txn|trans|count/i}]},
+ {id:'reg',label:'REG',t:[{p:'r',f:'ach',l:'REG (MTD অর্জন)',re:/reg/i}]},
+ {id:'ldreg',label:'LD-REG (গতকাল)',t:[{p:'r',f:'ld',l:'REG (গতকাল)',re:/reg/i}]},
+ {id:'ubp',label:'UBP',t:[{p:'u',f:'ach',l:'UBP (MTD অর্জন)',re:/ubp|bill|count/i}]},
+ {id:'sav',label:'SAVINGS (HQ থেকে পাওয়ার পর)',t:[{p:'vo',f:'ach',l:'SAV-VOL (পরিমাণ)',re:/vol|amount|bal/i},{p:'c',f:'ach',l:'SAV-CNT (সংখ্যা)',re:/cnt|count|acc|number/i}]},
+ {id:'a2m',label:'A2M (HQ থেকে পাওয়ার পর)',t:[{p:'a2m',f:'ach',l:'A2M (অর্জন)',re:/a2m|amount|value|vol/i}]},
+ {id:'d2c',label:'D2C (HQ থেকে পাওয়ার পর)',t:[{p:'d2c',f:'ach',l:'D2C (অর্জন)',re:/d2c|amount|value|vol/i}]}
+];
+const SVC=[
+ {id:'b2b-trx-id-wise',label:'B2B TRX ID WISE'},
+ {id:'b2b-agent-wise',label:'B2B – AGENT WISE'},
+ {id:'report-78',label:'REPORT 78'}
+];
+
+/* ===== কাজের কপি (প্রকাশিত data.json থেকে শুরু) ===== */
+let W={updated:'',tillDate:'',tills:{},ra:[],teams:[],dh:[],territory:null};
+const pending={};   // সার্ভিস ফাইল
+const SH={};        // প্রতিটি রিপোর্টের পড়া শিট {head,rows,idx}
+let dirty=false;
+
+fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{
+  W=Object.assign({tills:{}},j);W.tills=W.tills||{};
+  const t=W.tillDate||W.updated;
+  $('#last').textContent=`প্রকাশিত ডেটা: Till ${t} (${j.ra.length} জন ডিএসও, ${j.teams.length}টি টিম)।`;
+}).catch(()=>{$('#last').textContent='এখনও কোনো ডেটা প্রকাশ হয়নি।'});
+
 if(localStorage.getItem('gt')){$('#tk').value=localStorage.getItem('gt');$('#rem').checked=true}
-fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{$('#last').textContent=`প্রকাশিত ডেটার তারিখ ${j.updated} (${j.ra.length} জন আরএ, ${j.teams.length}টি টিম)।`}).catch(()=>{$('#last').textContent='এখনও কোনো ডেটা প্রকাশ হয়নি।'});
 $('#con').onclick=async()=>{
   $('#m1').textContent='';
   try{
@@ -74,10 +119,135 @@ $('#con').onclick=async()=>{
     if(!r.ok)throw new Error(j.message||'সাইন ইন হয়নি');
     if(!(j.permissions&&j.permissions.push))throw new Error('এই টোকেন দিয়ে রিপোজিটরিতে লেখা যাবে না। Contents: Read and write অনুমতি দিন।');
     if($('#rem').checked)localStorage.setItem('gt',tk());else localStorage.removeItem('gt');
-    $('#s2').hidden=false;$('#m1').className='ok';$('#m1').textContent='সাইন ইন সফল।';
+    $('#s2').hidden=false;$('#s2b').hidden=false;$('#s3').hidden=false;
+    $('#m1').className='ok';$('#m1').textContent='সাইন ইন সফল।';
+    buildCards();
   }catch(e){$('#m1').className='bad';$('#m1').textContent=e.message}
 };
-const num=v=>typeof v==='number'&&isFinite(v);
+
+/* ===== কার্ড ===== */
+function buildCards(){
+  $('#reps').innerHTML=REPS.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}${r.main?'<span class="tag">স্কোর</span>':''}</h3>
+    <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}">
+    <div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" value="${(W.tills&&W.tills[r.id])||''}"></div></div>
+    <div class="cfg"></div><ul class="st"></ul></div>`).join('');
+  $('#svc').innerHTML=SVC.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}</h3>
+    <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}" data-svc="1">
+    <div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" data-svc="1" value="${today()}"></div></div>
+    <ul class="st"></ul></div>`).join('');
+  document.querySelectorAll('input[type=file]').forEach(i=>i.onchange=onFile);
+  document.querySelectorAll('input.till').forEach(i=>i.onchange=()=>{
+    const id=i.dataset.id;
+    if(i.dataset.svc){if(pending[id])pending[id].till=i.value}
+    else{W.tills[id]=i.value;dirty=true}
+    refreshPub();
+  });
+}
+const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'ঠিক আছে':c==='warn'?'সতর্কতা':'সমস্যা'}:</span> ${t}</li>`;
+const setSt=(id,h)=>{$(`#c-${id} .st`).innerHTML=h};
+function refreshPub(){
+  const ok=!!(W.ra.length&&W.teams.length&&W.dh.length&&W.territory);
+  $('#pub').disabled=!ok;$('#dl').disabled=!ok;
+}
+
+/* ===== ফাইল পড়া ===== */
+async function readFile(f){
+  const buf=await f.arrayBuffer();
+  return XLSX.read(buf,{type:'array',cellDates:true,...(/\.(csv)$/i.test(f.name)?{}:{})});
+}
+async function onFile(e){
+  const inp=e.target,f=inp.files[0],id=inp.dataset.id;if(!f)return;
+  setSt(id,'<li>ফাইল পড়া হচ্ছে… অপেক্ষা করুন।</li>');
+  try{
+    if(inp.dataset.svc)return await onSvc(id,f);
+    const rep=REPS.find(r=>r.id===id);
+    if(rep.main)return await onMain(f);
+    const wb=await readFile(f);
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+    const hi=headerRow(aoa);
+    if(hi<0)throw new Error('ফাইলে কলামের নাম (হেডার সারি) পাওয়া যায়নি।');
+    const head=aoa[hi].map((h,i)=>h==null||h===''?`কলাম ${i+1}`:String(h).trim());
+    SH[id]={head,rows:aoa.slice(hi+1)};
+    // কলাম অনুমান
+    const idIdx=guessId(head);
+    const sel=rep.t.map(t=>{let k=head.findIndex(h=>t.re.test(h));return k<0?-1:k});
+    const cfg=$(`#c-${id} .cfg`);
+    const opt=(sel0)=>head.map((h,i)=>`<option value="${i}" ${i===sel0?'selected':''}>${esc(h)}</option>`).join('');
+    cfg.innerHTML=`<div class="row"><div><label>আইডি কলাম (ওয়ালেট / নাম)</label><select class="idc">${opt(idIdx)}</select></div>`+
+      rep.t.map((t,k)=>`<div><label>${esc(t.l)}</label><select class="vc" data-k="${k}"><option value="-1">— বেছে নিন —</option>${opt(sel[k])}</select></div>`).join('')+'</div>';
+    cfg.querySelectorAll('select').forEach(s=>s.onchange=()=>applyRep(id));
+    // তারিখ না দেওয়া থাকলে আজকের তারিখ
+    const ti=$(`#c-${id} input.till`);if(!ti.value){ti.value=today();W.tills[id]=ti.value}
+    applyRep(id);
+  }catch(err){setSt(id,`<li class="bad">${esc(err.message)}</li>`)}
+}
+function headerRow(aoa){
+  for(let i=0;i<Math.min(aoa.length,40);i++){
+    const r=aoa[i]||[];if(r.filter(c=>typeof c==='string'&&c.trim()).length>=2)return i;
+  }
+  return -1;
+}
+function guessId(head){
+  let k=head.findIndex(h=>/wallet|msisdn|mobile|dso|number/i.test(h));
+  if(k<0)k=head.findIndex(h=>/\bid\b|code|name|dss|house|dh/i.test(h));
+  return k<0?0:k;
+}
+const toNum=v=>{if(num(v))return v;if(typeof v==='string'){const n=Number(v.replace(/[,\s]/g,''));return isFinite(n)&&v.trim()!==''?n:null}return null};
+
+/* ===== রিপোর্ট প্রয়োগ ===== */
+function applyRep(id){
+  const rep=REPS.find(r=>r.id===id),S=SH[id];if(!S)return;
+  if(!W.ra.length){setSt(id,li('bad','আগে বিজনেস ট্র্যাকার (AC শিট) আপলোড করুন, নইলে ডিএসও/টিম মেলানো যাবে না।'));return}
+  const cfg=$(`#c-${id} .cfg`);
+  const ic=+cfg.querySelector('.idc').value;
+  const vcs=[...cfg.querySelectorAll('.vc')].map(s=>+s.value);
+  // প্রতিটি আইডির জন্য যোগফল
+  const maps=rep.t.map(()=>new Map());
+  S.rows.forEach(r=>{
+    const key=r[ic];if(key==null||key==='')return;
+    rep.t.forEach((t,k)=>{
+      if(vcs[k]<0)return;const n=toNum(r[vcs[k]]);if(n==null)return;
+      const kk=String(key);maps[k].set(kk,(maps[k].get(kk)||0)+n);
+    });
+  });
+  const byW=new Map(W.ra.map(x=>[normW(x.wallet),x]));
+  const byTeam=new Map(W.teams.map(x=>[x.dh+'\u0001'+up(x.dss),x]));
+  const teamByDss=new Map();W.teams.forEach(x=>{const k=up(x.dss);if(!teamByDss.has(k))teamByDss.set(k,[]);teamByDss.get(k).push(x)});
+  const byDh=new Map(W.dh.map(x=>[up(x.name),x]));
+  let nR=0,nT=0,nD=0;
+  rep.t.forEach((t,k)=>{
+    if(vcs[k]<0)return;
+    maps[k].forEach((val,key)=>{
+      const set=(o,dir)=>{o.v=o.v||{};o.v[t.p]=o.v[t.p]||{};o.v[t.p][t.f]=val;if(dir)o.v[t.p].agg=false};
+      const w=normW(key);
+      if(w.length===11&&byW.has(w)){set(byW.get(w));if(k===0)nR++;return}
+      const u=up(key);
+      if(teamByDss.has(u)){teamByDss.get(u).forEach(o=>set(o,true));if(k===0)nT++;return}
+      if(byDh.has(u)){set(byDh.get(u),true);if(k===0)nD++}
+    });
+  });
+  aggregate();dirty=true;
+  const matched=nR+nT+nD;
+  let h='';
+  h+=li('ok',`${S.rows.length}টি সারি পড়া হয়েছে`);
+  h+=matched?li('ok',`${nR} জন ডিএসও, ${nT}টি টিম, ${nD}টি ডিএইচ মিলেছে`):li('bad','কোনো আইডি মেলেনি — আইডি কলামটি ঠিক আছে কিনা দেখুন');
+  if(matched&&nR===0&&nT===0&&nD===0)h+='';
+  $(`#c-${id}`).classList.toggle('done',!!matched);
+  setSt(id,h);refreshPub();
+}
+/* টিম/ডিএইচ/টেরিটরির সংখ্যা সরাসরি না থাকলে নিচের স্তর থেকে যোগ */
+function aggregate(){
+  const P=['t','r','vo','c','u'],F=['ach','ld','lm'];
+  const sum=(arr,p,f)=>{let s=0,any=false;arr.forEach(x=>{const v=x.v&&x.v[p]&&x.v[p][f];if(v!=null){s+=v;any=true}});return any?s:null};
+  const put=(o,p,f,val)=>{if(val==null)return;o.v=o.v||{};o.v[p]=o.v[p]||{};if(o.v[p][f]==null||o.v[p].agg!==false){o.v[p][f]=val;o.v[p].agg=true}};
+  W.teams.forEach(t=>{const rs=W.ra.filter(x=>x.dh===t.dh&&x.dss===t.dss);P.forEach(p=>F.forEach(f=>put(t,p,f,sum(rs,p,f))))});
+  const allP=[...P,'a2m','d2c'];
+  W.dh.forEach(d=>{const ts=W.teams.filter(x=>x.dh===d.name);allP.forEach(p=>F.forEach(f=>put(d,p,f,sum(ts,p,f))))});
+  if(W.territory)allP.forEach(p=>F.forEach(f=>put(W.territory,p,f,sum(W.dh,p,f))));
+}
+
+/* ===== মূল ওয়ার্কবুক (AC শিট) ===== */
 function parse(wb){
   const ws=wb.Sheets['AC'];if(!ws)throw new Error('Sheet "AC" not found in this file.');
   ws['!ref']='A1:Y120';
@@ -85,55 +255,96 @@ function parse(wb){
   const ra=[],teams=[],dh=[];let terr=null;
   rows.forEach(r=>{
     const A=r[0];const fz=typeof A==='string'&&/^FIROZA/i.test(A);
+    const H=fz?up(A):null;
     if(fz&&typeof r[3]==='string'&&/^\d{11}$/.test(r[3].trim())&&num(r[5])&&num(r[23]))
-      ra.push({dh:A,dss:String(r[1]).trim(),name:String(r[2]).trim(),wallet:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],score:r[23],dhRank:r[24],teamRank:r[22]});
+      ra.push({dh:H,dss:String(r[1]).replace(/\s+/g,' ').trim(),name:String(r[2]).trim(),wallet:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],score:r[23],dhRank:r[24],teamRank:r[22]});
     else if(fz&&r[1]===A&&typeof r[2]==='string'&&typeof r[3]==='string'&&num(r[5])&&num(r[21]))
-      teams.push({dh:A,dss:r[2].trim(),team:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
+      teams.push({dh:H,dss:r[2].replace(/\s+/g,' ').trim(),team:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
     else if(fz&&r[1]===A&&!r[2]&&num(r[5])&&num(r[21]))
-      dh.push({name:A,t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
+      dh.push({name:H,t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
     else if(A==null&&num(r[5])&&num(r[21])&&r[22]==null)
       terr={t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21]};
   });
+  // প্রতিটি হাউজের ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক (ডিএসও ও টিম)
   [...new Set(ra.map(x=>x.dh))].forEach(g=>ra.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.dhRank=i+1));
+  [...new Set(teams.map(x=>x.dh))].forEach(g=>teams.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.rank=i+1));
   let d=null;const w2=wb.Sheets['RA'];
   if(w2&&w2['A7']){const v=w2['A7'].v;d=v instanceof Date?v:(num(v)?new Date(Math.round((v-25569)*864e5)):null)}
-  const iso=(d&&!isNaN(d)?d:new Date()).toISOString().slice(0,10);
-  return {updated:iso,ra,teams,dh,territory:terr,_dateFound:!!d};
+  return {ra,teams,dh,territory:terr,date:d&&!isNaN(d)?d.toISOString().slice(0,10):null};
 }
-$('#file').onchange=async e=>{
-  const f=e.target.files[0];if(!f)return;
-  const ul=$('#chk');ul.innerHTML='<li>ফাইল পড়া হচ্ছে… অপেক্ষা করুন।</li>';$('#s3').hidden=true;OUT=null;
-  try{
-    const buf=await f.arrayBuffer();
-    const wb=XLSX.read(buf,{type:'array',sheets:['AC','RA'],cellDates:true});
-    const o=parse(wb);
-    const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'ঠিক আছে':c==='warn'?'সতর্কতা':'সমস্যা'}:</span> ${t}</li>`;
-    let h='';
-    h+=o.ra.length?li('ok',`${o.ra.length}টি আরএ সারি পড়া হয়েছে`):li('bad','কোনো আরএ সারি পাওয়া যায়নি');
-    h+=o.teams.length?li('ok',`${o.teams.length}টি ডিএসএস টিম পড়া হয়েছে`):li('bad','কোনো ডিএসএস টিম পাওয়া যায়নি');
-    h+=o.dh.length?li('ok',`${o.dh.length}টি ডিস্ট্রিবিউটর পড়া হয়েছে`):li('bad','কোনো ডিস্ট্রিবিউটর পাওয়া যায়নি');
-    h+=o.territory?li('ok','টেরিটরি স্কোর পড়া হয়েছে'):li('bad','টেরিটরি সারি পাওয়া যায়নি');
-    h+=o._dateFound?li('ok',`ডেটার তারিখ: ${o.updated}`):li('warn',`ফাইলে তারিখ পাওয়া যায়নি, আজকের তারিখ ব্যবহার হচ্ছে (${o.updated})`);
-    ul.innerHTML=h;
-    if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('ফাইলটি Achievers’ Club ট্র্যাকারের ফরম্যাটে নেই, তাই প্রকাশ করা যাবে না।');
-    delete o._dateFound;OUT=o;$('#s3').hidden=false;$('#pub').disabled=false;$('#dl').disabled=false;
-  }catch(err){ul.insertAdjacentHTML('beforeend',`<li class="bad">${err.message}</li>`)}
-};
+async function onMain(f){
+  const buf=await f.arrayBuffer();
+  const wb=XLSX.read(buf,{type:'array',sheets:['AC','RA'],cellDates:true});
+  const o=parse(wb);
+  let h='';
+  h+=o.ra.length?li('ok',`${o.ra.length}টি ডিএসও সারি পড়া হয়েছে`):li('bad','কোনো ডিএসও সারি পাওয়া যায়নি');
+  h+=o.teams.length?li('ok',`${o.teams.length}টি ডিএসএস টিম পড়া হয়েছে`):li('bad','কোনো ডিএসএস টিম পাওয়া যায়নি');
+  h+=o.dh.length?li('ok',`${o.dh.length}টি ডিস্ট্রিবিউটর পড়া হয়েছে (নাম বড় হাতের অক্ষরে)`):li('bad','কোনো ডিস্ট্রিবিউটর পাওয়া যায়নি');
+  h+=o.territory?li('ok','টেরিটরি স্কোর পড়া হয়েছে'):li('bad','টেরিটরি সারি পাওয়া যায়নি');
+  const ti=$('#c-ac input.till');
+  if(o.date){ti.value=o.date;h+=li('ok',`ফাইল থেকে ডেটার তারিখ: ${o.date} (বদলাতে পারেন)`)}
+  else{if(!ti.value)ti.value=today();h+=li('warn',`ফাইলে তারিখ পাওয়া যায়নি; ${ti.value} ধরা হয়েছে। ঠিক করে দিন।`)}
+  setSt('ac',h);
+  if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('ফাইলটি Achievers’ Club ট্র্যাকারের ফরম্যাটে নেই, তাই প্রকাশ করা যাবে না।');
+  // আগের রিপোর্ট-ভিত্তিক সংখ্যা (v) ধরে রাখা
+  const m=new Map();
+  W.ra.forEach(x=>m.set('r'+x.wallet,x.v));W.teams.forEach(x=>m.set('t'+x.dh+'|'+x.dss,x.v));W.dh.forEach(x=>m.set('d'+x.name,x.v));
+  o.ra.forEach(x=>{const v=m.get('r'+x.wallet);if(v)x.v=v});
+  o.teams.forEach(x=>{const v=m.get('t'+x.dh+'|'+x.dss);if(v)x.v=v});
+  o.dh.forEach(x=>{const v=m.get('d'+x.name);if(v)x.v=v});
+  if(W.territory&&W.territory.v)o.territory.v=W.territory.v;
+  W.ra=o.ra;W.teams=o.teams;W.dh=o.dh;W.territory=o.territory;
+  W.tills.ac=ti.value;
+  $('#c-ac').classList.add('done');
+  aggregate();dirty=true;refreshPub();
+  // আগে আপলোড হওয়া রিপোর্টগুলো নতুন তালিকায় আবার প্রয়োগ
+  REPS.filter(r=>!r.main&&SH[r.id]).forEach(r=>applyRep(r.id));
+}
+
+/* ===== সার্ভিস রিপোর্ট ===== */
+async function onSvc(id,f){
+  const wb=await readFile(f);const ws=wb.Sheets[wb.SheetNames[0]];
+  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true,dateNF:'yyyy-mm-dd'});
+  const hi=Math.max(0,headerRow(aoa));
+  const rows=aoa.slice(hi+1).filter(r=>r.some(c=>c!=null&&c!==''));
+  const till=$(`#c-${id} input.till`).value||today();
+  pending[id]={path:`service/${id}.json`,till,head:aoa[hi]||[],rows:rows.slice(0,60000)};
+  let h=li('ok',`${rows.length}টি সারি পড়া হয়েছে`);
+  if(rows.length>60000)h+=li('warn','প্রথম ৬০,০০০ সারি রাখা হয়েছে');
+  $(`#c-${id}`).classList.add('done');setSt(id,h);refreshPub();
+}
+
+/* ===== প্রকাশ / ডাউনলোড ===== */
+function finalize(){
+  const t=Object.assign({},W.tills);
+  W.tills=t;
+  const ds=Object.values(t).filter(Boolean).sort();
+  W.tillDate=t.ac||ds[ds.length-1]||W.updated||today();
+  W.updated=W.tillDate;
+  return W;
+}
 $('#dl').onclick=()=>{
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(OUT)],{type:'application/json'}));a.download='data.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(finalize())],{type:'application/json'}));a.download='data.json';a.click();
 };
+async function put(path,obj,msg){
+  let sha;const g=await fetch(`${API}/contents/${path}`,{headers:hdr()});
+  if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw new Error('Could not read '+path);
+  const content=btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+  const p=await fetch(`${API}/contents/${path}`,{method:'PUT',headers:{...hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:msg,content,sha})});
+  const j=await p.json();if(!p.ok)throw new Error((j.message||'Publish failed')+' ('+path+')');
+}
 $('#pub').onclick=async()=>{
   const m=$('#msg');m.className='';m.textContent='প্রকাশ হচ্ছে…';$('#pub').disabled=true;
   try{
-    let sha;const g=await fetch(`${API}/contents/${PATH}`,{headers:hdr()});
-    if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw new Error('Could not read the current data.json');
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(OUT))));
-    const p=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:'Update data '+OUT.updated,content,sha})});
-    const j=await p.json();if(!p.ok)throw new Error(j.message||'Publish failed');
+    const d=finalize();
+    for(const id in pending)await put(pending[id].path,pending[id],'Update '+id+' '+pending[id].till);
+    await put(PATH,d,'Update data '+d.tillDate);
+    dirty=false;
     m.className='ok';m.textContent='প্রকাশ হয়েছে! এক-দুই মিনিটে সাইট আপডেট হবে।';
   }catch(e){m.className='bad';m.textContent=e.message+' বিকল্পে data.json ডাউনলোড করে GitHub-এ আপলোড করুন।'}
   $('#pub').disabled=false;
 };
+addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
 </script>
 </body>
 </html>
