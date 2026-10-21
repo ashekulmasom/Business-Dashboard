@@ -137,12 +137,42 @@ const LV={
 const REPOF={t:'dtr',r:'reg',u:'ubp',vo:'sav',c:'sav',a:'a2m'};
 let D=null,me=null;
 
-function normalize(){
-  const f=x=>{if(x.dh!=null)x.dh=up(x.dh);if(x.dss!=null&&typeof x.dss==='string')x.dss=x.dss.replace(/\s+/g,' ').trim()};
-  D.ra.forEach(f);D.teams.forEach(f);D.dh.forEach(x=>x.name=up(x.name));
-  [...new Set(D.ra.map(x=>x.dh))].forEach(g=>D.ra.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.dhRank=i+1));
-  [...new Set(D.teams.map(x=>x.dh))].forEach(g=>D.teams.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.rank=i+1));
+const tm=()=>{const tl=tillD(),dim=new Date(tl.getFullYear(),tl.getMonth()+1,0).getDate(),day=tl.getDate();return{day,dim,left:dim-day}};
+/* একটি রেকর্ড থেকে প্যারামিটারের অর্জন ও মাসিক টার্গেট */
+function vv(rec,p,lv){
+  const v=rec.v||{},g=k=>v[k]||{};
+  if(p==='a'){
+    if(lv==='dss')return {ach:g('a2m').ach==null?null:g('a2m').ach,trg:g('a2m').trg==null?null:g('a2m').trg};
+    const a=g('a2m'),d=g('d2c');
+    return {ach:(a.ach==null&&d.ach==null)?null:(a.ach||0)+(d.ach||0),trg:(a.trg==null&&d.trg==null)?null:(a.trg||0)+(d.trg||0)};
+  }
+  return {ach:g(p).ach==null?null:g(p).ach,trg:g(p).trg==null?null:g(p).trg};
+}
+/* অর্জন %: MTD প্যারামিটারে MTD টার্গেটের বিপরীতে, SAV-এ মোট (TTL) টার্গেটের বিপরীতে */
+function frac(rec,lv,p,basis){
+  const {ach,trg}=vv(rec,p,lv),{day,dim}=tm();
+  if(!(trg>0))return 0;
+  return (ach||0)/(basis==='MTD'?trg*day/dim:trg);
+}
+/* স্কোর = Σ ওজন × min(অর্জন %, ১০০%) — ১০০-র মধ্যে */
+function compute(){
+  const run=(rec,lv)=>{let s=0;LV[lv].ps.forEach(([p,n,b,w])=>{const f=frac(rec,lv,p,b);rec[p]=f;s+=w*Math.min(f,1)});rec.score=s};
+  const rankIn=(arr,key,set)=>[...new Set(arr.map(key))].forEach(g=>arr.filter(x=>key(x)===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x[set]=i+1));
+  D.ra.forEach(x=>run(x,'dso'));
+  D.teams.forEach(x=>{x.team=x.dss;run(x,'dss')});
+  D.dh.forEach(x=>run(x,'om'));
+  if(D.territory)run(D.territory,'om');
+  rankIn(D.ra,x=>x.dh,'dhRank');
+  rankIn(D.ra,x=>x.dh+'\u0001'+x.dss,'teamRank');
+  rankIn(D.teams,x=>x.dh,'rank');
   [...D.dh].sort((a,b)=>b.score-a.score).forEach((x,i)=>x.rank=i+1);
+}
+function normalize(){
+  D.ra.forEach(x=>{x.dh=up(x.dh);x.dss=String(x.dss).replace(/\s+/g,' ').trim()});
+  D.teams.forEach(x=>{x.dh=up(x.dh);x.dss=String(x.dss).replace(/\s+/g,' ').trim()});
+  D.dh.forEach(x=>x.name=up(x.name));
+  D.territory=D.territory||{v:{}};
+  compute();
 }
 fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{D=j;normalize();const w=sessionStorage.getItem('w');if(w)enter(w)}).catch(()=>{$('#e').textContent='ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।'});
 $('#f').addEventListener('submit',e=>{e.preventDefault();if(!D){$('#e').textContent='ডেটা লোড হচ্ছে, আবার চেষ্টা করুন।';return}enter($('#w').value,true)});
@@ -195,7 +225,7 @@ function dssOpts(){
 function head(a,n=1){return '<tr>'+a.map((h,i)=>`<th class="${i<n?'l':''}">${h}</th>`).join('')+'</tr>'}
 const th=(n,b)=>`${n}<small>${b}</small>`;
 const rk=n=>n<=3?`<span class="rk">${MED[n-1]}</span>`:n;
-const bar=s=>`<div class="bar"><i style="width:${Math.min(100,s/1.3)}%"></i></div>`;
+const bar=s=>`<div class="bar"><i style="width:${Math.min(100,s)}%"></i></div>`;
 function podium(list){
   if(list.length<3)return '';
   return `<div class="podium">${[1,0,2].map(i=>{const x=list[i];return `<div class="pd p${i+1} ${x===me?'mine':''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(tc(x.name))}${x===me?' (আপনি)':''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step"><b>${i+1}</b></div></div>`}).join('')}</div>`;
@@ -242,41 +272,24 @@ document.addEventListener('click',e=>{
 /* ---------- বিস্তারিত পাতা ---------- */
 const nf=n=>n==null||!isFinite(n)?'—':Math.round(n).toLocaleString('en-IN');
 const nd=n=>n==null||!isFinite(n)?'—':(n>=100?Math.round(n):Math.round(n*10)/10).toLocaleString('en-IN');
-function achOf(rec,p,lv){
-  const v=rec.v||{};
-  if(p==='a'){
-    if(lv==='dss')return v.a2m&&v.a2m.ach!=null?v.a2m.ach:(v.a&&v.a.ach!=null?v.a.ach:null);
-    const a=v.a2m&&v.a2m.ach,d=v.d2c&&v.d2c.ach;
-    if(a!=null||d!=null)return (a||0)+(d||0);
-    return v.a&&v.a.ach!=null?v.a.ach:null;
-  }
-  return v[p]&&v[p].ach!=null?v[p].ach:null;
-}
 function calc(rec,lv,[p,name,basis,w]){
-  const tl=tillD(),dim=new Date(tl.getFullYear(),tl.getMonth()+1,0).getDate(),day=tl.getDate(),left=dim-day;
-  const f=rec[p],ach=achOf(rec,p,lv),ex=(rec.v&&rec.v[p])||{};
-  let trg=ex.trg!=null?ex.trg:null,mtd=ex.mtdTrg!=null?ex.mtdTrg:null,derived=false;
-  if(basis==='MTD'){
-    if(mtd==null&&ach!=null&&f>0){mtd=ach/f;derived=true}
-    if(trg==null&&mtd!=null){trg=mtd*dim/day;derived=true}
-  }else{
-    if(trg==null&&ach!=null&&f>0){trg=ach/f}
-    if(mtd==null&&trg!=null){mtd=trg*day/dim;derived=true}
-  }
-  const rem=trg!=null&&ach!=null?Math.max(0,trg-ach):null;
-  return {name,basis,w,trg,mtd,ach,pct:(f||0)*100,rem,per:rem!=null?(left>0?rem/left:rem):null,need:rem!=null&&trg>0?rem/trg*100:null,left,derived,day,dim,p};
+  const {day,dim,left}=tm(),{ach,trg}=vv(rec,p,lv);
+  const mtd=trg!=null?trg*day/dim:null;
+  const f=frac(rec,lv,p,basis);
+  const rem=trg!=null&&ach!=null?Math.max(0,trg-ach):(trg!=null?trg:null);
+  return {name,basis,w,trg,mtd,ach,pct:f*100,rem,per:rem!=null?(left>0?rem/left:rem):null,need:rem!=null&&trg>0?rem/trg*100:null,left,p,pts:w*Math.min(f,1)};
 }
 function renderDetail(lv,rec,title,sub){
   const L=LV[lv],rows=L.ps.map(p=>calc(rec,lv,p));
   const any=rows[0],tl=tillD();
   const tills=D.tills||{};
   const body=rows.map(r=>{
-    const miss=r.ach==null||r.trg==null;
+    const miss=r.trg==null;
     const tp=tills[REPOF[r.p]];
     return `<tr><td class="l"><b>${r.name}</b><small>${r.basis==='MTD'?'MTD টার্গেটের বিপরীতে':'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w}${tp?` · Till ${fmtTill(new Date(tp+'T00:00:00'))}`:''}</small></td>
       <td>${nf(r.trg)}</td><td>${nf(r.mtd)}</td><td>${nf(r.ach)}</td>
       <td class="${r.pct>=100?'hi':r.pct<50?'lo':''}"><b>${Math.round(r.pct)}%</b></td>
-      <td>${miss?'—':nf(r.rem)}</td><td class="need">${miss?'—':nd(r.per)}</td><td class="need">${r.need==null?'—':(r.need<=0?'✅ পূর্ণ':nd(r.need)+'%')}</td></tr>`}).join('');
+      <td>${miss?'—':nf(r.rem)}</td><td class="need">${miss?'—':nd(r.per)}</td><td class="need">${r.need==null?'—':(r.need<=0?'✅ পূর্ণ':nd(r.need)+'%')}</td><td><b>${nd(r.pts)}</b> / ${r.w}</td></tr>`}).join('');
   const noAch=rows.every(r=>r.ach==null);
   $('#detail').innerHTML=`
   <div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
@@ -288,13 +301,14 @@ function renderDetail(lv,rec,title,sub){
         <li><b>মাসিক টার্গেট (TRG):</b> পুরো মাসের টার্গেট।</li>
         <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে আজ পর্যন্ত যতটা অর্জন করার কথা।</li>
         <li><b>MTD অর্জন ও MTD অর্জন %:</b> এখন পর্যন্ত কত হয়েছে এবং তা টার্গেটের কত শতাংশ। TRX, REG, UBP${lv==='dso'?'':lv==='dss'?', A2M':', BZP'}-এর % হলো MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % হলো মোট (TTL) টার্গেটের বিপরীতে।</li>
+        <li><b>পয়েন্ট:</b> ওজন অনুযায়ী এই প্যারামিটার থেকে কত পয়েন্ট পাচ্ছেন (অর্জন ১০০% হলে পূর্ণ পয়েন্ট)।</li>
         <li><b>বাকি (REMAINING):</b> মাসিক টার্গেট পূর্ণ করতে আর যতটা বাকি।</li>
         <li><b>প্রতিদিন প্রয়োজন:</b> বাকি ${any.left} দিনে প্রতিদিন গড়ে যতটা করতে হবে।</li>
         <li><b>আরও কত % অর্জন করতে হবে:</b> মাসিক টার্গেটের যত শতাংশ এখনও বাকি।</li>
       </ul></div>
     ${noAch?'<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি, তাই টার্গেট ও অর্জনের সংখ্যা দেখা যাচ্ছে না।</div>':''}
-    <div class="scroll"><table class="dt" style="min-width:820px">${head(['প্যারামিটার','মাসিক টার্গেট (TRG)','MTD টার্গেট','MTD অর্জন','MTD অর্জন %','বাকি (REMAINING)','প্রতিদিন প্রয়োজন','আরও কত % অর্জন করতে হবে'])}${body}</table></div>
-    ${rows.some(r=>r.derived)?'<p class="mut" style="margin-top:10px">টীকা: MTD ও মাসিক টার্গেট অর্জনের সংখ্যা ও শতাংশ থেকে হিসাব করা, মাসের দিনের হার ধরে।</p>':''}
+    <div class="scroll"><table class="dt" style="min-width:900px">${head(['প্যারামিটার','মাসিক টার্গেট (TRG)','MTD টার্গেট','MTD অর্জন','MTD অর্জন %','বাকি (REMAINING)','প্রতিদিন প্রয়োজন','আরও কত % অর্জন করতে হবে','পয়েন্ট (ওজনসহ)'])}${body}</table></div>
+    <p class="mut" style="margin-top:10px">টীকা: MTD টার্গেট = মাসিক টার্গেট × (${any.left>=0?tm().day:''} ÷ ${tm().dim} দিন)। স্কোর = প্রতিটি প্যারামিটারের ওজন × অর্জন % (সর্বোচ্চ ১০০%)।</p>
     <div style="margin-top:14px;font-weight:600;color:var(--deep)">স্কোর: ${rec.score.toFixed(1)}</div>
   </div>`;
 }
