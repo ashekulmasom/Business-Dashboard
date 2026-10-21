@@ -236,6 +236,20 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 .mot{grid-template-columns:1fr 1fr}
 @media (max-width:560px){.qbar .qd{display:none}.qbar .qt{font-size:15px}.hero .whoh{align-items:flex-start}}
 @media (max-width:560px){.mot{grid-template-columns:1fr}}
+
+/* ---- ফ্রিজ করা গ্রিড (Market Service) ---- */
+.grid{max-height:72vh;overflow:auto;border:1px solid var(--line);border-radius:14px;-webkit-overflow-scrolling:touch}
+.grid table{min-width:720px}
+.grid thead{position:sticky;top:0;z-index:3}
+.grid thead th{background:#FCF4F8;cursor:pointer;user-select:none;white-space:normal;min-width:96px;vertical-align:bottom}
+.grid thead tr.frow th{cursor:default;padding:4px 6px 8px;background:#FCF4F8}
+.grid thead tr.frow input{min-height:32px;padding:4px 8px;font-size:12.5px;border-radius:8px;border-width:1px}
+.grid tbody td:first-child,.grid thead th:first-child,.grid tfoot td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line);min-width:180px}
+.grid thead th:first-child{z-index:4;background:#FCF4F8}
+.grid tbody tr.mine td:first-child{background:#FFE3EF}
+.grid tfoot td{position:sticky;bottom:0;background:#FCF4F8;font-weight:700;z-index:2}
+.grid tfoot td:first-child{z-index:3;background:#FCF4F8}
+.grid tbody tr:hover td:first-child{background:#FFF6FA}
 </style>
 </head>
 <body>
@@ -663,10 +677,11 @@ function setup() {
   const F = focus();
   $('#mine').innerHTML = F ? mineHTML(F) : (who.missing ? '<div class="panel"><b>ℹ️ নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই।</b></div>' : '');
   const di = GC.dayInfo(D, 't', 'dso');
-  const top = D.ra.filter(x => scopeDH().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
+  const houseDH = () => who.myDH ? [who.myDH.name] : scopeDH();
+  const top = D.ra.filter(x => houseDH().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
   $('#mot').innerHTML = `<div class="mot">
     <div class="stat"><span class="mut">মাস শেষ হতে বাকি</span><b>${di.left} দিন</b><span class="mut">প্রতিটি দিন গুরুত্বপূর্ণ</span></div>
-    <div class="stat"><span class="mut">${isDSO() ? 'ডিএইচ-এর' : 'টেরিটরির'} সেরা ডিএসও</span><b style="font-size:22px">${top ? esc(tc(top.name)) : '—'}</b><span class="mut">${top ? top.score.toFixed(1) + ' পয়েন্ট ' + GC.tierChip(1) : ''}</span></div></div>`;
+    <div class="stat"><span class="mut">${isDSO() || who.myDH ? 'হাউজের' : 'টেরিটরির'} সেরা ডিএসও</span><b style="font-size:22px">${top ? esc(tc(top.name)) : '—'}</b><span class="mut">${top ? top.score.toFixed(1) + ' পয়েন্ট ' + GC.tierChip(1) : ''}</span></div></div>`;
   /* ডিএইচ কার্ড — ডিএসও দেখবে না */
   const c = (ic, k, v, s, cls, href, om) => `<a href="${href}" class="card ${cls || ''}"><div class="ic">${ic}</div>${om ? `<div class="omn">${esc(om)}</div>` : ''}<div class="mut">${k}</div><b class="big">${v}</b><div class="mut">${s}</div><div class="more">বিস্তারিত দেখুন →</div></a>`;
   $('#cards').innerHTML = isDSO() ? '' : c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*'))
@@ -698,12 +713,13 @@ function battle() {
     ${mine ? `<div class="mut" style="margin-top:10px">${mine.rank <= 3 ? '🎁 আপনার টিম এখন টেরিটরির শীর্ষ ৩-এ — পুরস্কারের দৌড়ে! জায়গা ধরে রাখুন।' : `🎯 আপনার টিম টেরিটরিতে #${mine.rank}। শীর্ষ ৩ টিম পুরস্কার পায় — ৩ নম্বর থেকে মাত্র ${GC.nd((([...D.teams].sort((a, b) => a.rank - b.rank)[2]) || mine).score - mine.score + 0.05)} পয়েন্ট দূরে!`}</div>` : ''}</div>`;
 }
 function champs() {
-  const pool = D.ra.filter(x => scopeDH().includes(x.dh));
-  $('#champS').textContent = isDSO() ? (scopeDH()[0] || '') + '-এর ডিএসও' : 'পুরো টেরিটরির ডিএসও';
+  const house = who.myDH ? [who.myDH.name] : scopeDH();
+  const pool = D.ra.filter(x => house.includes(x.dh));
+  $('#champS').textContent = isDSO() || who.myDH ? 'হাউজের মধ্যে · ' + (house[0] || '') : 'পুরো টেরিটরির ডিএসও';
   $('#champs').innerHTML = LV.dso.ps.map(([k, name]) => {
     const best = pool.slice().sort((a, b) => (b[k] || 0) - (a[k] || 0))[0];
     return best ? `<div class="ch"><div class="k">${name}</div><b>${esc(tc(best.name))}${best === who.me ? ' (আপনি)' : ''}</b><span>${Math.round((best[k] || 0) * 100)}%</span> <small class="mut">${esc(best.team ? best.team : tc(best.dss))}</small></div>` : '';
-  }).join('') + (isDSO() ? '' : (() => { const t = [...D.teams].sort((a, b) => a.rank - b.rank)[0]; return t ? `<div class="ch"><div class="k">সেরা টিম</div><b>${esc(GC.tn(t))}</b><span>${t.score.toFixed(1)}</span> <small class="mut">${esc(tc(t.dss))}</small></div>` : ''; })());
+  }).join('') + (isDSO() ? '' : (() => { const t = [...D.teams].filter(x => house.includes(x.dh)).sort((a, b) => a.rank - b.rank)[0]; return t ? `<div class="ch"><div class="k">সেরা টিম</div><b>${esc(GC.tn(t))}</b><span>${t.score.toFixed(1)}</span> <small class="mut">${esc(tc(t.dss))}</small></div>` : ''; })());
 }
 function dssOpts() {
   const d = $('#fdh').value;
