@@ -237,6 +237,20 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 .mot{grid-template-columns:1fr 1fr}
 @media (max-width:560px){.qbar .qd{display:none}.qbar .qt{font-size:15px}.hero .whoh{align-items:flex-start}}
 @media (max-width:560px){.mot{grid-template-columns:1fr}}
+
+/* ---- ফ্রিজ করা গ্রিড (Market Service) ---- */
+.grid{max-height:72vh;overflow:auto;border:1px solid var(--line);border-radius:14px;-webkit-overflow-scrolling:touch}
+.grid table{min-width:720px}
+.grid thead{position:sticky;top:0;z-index:3}
+.grid thead th{background:#FCF4F8;cursor:pointer;user-select:none;white-space:normal;min-width:96px;vertical-align:bottom}
+.grid thead tr.frow th{cursor:default;padding:4px 6px 8px;background:#FCF4F8}
+.grid thead tr.frow input{min-height:32px;padding:4px 8px;font-size:12.5px;border-radius:8px;border-width:1px}
+.grid tbody td:first-child,.grid thead th:first-child,.grid tfoot td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line);min-width:180px}
+.grid thead th:first-child{z-index:4;background:#FCF4F8}
+.grid tbody tr.mine td:first-child{background:#FFE3EF}
+.grid tfoot td{position:sticky;bottom:0;background:#FCF4F8;font-weight:700;z-index:2}
+.grid tfoot td:first-child{z-index:3;background:#FCF4F8}
+.grid tbody tr:hover td:first-child{background:#FFF6FA}
 </style>
 </head>
 <body>
@@ -257,18 +271,21 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 
 <section id="app" hidden>
   <div id="hdr"></div>
+  <nav class="tabs" id="stabs" aria-label="রিপোর্ট"></nav>
   <div class="panel filters">
     <div><label for="fdh">🏢 ডিএইচ</label><select id="fdh"></select></div>
-    <div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
-    <div style="flex:0 0 auto"><button class="ghost" id="xl" type="button">⬇️ Excel ডাউনলোড</button></div>
+    <div><label for="fdss">👥 টিম / ডিএসএস</label><select id="fdss"></select></div>
+    <div><label for="fq">🔎 খুঁজুন (নাম)</label><input id="fq" placeholder="ডিএসও / টিম / ডিএসএস"></div>
+    <div style="flex:0 0 auto;display:flex;gap:8px"><button class="ghost" id="clr" type="button">ফিল্টার মুছুন</button><button class="ghost" id="xl" type="button">⬇️ Excel</button></div>
   </div>
   <div class="panel">
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
       <h2 id="ttl">📋 মার্কেট সার্ভিস</h2>
-      <div class="seg" role="group" aria-label="রিপোর্টের স্তর"><button type="button" data-l="dh">ডিএইচ</button><button type="button" data-l="dss">ডিএসএস</button><button type="button" data-l="dso" class="on">ডিএসও</button></div>
+      <div class="seg" role="group" aria-label="রিপোর্টের স্তর"><button type="button" data-l="dh">ডিএইচ</button><button type="button" data-l="dss">টিম / ডিএসএস</button><button type="button" data-l="dso" class="on">আরএ / ডিএসও</button></div>
     </div>
     <div class="mut" id="sub" style="margin:4px 0 10px"></div>
-    <div class="scroll"><table id="tb"></table></div>
+    <div class="grid" id="gw"><table id="tb"></table></div>
+    <div class="tiny mut" style="margin-top:6px">কলামের নিচের ঘরে লিখে ফিল্টার করুন — লেখা দিয়ে খোঁজা যায়, সংখ্যায় যেমন <b>&gt;100</b>, <b>&lt;=50</b>, <b>0</b>, <b>10-20</b>। শিরোনামে ক্লিক করলে সাজানো (sort) হয়।</div>
   </div>
   <div class="panel"><h2>ℹ️ কোন সংখ্যা কীভাবে</h2><div id="leg" class="mut"></div></div>
 </section>
@@ -533,8 +550,7 @@ return { omName, TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, ba
 </script>
 <script>
 const {$, esc, tc} = GC;
-let IDX, D, SV, who, level = 'dso', view = { cols: [], rows: [] };
-GC.footer();
+let IDX, D, SV, MS, who, level = 'dso', tab = 'crit', sortBy = null, colF = {}, view = null;
 
 (async function init() {
   IDX = await GC.loadIndex();
@@ -548,6 +564,7 @@ GC.footer();
 async function load(m) {
   D = await GC.loadMonth(m);
   SV = await GC.getJSON(`${m}-service.json`);
+  MS = await GC.getJSON(`${m}-mssheet.json`);
 }
 $('#f').addEventListener('submit', e => {
   e.preventDefault();
@@ -559,59 +576,104 @@ $('#f').addEventListener('submit', e => {
 });
 async function onMonth(m) { await load(m); who = GC.resolve(D, GC.session(), GC.ss('gcd_admin') === '1'); start(); }
 
+/* ---------- সোর্স: ক্রাইটেরিয়া রিপোর্ট + অ্যাডমিনের আপলোড করা শিট ---------- */
+function sources() {
+  const list = [];
+  if (SV) list.push({
+    id: 'crit', title: '📋 সার্ভিস ক্রাইটেরিয়া', till: SV.till,
+    cols: SV.crit.filter(c => c.show !== false).map(c => ({ name: c.name, pct: c.kind === 'pct', get: o => c.kind === 'pct' ? ((o[c.den] || 0) ? (o[c.num] || 0) / o[c.den] * 100 : null) : (o[c.id] || 0) })),
+    dso: x => (SV.rows || {})[x.wallet] || {}, un: dh => (SV.un || {})[dh], add: addObj,
+    legend: () => '<ul style="padding-left:18px;margin:0">' + SV.crit.filter(c => c.show !== false).map(c => `<li><b>${esc(c.name)}:</b> ${esc(describe(c))}</li>`).join('') + '</ul>',
+    sub: `TRX রিপোর্ট Till ${GC.fmtTill(SV.till)} · ${GC.nf(SV.agents)}টি এজেন্ট বিশ্লেষণ`
+  });
+  ((MS && MS.sheets) || []).forEach(sh => {
+    const vis = sh.cols.map((c, j) => ({ c, j })).filter(x => x.c.show !== false);
+    list.push({
+      id: 'ms:' + sh.id, title: '📑 ' + sh.title, till: sh.till,
+      cols: (sh.kind === 'agent' ? [{ name: sh.countLabel || 'Agent Count', get: o => o.c || 0 }] : []).concat(vis.map(({ c, j }) => ({ name: c.name + (c.agg === 'avg' ? ' (গড়)' : ''), avg: c.agg === 'avg', get: o => o.v ? (c.agg === 'avg' ? (o.c ? o.v[j] / o.c : null) : o.v[j]) : (c.agg === 'avg' ? null : 0) }))),
+      dso: x => (sh.rows || {})[x.wallet] || { v: sh.cols.map(() => 0), c: 0 }, un: dh => (sh.un || {})[dh], add: addArr,
+      legend: () => `ফাইল: ${esc(sh.file)} · ${sh.kind === 'ra' ? 'RA-ভিত্তিক শিট' : 'এজেন্ট-ভিত্তিক শিট (সর্বশেষ TRX রিপোর্টের এজেন্ট→আরএ ম্যাপে মেলানো)'}। সংখ্যার কলাম ডিএসও → টিম → ডিএইচ অনুযায়ী যোগ হয়েছে; “(গড়)” কলাম সারি সংখ্যা অনুযায়ী গড়।`,
+      sub: `Till ${GC.fmtTill(sh.till)} · অ্যাডমিনের আপলোড করা শিট`
+    });
+  });
+  return list;
+}
+function addObj(a, b) { for (const k in b || {}) a[k] = (a[k] || 0) + (b[k] || 0); return a; }
+function addArr(a, b) { if (!b) return a; a.c = (a.c || 0) + (b.c || 0); a.v = a.v || b.v.map(() => 0); b.v.forEach((x, i) => a.v[i] += x || 0); return a; }
+
 function start() {
   $('#gate').hidden = true; $('#app').hidden = false;
   GC.header({ IDX, D, who, page: 'ms', title: 'MARKET SERVICE', till: SV && SV.till, onMonth });
-  const dhs = D.dh.map(d => d.name);
-  $('#fdh').innerHTML = '<option value="">সব ডিএইচ</option>' + dhs.map(d => `<option value="${esc(d)}" ${who.myDH && who.myDH.name === d ? 'selected' : ''}>${esc(d)}</option>`).join('');
-  $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw;
-  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => { level = b.dataset.l; document.querySelectorAll('.seg button').forEach(x => x.classList.toggle('on', x === b)); draw(); });
+  const src = sources();
+  if (!src.some(s => s.id === tab)) tab = src.length ? src[0].id : 'crit';
+  $('#stabs').innerHTML = src.map(s => `<a href="#" data-t="${esc(s.id)}" class="${s.id === tab ? 'on' : ''}">${esc(s.title)}</a>`).join('');
+  $('#stabs').hidden = src.length < 2;
+  document.querySelectorAll('#stabs a').forEach(a => a.onclick = e => { e.preventDefault(); tab = a.dataset.t; colF = {}; sortBy = null; document.querySelectorAll('#stabs a').forEach(x => x.classList.toggle('on', x === a)); draw(); });
+  $('#fdh').innerHTML = '<option value="">সব ডিএইচ</option>' + D.dh.map(d => `<option value="${esc(d.name)}" ${who.myDH && who.myDH.name === d.name ? 'selected' : ''}>${esc(d.name)}</option>`).join('');
+  $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw; $('#fq').oninput = draw;
+  $('#clr').onclick = () => { $('#fdh').value = ''; $('#fq').value = ''; colF = {}; sortBy = null; dssOpts(); draw(); };
+  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => { level = b.dataset.l; colF = {}; sortBy = null; document.querySelectorAll('.seg button').forEach(x => x.classList.toggle('on', x === b)); draw(); });
   dssOpts(); draw();
 }
 function dssOpts() {
   const d = $('#fdh').value;
-  $('#fdss').innerHTML = '<option value="">সব ডিএসএস</option>' + D.teams.filter(t => !d || t.dh === d).map(t => `<option value="${esc(t.dh + '\u0001' + t.dss)}">${esc(GC.tn(t))} (${esc(tc(t.dss))})${d ? '' : ' · ' + esc(t.dh)}</option>`).join('');
+  $('#fdss').innerHTML = '<option value="">সব টিম / ডিএসএস</option>' + D.teams.filter(t => !d || t.dh === d).map(t => `<option value="${esc(t.dh + '\u0001' + t.dss)}">${esc(GC.tn(t))} (${esc(tc(t.dss))})${d ? '' : ' · ' + esc(t.dh)}</option>`).join('');
 }
 
-/* ---------- হিসাব ---------- */
-const crit = () => SV.crit.filter(c => c.show !== false);
-function add(a, b) { for (const k in b || {}) a[k] = (a[k] || 0) + (b[k] || 0); return a; }
-function val(raw, c) {
-  if (c.kind === 'pct') { const n = raw[c.num] || 0, d = raw[c.den] || 0; return d ? n / d * 100 : null; }
-  return raw[c.id] || 0;
+/* ---------- ফিল্টার: লেখা → ধারণ করে; সংখ্যা → >100, <=50, 0, 10-20 ---------- */
+function match(val, f, isNum) {
+  f = String(f || '').trim(); if (!f) return true;
+  if (isNum) {
+    const v = val == null ? NaN : +val; let m;
+    if ((m = f.match(/^(>=|<=|>|<|=)?\s*(-?[\d.,]+)$/))) { const n = +m[2].replace(/,/g, ''); switch (m[1]) { case '>': return v > n; case '<': return v < n; case '>=': return v >= n; case '<=': return v <= n; default: return Math.abs(v - n) < 1e-9 || Math.round(v) === n; } }
+    if ((m = f.match(/^(-?[\d.,]+)\s*-\s*(-?[\d.,]+)$/))) { const a = +m[1].replace(/,/g, ''), b = +m[2].replace(/,/g, ''); return v >= a && v <= b; }
+  }
+  return String(val == null ? '' : val).toLowerCase().includes(f.toLowerCase());
 }
-const cell = (v, c) => c.kind === 'pct' ? (v == null ? '—' : (Math.round(v * 10) / 10) + '%') : GC.nf(v);
-const raDSO = x => (SV.rows || {})[x.wallet] || {};
-const rawDSS = t => D.ra.filter(x => x.dh === t.dh && x.dss === t.dss).reduce((a, x) => add(a, raDSO(x)), {});
-const rawDH = d => add(D.teams.filter(t => t.dh === d.name).reduce((a, t) => add(a, rawDSS(t)), {}), (SV.un || {})[d.name]);
+const fmtCell = (v, c) => v == null ? '—' : c.pct ? (Math.round(v * 10) / 10) + '%' : c.avg ? GC.nd(v) : GC.nf(v);
 
 function draw() {
-  if (!SV) { $('#tb').innerHTML = ''; $('#sub').textContent = `${GC.monLabel(D.month)}-এর মার্কেট সার্ভিস ডেটা এখনও প্রকাশ হয়নি। অ্যাডমিন TRX রিপোর্ট আপলোড করে প্রকাশ করলে দেখা যাবে।`; $('#leg').textContent = ''; return; }
-  const C = crit();
-  const d = $('#fdh').value, [sd, ss] = ($('#fdss').value || '').split('\u0001'), ed = d || sd || '';
+  const src = sources().find(s => s.id === tab);
+  if (!src) { $('#tb').innerHTML = ''; $('#sub').textContent = `${GC.monLabel(D.month)}-এর মার্কেট সার্ভিস ডেটা এখনও প্রকাশ হয়নি।`; $('#leg').innerHTML = ''; return; }
+  const d = $('#fdh').value, [sd, ss] = ($('#fdss').value || '').split('\u0001'), ed = d || sd || '', q = $('#fq').value.trim().toLowerCase();
   const my = who.myDH ? who.myDH.name : '';
-  let lead = [], rows = [], tot = {};
+  const rawDSS = t => D.ra.filter(x => x.dh === t.dh && x.dss === t.dss).reduce((a, x) => src.add(a, src.dso(x)), {});
+  const rawDH = dh => src.add(D.teams.filter(t => t.dh === dh.name).reduce((a, t) => src.add(a, rawDSS(t)), {}), src.un(dh.name));
+  let lead, rows = [];
   if (level === 'dh') {
     lead = ['ডিএইচ'];
-    D.dh.filter(x => !ed || x.name === ed).forEach(x => { const r = rawDH(x); add(tot, r); rows.push({ k: [x.name], r, mine: x.name === my }); });
+    D.dh.filter(x => !ed || x.name === ed).forEach(x => rows.push({ k: [x.om ? x.om + ' · ' + x.name : x.name], r: rawDH(x), mine: x.name === my }));
   } else if (level === 'dss') {
     lead = ['টিম (ডিএসএস)', 'ডিএইচ'];
-    D.teams.filter(t => (!ed || t.dh === ed) && (!ss || t.dss === ss)).forEach(t => { const r = rawDSS(t); add(tot, r); rows.push({ k: [GC.tn(t) + (t.team ? ' (' + tc(t.dss) + ')' : ''), t.dh], r, mine: t.dh === my }); });
-    if (!ss) D.dh.filter(x => (!ed || x.name === ed) && SV.un && SV.un[x.name]).forEach(x => { rows.push({ k: ['অনির্ধারিত আরএ', x.name], r: SV.un[x.name], muted: true }); add(tot, SV.un[x.name]); });
+    D.teams.filter(t => (!ed || t.dh === ed) && (!ss || t.dss === ss)).forEach(t => rows.push({ k: [GC.tn(t) + (t.team ? ' (' + tc(t.dss) + ')' : ''), t.dh], r: rawDSS(t), mine: t.dh === my }));
+    if (!ss) D.dh.filter(x => (!ed || x.name === ed) && src.un(x.name)).forEach(x => rows.push({ k: ['অনির্ধারিত আরএ', x.name], r: src.un(x.name), muted: true }));
   } else {
-    lead = ['ডিএসও', 'ডিএসএস', 'ডিএইচ'];
+    lead = ['ডিএসও', 'আরএ ওয়ালেট', 'টিম (ডিএসএস)', 'ডিএইচ'];
     D.ra.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss)).sort((a, b) => a.dh.localeCompare(b.dh) || a.dss.localeCompare(b.dss) || a.name.localeCompare(b.name))
-      .forEach(x => { const r = raDSO(x); add(tot, r); rows.push({ k: [tc(x.name), tc(x.dss), x.dh], r, mine: x.dh === my, w: x.wallet }); });
+      .forEach(x => rows.push({ k: [tc(x.name), x.wallet, (x.team || '') + (x.team ? ' (' + tc(x.dss) + ')' : tc(x.dss)), x.dh], r: src.dso(x), mine: x.dh === my }));
   }
-  const label = { dh: 'ডিএইচ', dss: 'ডিএসএস', dso: 'ডিএসও' }[level];
-  $('#ttl').textContent = `📋 ${label}-ভিত্তিক মার্কেট সার্ভিস`;
-  $('#sub').textContent = `${GC.monLabel(D.month)} · TRX রিপোর্ট Till ${GC.fmtTill(SV.till)} · মোট ${GC.nf(SV.agents)}টি এজেন্ট বিশ্লেষণ করা হয়েছে`;
-  let h = GC.head([...lead, ...C.map(c => esc(c.name))], lead.length);
-  rows.forEach(x => h += `<tr class="${x.mine && level !== 'dso' ? 'mine' : ''}" ${x.muted ? 'style="opacity:.75"' : ''}>${x.k.map((v, i) => `<td class="l">${i ? `<small>${esc(v)}</small>` : esc(v)}</td>`).join('')}${C.map(c => `<td>${cell(val(x.r, c), c)}</td>`).join('')}</tr>`);
-  h += `<tr class="tot"><td class="l" colspan="${lead.length}">মোট${ed ? ' · ' + esc(ss ? tc(ss) : ed) : ' · গাজীপুর সেন্ট্রাল'}</td>${C.map(c => `<td>${cell(val(tot, c), c)}</td>`).join('')}</tr>`;
+  rows.forEach(x => x.cells = src.cols.map(c => c.get(x.r)));
+  if (q) rows = rows.filter(x => x.k.join(' ').toLowerCase().includes(q));
+  rows = rows.filter(x => x.k.every((v, i) => match(v, colF['k' + i], false)) && x.cells.every((v, i) => match(v, colF['c' + i], true)));
+  if (sortBy) { const { key, dir } = sortBy; rows.sort((a, b) => { const va = key[0] === 'k' ? a.k[+key.slice(1)] : a.cells[+key.slice(1)], vb = key[0] === 'k' ? b.k[+key.slice(1)] : b.cells[+key.slice(1)]; return (typeof va === 'number' || typeof vb === 'number' ? ((va ?? -Infinity) - (vb ?? -Infinity)) : String(va).localeCompare(String(vb))) * dir; }); }
+  const tot = rows.filter(x => !x.muted || true).reduce((a, x) => src.add(a, x.r), {});
+  const totCells = src.cols.map(c => c.get(tot));
+  const label = { dh: 'ডিএইচ', dss: 'টিম / ডিএসএস', dso: 'আরএ / ডিএসও' }[level];
+  $('#ttl').textContent = `${src.title} · ${label}-ভিত্তিক`;
+  $('#sub').textContent = `${GC.monLabel(D.month)} · ${src.sub} · ${rows.length}টি সারি`;
+  const arrow = key => sortBy && sortBy.key === key ? (sortBy.dir > 0 ? ' ▲' : ' ▼') : '';
+  const allCols = [...lead.map((n, i) => ({ key: 'k' + i, name: n, l: true })), ...src.cols.map((c, i) => ({ key: 'c' + i, name: c.name }))];
+  let h = `<thead><tr>${allCols.map(c => `<th class="${c.l ? 'l' : ''}" data-sort="${c.key}" title="সাজাতে ক্লিক করুন">${esc(c.name)}${arrow(c.key)}</th>`).join('')}</tr>
+    <tr class="frow">${allCols.map(c => `<th class="${c.l ? 'l' : ''}"><input data-f="${c.key}" value="${esc(colF[c.key] || '')}" placeholder="ফিল্টার" aria-label="${esc(c.name)} ফিল্টার"></th>`).join('')}</tr></thead><tbody>`;
+  rows.forEach(x => h += `<tr class="${x.mine && level !== 'dso' ? 'mine' : ''}" ${x.muted ? 'style="opacity:.75"' : ''}>${x.k.map((v, i) => `<td class="l">${i ? `<small>${esc(v)}</small>` : `<b>${esc(v)}</b>`}</td>`).join('')}${x.cells.map((v, i) => `<td>${fmtCell(v, src.cols[i])}</td>`).join('')}</tr>`);
+  h += `</tbody><tfoot><tr class="tot"><td class="l">মোট (ফিল্টার অনুযায়ী)</td>${lead.slice(1).map(() => '<td></td>').join('')}${totCells.map((v, i) => `<td>${fmtCell(v, src.cols[i])}</td>`).join('')}</tr></tfoot>`;
+  const keep = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
   $('#tb').innerHTML = h;
-  view = { lead, C, rows, tot };
-  $('#leg').innerHTML = '<ul style="padding-left:18px;margin:0">' + C.map(c => `<li><b>${esc(c.name)}:</b> ${esc(describe(c))}</li>`).join('') + '</ul><p>এজেন্টের আরএ ধরা হয়েছে সর্বশেষ TRX রিপোর্ট থেকে। টার্গেট ফাইলে নেই এমন আরএ-র এজেন্ট “অনির্ধারিত আরএ” হিসেবে ডিএইচ-এর মোটে যোগ হয়।</p>';
+  document.querySelectorAll('#tb th[data-sort]').forEach(th => th.onclick = () => { const k = th.dataset.sort; sortBy = sortBy && sortBy.key === k ? (sortBy.dir > 0 ? { key: k, dir: -1 } : null) : { key: k, dir: 1 }; draw(); });
+  document.querySelectorAll('#tb input[data-f]').forEach(inp => inp.oninput = () => { colF[inp.dataset.f] = inp.value; draw(); });
+  if (keep) { const el = document.querySelector(`#tb input[data-f="${keep}"]`); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }
+  view = { allCols, rows, totCells, src };
+  $('#leg').innerHTML = src.legend() + '<p>এজেন্টের আরএ ধরা হয়েছে সর্বশেষ TRX রিপোর্ট থেকে। টার্গেট ফাইলে নেই এমন আরএ “অনির্ধারিত আরএ” হিসেবে ডিএইচ-এর মোটে যোগ হয়।</p>';
 }
 const OPN = { '=': '=', '!=': '≠', '>': '>', '>=': '≥', '<': '<', '<=': '≤', in: 'এর যেকোনো একটি', notin: 'এর কোনোটিই নয়', contains: 'ধারণ করে', empty: 'খালি', notempty: 'খালি নয়' };
 function describe(c) {
@@ -619,18 +681,24 @@ function describe(c) {
   const cs = (c.conds || []).map(x => `${x.f} ${OPN[x.op] || x.op}${['empty', 'notempty'].includes(x.op) ? '' : ' ' + x.v}`).join(' এবং ');
   return (c.kind === 'sum' ? `যোগফল: ${c.sumField}` : 'এজেন্ট সংখ্যা') + (cs ? ` — যেখানে ${cs}` : '');
 }
-/* ---------- Excel ---------- */
+/* ---------- Excel (ফিল্টার করা সারি, ফ্রিজ করা শিরোনাম ও প্রথম কলাম) ---------- */
 $('#xl').onclick = () => {
   const go = () => {
-    const aoa = [[...view.lead, ...view.C.map(c => c.name)]];
-    view.rows.forEach(x => aoa.push([...x.k, ...view.C.map(c => { const v = val(x.r, c); return v == null ? '' : c.kind === 'pct' ? Math.round(v * 10) / 10 : v; })]));
-    aoa.push(['মোট', ...Array(view.lead.length - 1).fill(''), ...view.C.map(c => { const v = val(view.tot, c); return v == null ? '' : c.kind === 'pct' ? Math.round(v * 10) / 10 : v; })]);
-    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Market Service');
-    XLSX.writeFile(wb, `Market_Service_${level.toUpperCase()}_${SV.till || D.month}.xlsx`);
+    const { allCols, rows, totCells, src } = view;
+    const aoa = [allCols.map(c => c.name)];
+    rows.forEach(x => aoa.push([...x.k, ...x.cells.map((v, i) => v == null ? '' : src.cols[i].pct || src.cols[i].avg ? Math.round(v * 10) / 10 : v)]));
+    aoa.push(['মোট', ...Array(allCols.length - src.cols.length - 1).fill(''), ...totCells.map((v, i) => v == null ? '' : src.cols[i].pct || src.cols[i].avg ? Math.round(v * 10) / 10 : v)]);
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: aoa.length - 2, c: allCols.length - 1 } }) };
+    ws['!cols'] = allCols.map((c, i) => ({ wch: i === 0 ? 28 : Math.max(10, Math.min(30, String(c.name).length + 2)) }));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Market Service');
+    wb.Workbook = { Views: [{}] }; ws['!freeze'] = { xSplit: 1, ySplit: 1 };
+    XLSX.writeFile(wb, `Market_Service_${level.toUpperCase()}_${src.till || D.month}.xlsx`);
   };
   if (window.XLSX) return go();
   const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = go; document.head.appendChild(s);
 };
+
 </script>
 </body>
 </html>
