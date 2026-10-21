@@ -237,6 +237,20 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 .mot{grid-template-columns:1fr 1fr}
 @media (max-width:560px){.qbar .qd{display:none}.qbar .qt{font-size:15px}.hero .whoh{align-items:flex-start}}
 @media (max-width:560px){.mot{grid-template-columns:1fr}}
+
+/* ---- ফ্রিজ করা গ্রিড (Market Service) ---- */
+.grid{max-height:72vh;overflow:auto;border:1px solid var(--line);border-radius:14px;-webkit-overflow-scrolling:touch}
+.grid table{min-width:720px}
+.grid thead{position:sticky;top:0;z-index:3}
+.grid thead th{background:#FCF4F8;cursor:pointer;user-select:none;white-space:normal;min-width:96px;vertical-align:bottom}
+.grid thead tr.frow th{cursor:default;padding:4px 6px 8px;background:#FCF4F8}
+.grid thead tr.frow input{min-height:32px;padding:4px 8px;font-size:12.5px;border-radius:8px;border-width:1px}
+.grid tbody td:first-child,.grid thead th:first-child,.grid tfoot td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line);min-width:180px}
+.grid thead th:first-child{z-index:4;background:#FCF4F8}
+.grid tbody tr.mine td:first-child{background:#FFE3EF}
+.grid tfoot td{position:sticky;bottom:0;background:#FCF4F8;font-weight:700;z-index:2}
+.grid tfoot td:first-child{z-index:3;background:#FCF4F8}
+.grid tbody tr:hover td:first-child{background:#FFF6FA}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -294,6 +308,16 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <input id="file" type="file" multiple accept=".xlsx,.xls,.xlsb,.csv" hidden>
   </div>
   <div id="files"></div>
+</section>
+
+<section class="panel">
+  <h2>3b. Market Service Sheet (your own Excel)</h2>
+  <p class="mut">Upload any Excel you prepare for market service tracking. Each sheet needs an <b>RA / RA Wallet</b> column (RA-wise sheet) or an <b>Agent Wallet</b> column (agent-wise sheet — matched to RA by the latest TRX report). Number columns are added up by DSO → DSS → DH and shown on the Market Service page with filters and frozen header/first column. Upload the RA-DSS Target File for this month first.</p>
+  <div class="btns"><button type="button" id="msPick">📑 Choose Excel file(s)</button><button type="button" class="ghost" id="msPub" disabled>Publish sheets</button></div>
+  <input id="msFile" type="file" multiple accept=".xlsx,.xls,.xlsb,.csv" hidden>
+  <ul class="ln" id="msLines"></ul>
+  <div id="msList"></div>
+  <div id="msMsg" style="margin-top:8px;font-weight:600"></div>
 </section>
 
 <section class="panel">
@@ -1023,9 +1047,60 @@ function computeService(S) {
   return S.svc;
 }
 
+/* =====================================================================
+   মার্কেট সার্ভিস শিট (অ্যাডমিনের নিজের Excel) — আরএ/ডিএসও ভিত্তিক যোগফল
+   - RA কলাম থাকলে সরাসরি, না থাকলে এজেন্ট ওয়ালেট → সর্বশেষ TRX ম্যাপ
+   - সংখ্যার কলাম: যোগফল (Sum) বা গড় (Average, শিরোনামে % / avg / rate থাকলে)
+   ===================================================================== */
+const MS_RA = ['ra', 'ra wallet', 'ra wlt', 'ra_wallet', 'ra_wlt', 'ra number', 'ra no', 'ra msisdn', 'dso wallet', 'dso number', 'dso ra', 'ra account'];
+const MS_SKIP = /^(region|area|territory|tm|distributor|distributor name|distributor wallet|dh|dh name|house|dss|dss name|dss id|dso|dso name|dso id|dso supervisor name|team|team name|agent shop name|agent shop address|shop name|address|ma|ma wallet|ma wlt|agent categoy|agent category|category|status|agent status|trx date|date|month|sl|sl no|serial|#)$/;
+async function parseMSSheets(S, wb, fileName) {
+  const out = [], lines = [];
+  const ours = new Set(S.W.ra.map(r => N(r.wallet)));
+  for (const sn of wb.SheetNames) {
+    const aoa = aoaOf(wb, sn);
+    let h = null, kind = '';
+    for (let i = 0; i < Math.min(aoa.length, 15) && !h; i++) {
+      const t = mkHdr(aoa, i);
+      if (t.ixAny(AGENT_COLS) >= 0) { h = t; kind = 'agent'; } else if (t.ixAny(MS_RA) >= 0) { h = t; kind = 'ra'; }
+    }
+    if (!h) { lines.push(L('n', `Sheet "${sn}": no RA or Agent wallet column — skipped`)); continue; }
+    const rows = dataRows(aoa, h), names = fieldNames(aoa, h);
+    const ri = h.ixAny(MS_RA), ai = kind === 'agent' ? h.ixAny(AGENT_COLS) : -1;
+    const dhi = h.ixAny(['distributor', 'distributor name', 'dh', 'dh name', 'house']);
+    const cols = [];
+    names.forEach((n, i) => {
+      if (!n || i === ri || i === ai || MS_SKIP.test(hc(n)) || RA_COLS.includes(hc(n)) || AGENT_COLS.includes(hc(n))) return;
+      let num = 0, txt = 0;
+      rows.slice(0, 300).forEach(r => { const v = r[i]; if (v == null || v === '') return; if (v instanceof Date) { txt++; return; } toNum(v) != null ? num++ : txt++; });
+      if (num && num >= txt) cols.push({ i, name: n, agg: /%|avg|average|rate|ratio|percent/i.test(n) ? 'avg' : 'sum', show: true });
+    });
+    if (!cols.length) { lines.push(L('warn', `Sheet "${sn}": no number columns found — skipped`)); continue; }
+    let raOf;
+    if (kind === 'ra') raOf = rows.map(r => N(r[ri]));
+    else { const hh = await hashAll(rows.map(r => r[ai])); raOf = rows.map((r, k) => S.AM.get(hh[k]) || (ri >= 0 ? N(r[ri]) : '')); }   // সর্বশেষ TRX ম্যাপ, না পেলে শিটের RA
+    const byRA = {}, un = {}; let matched = 0, unm = 0;
+    rows.forEach((r, k) => {
+      const ra = raOf[k];
+      if (kind === 'agent' && !N(r[ai])) return;
+      if (kind === 'ra' && !ra) return;
+      let bucket;
+      if (ra && ours.has(ra)) { const w = '0' + ra; bucket = byRA[w] = byRA[w] || { v: cols.map(() => 0), c: 0 }; matched++; }
+      else { const dh = dhi >= 0 ? up(r[dhi]) : '—'; bucket = un[dh] = un[dh] || { v: cols.map(() => 0), c: 0 }; unm++; }
+      bucket.c++;
+      cols.forEach((c, j) => { bucket.v[j] += num0(r[c.i]); });
+    });
+    const sheet = { id: (fileName + '|' + sn).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60), title: sn, file: fileName, kind, till: '', cols: cols.map(c => ({ name: c.name, agg: c.agg, show: true })), countLabel: kind === 'agent' ? 'Agent Count' : 'Rows', rows: byRA, un, updated: new Date().toISOString() };
+    out.push(sheet);
+    lines.push(L(unm && !matched ? 'warn' : 'ok', `Sheet "${sn}": ${rows.length} rows (${kind === 'ra' ? 'RA-wise' : 'agent-wise, matched by latest TRX agent→RA map'}) · ${matched} matched to our DSOs${unm ? ` · ${unm} not matched (shown under DH/“—”)` : ''} · ${cols.length} number columns`));
+    if (kind === 'agent' && !S.AM.size) lines.push(L('bad', 'No agent→RA mapping for this month — upload the latest TRX report first, then this sheet again.'));
+  }
+  return { sheets: out, lines };
+}
+
 root.Engine = {
   SLOTS, OPS, CALC, N, w11, up, toNum, parseDate, dateFromName, monthFromName, prevMonth, endOfMonth, ym, today, addDays, fmt,
-  read, detect, detectAs, newState, fixW, classify, run, aggregate, finalize, computeService, defaultCrit, describe, test, agents
+  parseMSSheets, read, detect, detectAs, newState, fixW, classify, run, aggregate, finalize, computeService, defaultCrit, describe, test, agents
 };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -1112,6 +1187,7 @@ async function loadMonth(m) {
     const sv = await ghRead(`${m}-service.json`).catch(() => null);
     if (sv) S.svc = sv;
     if (Array.isArray(IDX.criteria) && IDX.criteria.length) S.crit = JSON.parse(JSON.stringify(IDX.criteria));
+    MSS = (await ghRead(`${m}-mssheet.json`).catch(() => null)) || { v: 1, month: m, sheets: [] }; mssDirty = false;
     const src = await IDB.get('src:' + m);
     if (src) { S.src = src; S.fields = E.agents(S).fields; }
     S.dirty = { data: false, am: false, svc: false }; idxDirty = false;
@@ -1119,7 +1195,7 @@ async function loadMonth(m) {
   } catch (e) { $('#mst').innerHTML = `<span class="bad">${esc(e.message)}</span>`; }
   renderAll();
 }
-const dirty = () => S && (S.dirty.data || S.dirty.am || S.dirty.svc || idxDirty);
+const dirty = () => S && (S.dirty.data || S.dirty.am || S.dirty.svc || idxDirty || mssDirty);
 
 /* ---------- ফাইল ড্রপ ---------- */
 const drop = $('#drop'), fin = $('#file');
@@ -1154,7 +1230,7 @@ async function rerun(j) {
 /* ---------- স্ক্রিন ---------- */
 const li = ([c, t]) => `<li>${c === 'n' ? '<span class="mut">ℹ️</span>' : `<span class="${c}">${c === 'ok' ? 'OK' : c === 'warn' ? 'Warning' : 'Problem'}:</span>`} ${esc(t)}</li>`;
 const TYPE_OPTS = [['', 'Auto-detect'], ...E.SLOTS.map(s => [s.id, s.label])];
-function renderAll() { renderFiles(); renderSlots(); renderCfg(); renderCrit(); finish(); }
+function renderAll() { renderFiles(); renderSlots(); renderCfg(); renderCrit(); renderMSS(); finish(); }
 function finish() { const ok = !!(S && S.W.ra.length); $('#pub').disabled = !ok; $('#dl').disabled = !ok; }
 function renderFiles() {
   $('#files').innerHTML = jobs.map(j => {
@@ -1233,6 +1309,49 @@ $('#dl').onclick = () => {
   $('#msg').className = 'mut'; $('#msg').textContent = 'Upload the downloaded files to the root folder of the GitHub repository.';
 };
 addEventListener('beforeunload', e => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- মার্কেট সার্ভিস শিট ---------- */
+let MSS = { v: 1, month: '', sheets: [] }, mssDirty = false;
+$('#msPick').onclick = () => $('#msFile').click();
+$('#msFile').onchange = async () => {
+  const files = [...$('#msFile').files]; $('#msFile').value = '';
+  if (!files.length || !S) return;
+  if (!S.W.ra.length) { $('#msLines').innerHTML = li(['bad', 'Upload this month’s RA-DSS Target File first.']); return; }
+  $('#msLines').innerHTML = li(['n', 'Reading…']);
+  let L = [];
+  for (const f of files) {
+    try {
+      const wb = XLSX.read(await f.arrayBuffer(), { type: 'array', cellDates: true });
+      const r = await E.parseMSSheets(S, wb, f.name);
+      const till = E.dateFromName(f.name) || S.W.tills.dtr || '';
+      r.sheets.forEach(sh => { sh.till = till; const k = MSS.sheets.findIndex(x => x.id === sh.id); if (k >= 0) MSS.sheets[k] = sh; else MSS.sheets.push(sh); });
+      L = L.concat([['n', f.name]], r.lines);
+    } catch (e) { L.push(['bad', f.name + ': ' + e.message]); }
+  }
+  mssDirty = true; $('#msLines').innerHTML = L.map(li).join(''); renderMSS();
+};
+function renderMSS() {
+  $('#msPub').disabled = !MSS.sheets.length && !mssDirty;
+  $('#msList').innerHTML = MSS.sheets.map((s, i) => `<div class="rc" data-s="${i}"><div class="row">
+      <div style="flex:2 1 240px"><label>Sheet title (shown as a tab)</label><input class="mst" value="${esc(s.title)}"></div>
+      <div><label>Data till</label><input type="date" class="msd" value="${esc(s.till || '')}"></div>
+      <div style="flex:0 0 auto;align-self:flex-end"><button type="button" class="ghost sm msx">Delete sheet</button></div></div>
+    <div class="tiny" style="margin-top:6px">${esc(s.file)} · ${s.kind === 'ra' ? 'RA-wise' : 'Agent-wise'} · ${Object.keys(s.rows || {}).length} DSOs matched</div>
+    <div class="scroll" style="margin-top:8px"><table><tr><th>Column</th><th>Show as</th><th>Show</th></tr>${s.cols.map((c, j) => `<tr><td>${esc(c.name)}</td><td><select class="msa" data-j="${j}" style="min-height:36px;width:auto"><option value="sum" ${c.agg === 'sum' ? 'selected' : ''}>Sum</option><option value="avg" ${c.agg === 'avg' ? 'selected' : ''}>Average</option></select></td><td><input type="checkbox" class="msv" data-j="${j}" ${c.show !== false ? 'checked' : ''} style="width:auto;min-height:0" aria-label="Show"></td></tr>`).join('')}</table></div></div>`).join('');
+  document.querySelectorAll('#msList .rc').forEach(el => {
+    const s = MSS.sheets[+el.dataset.s], dirt = () => { mssDirty = true; $('#msPub').disabled = false; };
+    el.querySelector('.mst').onchange = e => { s.title = e.target.value.trim() || s.title; dirt(); };
+    el.querySelector('.msd').onchange = e => { s.till = e.target.value; dirt(); };
+    el.querySelector('.msx').onclick = () => { if (confirm(`Delete sheet "${s.title}"?`)) { MSS.sheets.splice(+el.dataset.s, 1); dirt(); renderMSS(); } };
+    el.querySelectorAll('.msa').forEach(x => x.onchange = () => { s.cols[+x.dataset.j].agg = x.value; dirt(); });
+    el.querySelectorAll('.msv').forEach(x => x.onchange = () => { s.cols[+x.dataset.j].show = x.checked; dirt(); });
+  });
+}
+$('#msPub').onclick = async () => {
+  const m = $('#msMsg'); m.className = 'mut'; m.textContent = 'Publishing sheets…';
+  try { MSS.month = S.month; MSS.updated = new Date().toISOString(); await ghPut(`${S.month}-mssheet.json`, MSS, 'Update market service sheets ' + S.month); mssDirty = false; m.className = 'ok'; m.textContent = `Published ${MSS.sheets.length} sheet(s). The Market Service page updates in 1–2 minutes.`; }
+  catch (e) { m.className = 'bad'; m.textContent = e.message; }
+};
 
 /* ---------- অনুপ্রেরণার উক্তি ---------- */
 const QUOTES = [
