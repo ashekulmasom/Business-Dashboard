@@ -250,6 +250,74 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
 .grid tfoot td{position:sticky;bottom:0;background:#FCF4F8;font-weight:700;z-index:2}
 .grid tfoot td:first-child{z-index:3;background:#FCF4F8}
 .grid tbody tr:hover td:first-child{background:#FFF6FA}
+
+/* =================== মোবাইল =================== */
+.mob{display:none}
+.mrow{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center;padding:10px 6px;border-top:1px solid #F4E5ED;color:inherit;text-decoration:none}
+.mrow:first-child{border-top:0}
+.mrow.top{background:#FFF8E1;border-radius:12px}
+.mrow.mine{background:#FFE3EF;border-radius:12px;box-shadow:inset 4px 0 0 var(--pink)}
+.mrow.tot{background:#FCF4F8;border-radius:12px}
+.mr-r{text-align:center;font:800 16px var(--fh);color:var(--deep)}
+.mr-r .rk{font-size:17px}
+.mr-n{font:700 15px/1.3 var(--fh);color:var(--plum)}
+.mr-s{font-size:12px;color:var(--mut);line-height:1.35;margin-top:1px}
+.mr-k{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.pl{font-size:10.5px;font-weight:600;padding:1px 5px;border-radius:6px;background:#F6EEF2;color:var(--ink);white-space:nowrap}
+.pl.hi{background:#E2F5F1;color:var(--ok)}.pl.lo{background:#FFF0E0;color:var(--low)}
+.mr-sc{text-align:right;min-width:62px}.mr-sc b{font:800 19px var(--fh);color:var(--pink)}.mr-sc .bar{min-width:56px}
+.mc{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fff}
+.mc-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.mc-h b{font:800 16px var(--fh);color:var(--plum)}
+.mc-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.mc-g div{background:#FCF6F9;border-radius:10px;padding:6px 8px}.mc-g span{display:block;font-size:11px;color:var(--mut)}.mc-g b{font:700 14px var(--fh)}
+.mc-l{font-size:13px;margin-top:6px}.mc-l>span{font-weight:700;color:var(--deep)}.mc-l small{display:block}
+.mine-grid.det{grid-template-columns:minmax(220px,280px) 1fr;align-items:center}
+@media (max-width:700px){
+  .desk{display:none!important}.mob{display:block}
+  .wrap{padding:10px 10px 30px}
+  .panel{padding:14px;border-radius:18px;margin:12px 0}
+  h2{font-size:19px}
+  .ph{margin-bottom:8px}.ph .mut{font-size:12px}
+  .hero{padding:14px 16px;border-radius:20px;gap:10px}
+  .hero h1{font-size:21px}.badge{padding:5px 8px;border-radius:14px}.badge img{height:42px}
+  .hero .side{width:100%;justify-content:space-between;margin-left:0}
+  .hero .whoh{flex-direction:row;align-items:center;gap:6px;flex-wrap:wrap}
+  nav.tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  nav.tabs a{white-space:nowrap;min-height:40px;padding:6px 14px;font-size:14px}
+  .qbar{padding:8px 12px;min-height:46px;margin-top:10px}.qbar .qi{font-size:18px}
+  .mine-grid,.mine-grid.det{grid-template-columns:1fr;gap:12px}
+  .scorebox{padding:16px 14px}
+  .sb-name{font-size:23px}.sb-name.om{font-size:26px}
+  .ring{width:136px;height:136px;margin:4px auto 8px}.ring>div{width:110px;height:110px}.ring b{font-size:34px}
+  .kpis b{font-size:19px}.kpis span{font-size:11px}
+  .race{padding:14px}.rbig{font-size:18px}.rbig b{font-size:25px}
+  .levers{gap:6px}.lever{font-size:12px}
+  .kgrid{grid-template-columns:1fr 1fr;gap:8px}.kt{padding:8px 10px}.kt-p{font-size:16px}.kt-f{flex-direction:column;gap:0}
+  .champs,.battle,.cards{display:grid;grid-auto-flow:column;grid-auto-columns:80%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  .champs>*,.battle>*,.cards>*{scroll-snap-align:start}
+  .cards{grid-auto-columns:72%}
+  .card b.big{font-size:28px}.omn{font-size:19px}
+  .mot{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px}.stat b{font-size:22px}
+  .podium{gap:6px;margin:8px 0 12px}.pd .medal{font-size:26px}.pd .pn{font-size:12.5px}.pd .ps{font-size:17px}.pnote{font-size:10.5px}
+  .p1 .step{height:64px}.p2 .step{height:46px}.p3 .step{height:36px}.pd .step{font-size:17px}
+  .filters{gap:10px}.filters>div{flex:1 1 100%}
+  .reward{font-size:14px;padding:8px 12px}
+  .dhh{font-size:16px;margin:16px 0 6px}
+  .how{padding:12px 14px}.how li{font-size:13.5px}
+  .grid{max-height:68vh}.grid tbody td:first-child,.grid thead th:first-child,.grid tfoot td:first-child{min-width:150px;max-width:170px}
+  .grid thead th{min-width:84px;font-size:12px}
+  .badges{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.bd{flex:0 0 auto}
+}
+@media (max-width:380px){.kgrid{grid-template-columns:1fr}.mc-g{grid-template-columns:1fr 1fr}}
+.mine-grid>*,.mot>*,.kgrid>*,.cards>*,.battle>*,.champs>*{min-width:0}
+
+@media (max-width:700px){
+  .hero .sp{display:none}
+  .msf>div:nth-child(1),.msf>div:nth-child(2){flex:1 1 calc(50% - 5px)}
+  .msf select{font-size:13px;padding:6px 8px}
+  .grid td.l small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mrow .mr-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
 </style>
 </head>
 <body>
@@ -283,7 +351,7 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
       <div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
       <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
     </div>
-    <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll"><table id="tdh"></table></div></div>
+    <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll desk"><table id="tdh"></table></div><div class="mob" id="tdhm"></div></div>
     <div class="panel" id="dssP"><div class="ph"><h2>⚡ ডিএসএস পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
     <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
   </div>
@@ -751,6 +819,7 @@ function group(lv, rec) {
 /* প্যারামিটার অনুযায়ী তুলনা: ক্যাপ পর্যন্ত কত বাড়ানো যায়, আর মিলিত পরিকল্পনায় কোনটিতে কত */
 function gapTable(lv, me, other, oname) {
   const need = other.score - me.score + 0.05, pl = planFor(lv, me, need), x = pl.x;
+  let mob = '';
   const rows = pl.P.map(p => {
     const of = other[p.k] || 0, mp = p.w * Math.min(p.mf, p.cap), op = p.w * Math.min(of, p.cap), d = mp - op;
     let single, plan;
@@ -763,12 +832,15 @@ function gapTable(lv, me, other, oname) {
       else single = `<span class="lo">একা যথেষ্ট নয়</span><small class="mut">ক্যাপ ${Math.round(p.cap * 100)}% পর্যন্ত আরও ${fmtU(p.k, p.room * p.base)} করলে সর্বোচ্চ +${GC.nd(p.w * p.room)} পয়েন্ট</small>`;
       plan = x == null ? '—' : p.add <= 1e-9 ? '<span class="mut">—</span>' : `আরও <b>${fmtU(p.k, p.units)}</b> <small class="mut">(${Math.round(p.mf * 100)}% → ${Math.round((p.mf + p.add) * 100)}%, +${GC.nd(p.pts)} পয়েন্ট)</small>`;
     }
+    mob += `<div class="mc"><div class="mc-h"><b>${p.name}</b><span class="mut">ওজন ${p.w} · ${GC.capTxt(p.cap)}</span></div>
+      <div class="mc-g"><div><span>অর্জন</span><b>${Math.round(p.mf * 100)}%</b></div><div><span>${esc(oname)}</span><b>${Math.round(of * 100)}%</b></div><div><span>পয়েন্ট পার্থক্য</span><b class="${d >= 0 ? 'hi' : 'lo'}">${d >= 0 ? '+' : ''}${GC.nd(d)}</b></div></div>
+      <div class="mc-l"><span>শুধু এটিতে:</span> ${single}</div><div class="mc-l"><span>মিলিত পরিকল্পনা:</span> ${plan}</div></div>`;
     return `<tr><td class="l"><b>${p.name}</b><small>ওজন ${p.w} · ${GC.capTxt(p.cap)}</small></td><td>${Math.round(p.mf * 100)}%</td><td>${Math.round(of * 100)}%</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${d >= 0 ? '+' : ''}${GC.nd(d)}</td><td class="l">${single}</td><td class="l">${plan}</td></tr>`;
   }).join('');
   let note = '';
   if (need > 0 && x == null) note = `<div class="msg" style="color:var(--low)">⚠️ সব প্যারামিটার ক্যাপ পর্যন্ত নিলেও সর্বোচ্চ +${GC.nd(pl.maxGain)} পয়েন্ট বাড়ানো সম্ভব — এই মাসে ${esc(oname)}-কে ছাড়ানো কঠিন, তবে যতটা সম্ভব এগিয়ে যান!</div>`;
   else if (need > 0) note = `<div class="mut" style="margin-top:8px">✅ <b>মিলিত পরিকল্পনা:</b> সব প্যারামিটারে একসাথে প্রায় ${Math.round(x * 100)}% করে (ক্যাপ মেনে) বাড়ালে ${GC.nd(need)} পয়েন্ট পূরণ হবে। "শুধু এটিতে" কলাম দেখায় একটি প্যারামিটার একাই যথেষ্ট কিনা।</div>`;
-  return `<div class="scroll"><table style="min-width:1000px">${GC.head(['প্যারামিটার', 'অর্জন %', esc(oname) + '-এর %', 'পয়েন্ট', esc(oname) + '-এর পয়েন্ট', 'পার্থক্য', 'শুধু এটিতে কত লাগবে', 'মিলিত পরিকল্পনা'])}${rows}</table></div>${note}`;
+  return `<div class="scroll desk"><table style="min-width:1000px">${GC.head(['প্যারামিটার', 'অর্জন %', esc(oname) + '-এর %', 'পয়েন্ট', esc(oname) + '-এর পয়েন্ট', 'পার্থক্য', 'শুধু এটিতে কত লাগবে', 'মিলিত পরিকল্পনা'])}${rows}</table></div><div class="mob">${mob}</div>${note}`;
 }
 function compareHTML(lv, rec, title) {
   const G = group(lv, rec); if (!G || G.list.length < 2) return '';
@@ -791,6 +863,9 @@ function podium(list, nameOf, mine, kind) {
   const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${DSO_MSG}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
   return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
+/* মোবাইল: টেবিলের বদলে ছোট কার্ড-সারি */
+const pills = (x, lv) => LV[lv].ps.map(p => { const v = Math.round((x[p[0]] || 0) * 100); return `<span class="pl ${v >= 100 ? 'hi' : v < 50 ? 'lo' : ''}">${p[1].replace(' (A2M+D2C)', '').replace('SAV-', '')} ${v}%</span>`; }).join('');
+const mrow = (href, rankHTML, name, sub, x, lv, cls, extra) => `<a class="mrow ${cls || ''}" href="${href}"><div class="mr-r">${rankHTML}</div><div class="mr-m"><div class="mr-n">${name}</div>${sub ? `<div class="mr-s">${sub}</div>` : ''}${extra || ''}<div class="mr-k">${pills(x, lv)}</div></div><div class="mr-sc"><b>${x.score.toFixed(1)}</b>${bar(x.score)}</div></a>`;
 function draw() {
   const me = who.me, my = who.myDH, mt = who.myTeam;
   const d = $('#fdh').value;
@@ -801,24 +876,27 @@ function draw() {
     [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${x.om ? `<b class="omt">${esc(x.om)}</b>` : esc(x.name)}</a>${x.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''}${x.om ? `<small>${esc(x.name)}</small>` : ''}</td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.rank === 1 ? rk(1) : x.rank}</td></tr>`);
     if (!ed) { const t = D.territory; h += `<tr class="tot go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k => GC.pcCell(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`; }
     $('#tdh').innerHTML = h;
+    $('#tdhm').innerHTML = [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).map(x => mrow(hOM(x.name), x.rank === 1 ? rk(1) : x.rank, x.om ? `<b class="omt">${esc(x.om)}</b>` : esc(x.name), (x.om ? esc(x.name) : '') + (x.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''), x, 'om', x === my ? 'mine' : '')).join('')
+      + (!ed ? mrow(hOM('*'), '🏆', 'টেরিটরি', 'গাজীপুর সেন্ট্রাল', D.territory, 'om', 'tot') : '');
     const all = [...D.teams].sort((a, b) => a.rank - b.rank);
     const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
     let tb = GC.head(['র‍্যাঙ্ক', 'টিম · ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
     l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}"><b>${esc(GC.tn(x))}</b></a>${x.rank <= 3 ? ' <span class="chip">🎁 পুরস্কার</span>' : ''}<small>${esc(tc(x.dss))}</small></td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
-    $('#tt').innerHTML = '<div class="reward">🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার! 🏆🥇 ১ম · 🥈 ২য় · 🥉 ৩য়</div>' + (!ed && !ss ? podium(all, x => GC.tn(x), mt, 'dss') : '') + `<div class="scroll"><table>${tb}</table></div>`;
+    $('#tt').innerHTML = '<div class="reward">🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার! 🏆🥇 ১ম · 🥈 ২য় · 🥉 ৩য়</div>' + (!ed && !ss ? podium(all, x => GC.tn(x), mt, 'dss') : '') + `<div class="scroll desk"><table>${tb}</table></div><div class="mob">${l.map(x => mrow(hDSS(x), rk(x.rank), `<b>${esc(GC.tn(x))}</b>${x.rank <= 3 ? ' <span class="chip">🎁</span>' : ''}`, esc(tc(x.dss)) + ' · ' + esc(x.dh), x, 'dss', (x.rank <= 3 ? 'top ' : '') + (x === mt ? 'mine' : ''))).join('')}</div>`;
   }
   let r = '';
   scopeDH().filter(g => !ed || g === ed).forEach(g => {
     const list = D.ra.filter(x => x.dh === g).sort((a, b) => a.dhRank - b.dhRank);
     let tb2 = GC.head(['র‍্যাঙ্ক', 'ডিএসও', 'টিম (ডিএসএস)', ...cols('dso'), 'স্কোর', 'টিমে'], 3);
-    let n = 0;
+    let n = 0, mob = '';
     list.forEach(x => {
       if (ss && x.dss !== ss) return; n++;
       const myTeam = mt && mt.dh === x.dh && mt.dss === x.dss;
       tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.dhRank)}${x.dhRank === 2 || x.dhRank === 3 ? `<small>${DSO_MSG}</small>` : ''}</td><td class="l">${x.team ? '<b>' + esc(x.team) + '</b><small>' + esc(tc(x.dss)) + '</small>' : esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
+      mob += mrow(hDSO(x), rk(x.dhRank), `${esc(tc(x.name))}${x === me ? ' <span class="chip">আপনি</span>' : ''} ${GC.tierChip(x.dhRank)}`, (x.team ? esc(x.team) + ' · ' : '') + esc(tc(x.dss)) + ' · টিমে #' + x.teamRank, x, 'dso', (x.dhRank <= 3 ? 'top ' : '') + (x === me || myTeam ? 'mine' : ''), x.dhRank === 2 || x.dhRank === 3 ? `<div class="mr-s" style="color:var(--deep)">${DSO_MSG}</div>` : '');
     });
     if (!n) return;
-    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll"><table>${tb2}</table></div>`;
+    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div>`;
   });
   $('#tr').innerHTML = r;
 }
@@ -839,6 +917,15 @@ function calc(rec, lv, [p, name, basis, w, cap]) {
 }
 function renderDetail(lv, rec, title, sub) {
   const Lx = LV[lv], rows = Lx.ps.map(p => calc(rec, lv, p));
+  const mobBody = rows.map(r => {
+    const miss = r.trg == null;
+    return `<div class="mc"><div class="mc-h"><b>${r.name}</b><span class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}" style="font:800 20px var(--fh)">${Math.round(r.pct)}%</span></div>
+      <div class="mut" style="font-size:12px">${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট টার্গেটের বিপরীতে'} · ওজন ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</div>
+      ${r.p === 'a' && lv === 'om' ? `<div class="mut" style="font-size:12px">A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)}</div>` : ''}
+      <div class="mc-g"><div><span>মাসিক টার্গেট</span><b>${nf(r.trg)}</b></div><div><span>MTD টার্গেট</span><b>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</b></div><div><span>MTD অর্জন</span><b>${nf(r.ach)}</b></div>
+        <div><span>বাকি</span><b>${miss ? '—' : nf(r.rem)}</b></div><div><span>প্রতিদিন প্রয়োজন</span><b class="need">${miss ? '—' : nd(r.per)}</b></div><div><span>পয়েন্ট</span><b>${nd(r.pts)}${isFinite(r.cap) ? '/' + nd(r.w * r.cap) : ''}</b></div>
+        ${r.lm != null ? `<div><span>LMTD</span><b>${nf(r.lm)}</b></div><div><span>MoM গ্রোথ</span><b class="${r.gr >= 0 ? 'hi' : 'lo'}">${r.gr == null ? '—' : (r.gr >= 0 ? '▲ ' : '▼ ') + nd(Math.abs(r.gr)) + '%'}</b></div>` : ''}</div></div>`;
+  }).join('');
   const body = rows.map(r => {
     const miss = r.trg == null;
     const extra = r.p === 'a' && lv === 'om' ? `<small>অর্জন: A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · ${r.V.bzpSet ? 'BZP টার্গেট অ্যাডমিন সেটিংস থেকে' : 'BZP টার্গেট দেওয়া নেই — A2M টার্গেট ধরা হয়েছে'}</small>` : '';
@@ -853,7 +940,7 @@ function renderDetail(lv, rec, title, sub) {
   $('#detail').innerHTML = `
   <div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
   <div class="panel">
-    <div class="mine-grid" style="grid-template-columns:minmax(220px,280px) 1fr;align-items:center">
+    <div class="mine-grid det">
       <div class="scorebox"><div class="ring" style="--p:${Math.min(100, rec.score).toFixed(1)}"><div><b>${rec.score.toFixed(1)}</b><small>স্কোর</small></div></div>${rr ? `<span class="tier ${labelCls(lv, rr)}">${label(lv, rr)}</span>` : ''}</div>
       <div><div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</div>
         <h2 style="font-size:28px;margin-top:2px">${esc(title)}</h2>
@@ -871,7 +958,8 @@ function renderDetail(lv, rec, title, sub) {
         <li><b>পয়েন্ট:</b> ওজন × অর্জন %, প্রতিটি KPI-র নিজস্ব ক্যাপ পর্যন্ত (যেমন ডিএসও-র TRX ১৩০%, REG ১৫০%)। তাই মোট স্কোর ১০০-এর বেশিও হতে পারে। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
       </ul></div>
     ${noAch ? '<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি।</div>' : ''}
-    <div class="scroll"><table style="min-width:1080px">${GC.head(['প্যারামিটার', 'মাসিক টার্গেট', 'MTD টার্গেট', 'MTD অর্জন', 'MTD অর্জন %', 'LMTD', 'MoM গ্রোথ', 'বাকি', 'প্রতিদিন প্রয়োজন', 'আরও কত % বাকি', 'পয়েন্ট'])}${body}</table></div>
+    <div class="mob">${mobBody}</div>
+    <div class="scroll desk"><table style="min-width:1080px">${GC.head(['প্যারামিটার', 'মাসিক টার্গেট', 'MTD টার্গেট', 'MTD অর্জন', 'MTD অর্জন %', 'LMTD', 'MoM গ্রোথ', 'বাকি', 'প্রতিদিন প্রয়োজন', 'আরও কত % বাকি', 'পয়েন্ট'])}${body}</table></div>
     <p class="mut" style="margin-top:10px">টীকা: MTD টার্গেট = মাসিক টার্গেট × (রিপোর্টের দিন ÷ মাসের মোট দিন)। প্রতিটি রিপোর্টের নিজের Till তারিখ ধরা হয়।</p>
   </div>`;
 }
