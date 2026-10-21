@@ -48,7 +48,7 @@ ul{list-style:none;padding:0;margin:8px 0 0}li{margin:4px 0}
 
 <section class="panel" id="s2" hidden>
 <h2>২. নিয়মিত রিপোর্ট আপলোড করুন</h2>
-<p class="mut">প্রতিটি রিপোর্টের নিচে <b>ডেটার তারিখ (Till)</b> ঠিক করে দিন। যে রিপোর্টগুলো আজ পাননি সেগুলো বাদ দিন — আগের ডেটা অপরিবর্তিত থাকবে। ফাইল দিলে কলাম নিজে বেছে নেওয়া হবে; ভুল হলে ড্রপডাউন থেকে বদলান। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</p>
+<p class="mut">প্রতিটি রিপোর্টের নিচে <b>ডেটার তারিখ (Till)</b> ঠিক করে দিন। মাসের শুরুতে বা টার্গেট বদলালে প্রথমে RA-DSS টার্গেট ফাইল দিন; এতে ডিএসও-ডিএসএস-ডিএইচ তালিকা ও মাসিক টার্গেট আসে। স্কোর ও র‍্যাঙ্ক সাইট নিজেই ওজন অনুযায়ী হিসাব করে। যে রিপোর্টগুলো আজ পাননি সেগুলো বাদ দিন — আগের ডেটা অপরিবর্তিত থাকবে। ফাইল দিলে কলাম নিজে বেছে নেওয়া হবে; ভুল হলে ড্রপডাউন থেকে বদলান। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</p>
 <div id="reps"></div>
 </section>
 
@@ -82,7 +82,7 @@ const normW=w=>{w=String(w==null?'':w).replace(/[^\d]/g,'');if(w.startsWith('880
 /* ===== রিপোর্টের তালিকা =====
    t: [{p: প্যারামিটার কী, f: ach | ld | lm, l: লেবেল, re: কলাম অনুমানের প্যাটার্ন}] */
 const REPS=[
- {id:'ac',label:'বিজনেস ট্র্যাকার (AC শিট) — স্কোর ও অর্জন %',main:true},
+ {id:'ra',label:'RA-DSS টার্গেট ফাইল — ডিএসও-ডিএসএস-ডিএইচ ম্যাপিং ও মাসিক টার্গেট',main:true},
  {id:'dtr',label:'DAILY TRX REPORT – DTR',t:[{p:'t',f:'ach',l:'TRX (MTD অর্জন)',re:/trx|txn|trans|count/i}]},
  {id:'lddtr',label:'LD-DTR (গতকাল)',t:[{p:'t',f:'ld',l:'TRX (গতকাল)',re:/trx|txn|trans|count/i}]},
  {id:'lmdtr',label:'LM DTR (গত মাস)',t:[{p:'t',f:'lm',l:'TRX (গত মাস)',re:/trx|txn|trans|count/i}]},
@@ -127,9 +127,9 @@ $('#con').onclick=async()=>{
 
 /* ===== কার্ড ===== */
 function buildCards(){
-  $('#reps').innerHTML=REPS.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}${r.main?'<span class="tag">স্কোর</span>':''}</h3>
+  $('#reps').innerHTML=REPS.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}${r.main?'<span class="tag">প্রথমে এটি দিন</span>':''}</h3>
     <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}">
-    <div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" value="${(W.tills&&W.tills[r.id])||''}"></div></div>
+    ${r.main?'':`<div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" value="${(W.tills&&W.tills[r.id])||''}"></div></div>`}
     <div class="cfg"></div><ul class="st"></ul></div>`).join('');
   $('#svc').innerHTML=SVC.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}</h3>
     <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}" data-svc="1">
@@ -238,66 +238,70 @@ function applyRep(id){
 }
 /* টিম/ডিএইচ/টেরিটরির সংখ্যা সরাসরি না থাকলে নিচের স্তর থেকে যোগ */
 function aggregate(){
-  const P=['t','r','vo','c','u'],F=['ach','ld','lm'];
+  const P=['t','r','vo','c','u','a2m','d2c'],F=['trg','ach','ld','lm'];
   const sum=(arr,p,f)=>{let s=0,any=false;arr.forEach(x=>{const v=x.v&&x.v[p]&&x.v[p][f];if(v!=null){s+=v;any=true}});return any?s:null};
-  const put=(o,p,f,val)=>{if(val==null)return;o.v=o.v||{};o.v[p]=o.v[p]||{};if(o.v[p][f]==null||o.v[p].agg!==false){o.v[p][f]=val;o.v[p].agg=true}};
+  const put=(o,p,f,val)=>{if(val==null)return;o.v=o.v||{};o.v[p]=o.v[p]||{};if(o.v[p][f]==null||o.v[p].agg!==false){o.v[p][f]=val;if(f!=='trg')o.v[p].agg=true}};
   W.teams.forEach(t=>{const rs=W.ra.filter(x=>x.dh===t.dh&&x.dss===t.dss);P.forEach(p=>F.forEach(f=>put(t,p,f,sum(rs,p,f))))});
-  const allP=[...P,'a2m','d2c'];
-  W.dh.forEach(d=>{const ts=W.teams.filter(x=>x.dh===d.name);allP.forEach(p=>F.forEach(f=>put(d,p,f,sum(ts,p,f))))});
-  if(W.territory)allP.forEach(p=>F.forEach(f=>put(W.territory,p,f,sum(W.dh,p,f))));
+  W.dh.forEach(d=>{const ts=W.teams.filter(x=>x.dh===d.name);P.forEach(p=>F.forEach(f=>put(d,p,f,sum(ts,p,f))))});
+  W.territory=W.territory||{v:{}};
+  P.forEach(p=>F.forEach(f=>put(W.territory,p,f,sum(W.dh,p,f))));
 }
 
-/* ===== মূল ওয়ার্কবুক (AC শিট) ===== */
-function parse(wb){
-  const ws=wb.Sheets['AC'];if(!ws)throw new Error('Sheet "AC" not found in this file.');
-  ws['!ref']='A1:Y120';
-  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
-  const ra=[],teams=[],dh=[];let terr=null;
-  rows.forEach(r=>{
-    const A=r[0];const fz=typeof A==='string'&&/^FIROZA/i.test(A);
-    const H=fz?up(A):null;
-    if(fz&&typeof r[3]==='string'&&/^\d{11}$/.test(r[3].trim())&&num(r[5])&&num(r[23]))
-      ra.push({dh:H,dss:String(r[1]).replace(/\s+/g,' ').trim(),name:String(r[2]).trim(),wallet:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],score:r[23],dhRank:r[24],teamRank:r[22]});
-    else if(fz&&r[1]===A&&typeof r[2]==='string'&&typeof r[3]==='string'&&num(r[5])&&num(r[21]))
-      teams.push({dh:H,dss:r[2].replace(/\s+/g,' ').trim(),team:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
-    else if(fz&&r[1]===A&&!r[2]&&num(r[5])&&num(r[21]))
-      dh.push({name:H,t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
-    else if(A==null&&num(r[5])&&num(r[21])&&r[22]==null)
-      terr={t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21]};
-  });
-  // প্রতিটি হাউজের ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক (ডিএসও ও টিম)
-  [...new Set(ra.map(x=>x.dh))].forEach(g=>ra.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.dhRank=i+1));
-  [...new Set(teams.map(x=>x.dh))].forEach(g=>teams.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.rank=i+1));
-  let d=null;const w2=wb.Sheets['RA'];
-  if(w2&&w2['A7']){const v=w2['A7'].v;d=v instanceof Date?v:(num(v)?new Date(Math.round((v-25569)*864e5)):null)}
-  return {ra,teams,dh,territory:terr,date:d&&!isNaN(d)?d.toISOString().slice(0,10):null};
-}
+/* ===== RA-DSS টার্গেট ফাইল ===== */
+const RF=[
+ {k:'dh',l:'ডিএইচ (ডিস্ট্রিবিউটর)',re:/\bdh\b|distributor|house/i},
+ {k:'dss',l:'ডিএসএস নাম',re:/dss/i},
+ {k:'name',l:'ডিএসও নাম',re:/dso|ra.?name|^name|\bname\b/i},
+ {k:'wallet',l:'ডিএসও ওয়ালেট',re:/wallet|msisdn|mobile|number/i}
+];
+const RT=[
+ {p:'t',l:'TRX টার্গেট',re:/trx|txn|trans/i},
+ {p:'r',l:'REG টার্গেট',re:/reg/i},
+ {p:'vo',l:'SAV-VOL টার্গেট',re:/vol|sav.*(amt|amount)|saving/i},
+ {p:'c',l:'SAV-CNT টার্গেট',re:/cnt|count|sav.*(acc|no)/i},
+ {p:'u',l:'UBP টার্গেট',re:/ubp|bill/i},
+ {p:'a2m',l:'A2M টার্গেট',re:/a2m/i},
+ {p:'d2c',l:'D2C টার্গেট',re:/d2c/i}
+];
 async function onMain(f){
-  const buf=await f.arrayBuffer();
-  const wb=XLSX.read(buf,{type:'array',sheets:['AC','RA'],cellDates:true});
-  const o=parse(wb);
-  let h='';
-  h+=o.ra.length?li('ok',`${o.ra.length}টি ডিএসও সারি পড়া হয়েছে`):li('bad','কোনো ডিএসও সারি পাওয়া যায়নি');
-  h+=o.teams.length?li('ok',`${o.teams.length}টি ডিএসএস টিম পড়া হয়েছে`):li('bad','কোনো ডিএসএস টিম পাওয়া যায়নি');
-  h+=o.dh.length?li('ok',`${o.dh.length}টি ডিস্ট্রিবিউটর পড়া হয়েছে (নাম বড় হাতের অক্ষরে)`):li('bad','কোনো ডিস্ট্রিবিউটর পাওয়া যায়নি');
-  h+=o.territory?li('ok','টেরিটরি স্কোর পড়া হয়েছে'):li('bad','টেরিটরি সারি পাওয়া যায়নি');
-  const ti=$('#c-ac input.till');
-  if(o.date){ti.value=o.date;h+=li('ok',`ফাইল থেকে ডেটার তারিখ: ${o.date} (বদলাতে পারেন)`)}
-  else{if(!ti.value)ti.value=today();h+=li('warn',`ফাইলে তারিখ পাওয়া যায়নি; ${ti.value} ধরা হয়েছে। ঠিক করে দিন।`)}
-  setSt('ac',h);
-  if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('ফাইলটি Achievers’ Club ট্র্যাকারের ফরম্যাটে নেই, তাই প্রকাশ করা যাবে না।');
-  // আগের রিপোর্ট-ভিত্তিক সংখ্যা (v) ধরে রাখা
-  const m=new Map();
-  W.ra.forEach(x=>m.set('r'+x.wallet,x.v));W.teams.forEach(x=>m.set('t'+x.dh+'|'+x.dss,x.v));W.dh.forEach(x=>m.set('d'+x.name,x.v));
-  o.ra.forEach(x=>{const v=m.get('r'+x.wallet);if(v)x.v=v});
-  o.teams.forEach(x=>{const v=m.get('t'+x.dh+'|'+x.dss);if(v)x.v=v});
-  o.dh.forEach(x=>{const v=m.get('d'+x.name);if(v)x.v=v});
-  if(W.territory&&W.territory.v)o.territory.v=W.territory.v;
-  W.ra=o.ra;W.teams=o.teams;W.dh=o.dh;W.territory=o.territory;
-  W.tills.ac=ti.value;
-  $('#c-ac').classList.add('done');
-  aggregate();dirty=true;refreshPub();
-  // আগে আপলোড হওয়া রিপোর্টগুলো নতুন তালিকায় আবার প্রয়োগ
+  const wb=await readFile(f);const ws=wb.Sheets[wb.SheetNames[0]];
+  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+  const hi=headerRow(aoa);if(hi<0)throw new Error('ফাইলে কলামের নাম (হেডার সারি) পাওয়া যায়নি।');
+  const head=aoa[hi].map((h,i)=>h==null||h===''?`কলাম ${i+1}`:String(h).trim());
+  SH.ra={head,rows:aoa.slice(hi+1)};
+  const guess=re=>{let k=head.findIndex(h=>re.test(h)&&/tar|trg/i.test(h));if(k<0)k=head.findIndex(h=>re.test(h));return k};
+  const opt=s0=>head.map((h,i)=>`<option value="${i}" ${i===s0?'selected':''}>${esc(h)}</option>`).join('');
+  const sel=(cls,key,l,g,none)=>`<div><label>${esc(l)}</label><select class="${cls}" data-k="${key}">${none?'<option value="-1">— নেই —</option>':''}${opt(g)}</select></div>`;
+  $('#c-ra .cfg').innerHTML='<div class="row">'+RF.map(x=>sel('rf',x.k,x.l,head.findIndex(h=>x.re.test(h)),false)).join('')+'</div><div class="row">'+RT.map(x=>sel('rt',x.p,x.l,guess(x.re),true)).join('')+'</div>';
+  $('#c-ra .cfg').querySelectorAll('select').forEach(s=>s.onchange=applyRoster);
+  applyRoster();
+}
+function applyRoster(){
+  const S=SH.ra,cfg=$('#c-ra .cfg');
+  const F={};cfg.querySelectorAll('.rf').forEach(s=>F[s.dataset.k]=+s.value);
+  const T=[...cfg.querySelectorAll('.rt')].map(s=>({p:s.dataset.k,i:+s.value}));
+  const ra=[];let skip=0;const seen=new Set();
+  S.rows.forEach(r=>{
+    const w=normW(r[F.wallet]);
+    if(w.length!==11||!r[F.dh]||!r[F.dss]){skip++;return}
+    if(seen.has(w)){skip++;return}seen.add(w);
+    const o={dh:up(r[F.dh]),dss:String(r[F.dss]).replace(/\s+/g,' ').trim(),name:String(r[F.name]==null?'':r[F.name]).trim(),wallet:w,v:{}};
+    T.forEach(t=>{if(t.i<0)return;const n=toNum(r[t.i]);if(n!=null)o.v[t.p]={trg:n}});
+    ra.push(o);
+  });
+  // আগের অর্জনের সংখ্যা ধরে রাখা
+  const old=new Map(W.ra.map(x=>[x.wallet,x.v]));
+  ra.forEach(x=>{const ov=old.get(x.wallet);if(!ov)return;for(const p in ov)for(const f of ['ach','ld','lm'])if(ov[p][f]!=null){x.v[p]=x.v[p]||{};x.v[p][f]=ov[p][f]}});
+  const tmap=new Map();ra.forEach(x=>tmap.set(x.dh+'\u0001'+x.dss,{dh:x.dh,dss:x.dss,v:{}}));
+  const dmap=new Map();ra.forEach(x=>dmap.set(x.dh,{name:x.dh,v:{}}));
+  const oldT=new Map(W.teams.map(x=>[x.dh+'\u0001'+x.dss,x.v])),oldD=new Map(W.dh.map(x=>[x.name,x.v]));
+  tmap.forEach((t,k)=>{const ov=oldT.get(k);if(ov)for(const p in ov)for(const f of ['ach','ld','lm'])if(ov[p]&&ov[p][f]!=null&&ov[p].agg===false){t.v[p]={[f]:ov[p][f],agg:false}}});
+  W.ra=ra;W.teams=[...tmap.values()];W.dh=[...dmap.values()];W.territory=W.territory||{v:{}};
+  aggregate();dirty=true;
+  let h=li(ra.length?'ok':'bad',`${ra.length} জন ডিএসও, ${W.teams.length}টি ডিএসএস টিম, ${W.dh.length}টি ডিএইচ পড়া হয়েছে`);
+  if(skip)h+=li('warn',`${skip}টি সারি বাদ গেছে (ওয়ালেট/ডিএইচ/ডিএসএস নেই বা ডুপ্লিকেট)`);
+  if(!T.some(t=>t.i>=0))h+=li('warn','কোনো টার্গেট কলাম বেছে নেওয়া হয়নি');
+  $('#c-ra').classList.toggle('done',ra.length>0);setSt('ra',h);refreshPub();
   REPS.filter(r=>!r.main&&SH[r.id]).forEach(r=>applyRep(r.id));
 }
 
@@ -319,7 +323,7 @@ function finalize(){
   const t=Object.assign({},W.tills);
   W.tills=t;
   const ds=Object.values(t).filter(Boolean).sort();
-  W.tillDate=t.ac||ds[ds.length-1]||W.updated||today();
+  W.tillDate=ds[ds.length-1]||W.updated||today();
   W.updated=W.tillDate;
   return W;
 }
