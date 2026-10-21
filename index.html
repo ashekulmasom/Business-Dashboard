@@ -1,121 +1,174 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Achievers’ Club</title>
+<title>Achievers’ Club · গাজীপুর সেন্ট্রাল</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
 <style>
-:root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
+:root{--pink:#E2136E;--deep:#A80B52;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px}
-img.logo{height:84px;width:auto;mix-blend-mode:multiply;display:block}
-h1{font-size:30px;margin:6px 0 2px}h2{font-size:19px;margin:0 0 4px}
-.mut{color:var(--mut);font-size:13px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
-.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
-.card b{display:block;font:600 30px ui-monospace,Menlo,Consolas,monospace;margin:4px 0}
-.me{border:2px solid var(--pink)}
-label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
-input,select{width:100%;min-height:48px;border:1px solid #8A6A7B;border-radius:8px;padding:10px 12px;font:inherit;background:#fff}
-button{min-height:48px;border-radius:8px;padding:10px 22px;font:600 15px inherit;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff}
+body{margin:0;color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#FFE3F0 0,transparent 40%),radial-gradient(circle at 95% 15%,#FFEFD2 0,transparent 35%),var(--bg);min-height:100vh}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--pink),var(--deep));color:#fff;border-radius:24px;padding:22px 26px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;box-shadow:0 14px 34px rgba(226,19,110,.32)}
+.badge{background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 6px 18px rgba(0,0,0,.22);transform:rotate(-3deg);animation:bob 4s ease-in-out infinite}
+.badge img{height:78px;display:block}
+.hero h1{margin:0;font-size:30px;line-height:1.25;font-weight:700}
+.hero p{margin:4px 0 0;font-size:15px;opacity:.95}
+.hero .tr{margin-left:auto;font-size:64px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.sp{position:absolute;color:#FFE27A;animation:tw 2.4s ease-in-out infinite;pointer-events:none;font-size:20px}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+@keyframes tw{50%{opacity:.15;transform:scale(.6)}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 4px 14px rgba(226,19,110,.07)}
+h2{font-size:21px;margin:0 0 2px}
+.mut{color:var(--mut);font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;transition:transform .2s,box-shadow .2s;position:relative}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(226,19,110,.16)}
+.card .ic{font-size:28px}
+.card b{display:block;font:700 32px "Hind Siliguri",sans-serif;line-height:1.2}
+.card.me{background:linear-gradient(135deg,#FFF0F7,#FFF7DD);border:2px solid var(--pink)}
+.msg{margin-top:8px;font-weight:600;color:var(--deep);font-size:14px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+input,select{width:100%;min-height:50px;border:2px solid #D9B8C8;border-radius:12px;padding:10px 14px;font:inherit;background:#fff}
+input:focus,select:focus{outline:3px solid #FFC2DC;border-color:var(--pink)}
+button{min-height:50px;border-radius:999px;padding:10px 26px;font:700 16px "Hind Siliguri",sans-serif;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;transition:transform .15s}
+button:hover{transform:scale(1.04)}
 button.ghost{background:#fff;color:var(--pink)}
-.filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
-.filters>div{flex:1 1 220px}
+.hero button.ghost{border-color:#fff;background:rgba(255,255,255,.14);color:#fff}
+.filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}.filters>div{flex:1 1 220px}
 .scroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
-th{text-align:right;font-size:12px;color:var(--mut);padding:8px 10px;white-space:nowrap}
+table{border-collapse:collapse;width:100%;min-width:660px;font-variant-numeric:tabular-nums}
+th{text-align:right;font-size:13px;color:var(--mut);padding:8px 10px;white-space:nowrap}
 td{padding:9px 10px;border-top:1px solid #F4E1EB;text-align:right}
 th:first-child,td:first-child,th.l,td.l{text-align:left}
-tr.top td{background:#FDE4F0;font-weight:600}
-tr.mine td{background:#FFE9F3;box-shadow:inset 0 0 0 0}
-tr.mine td:first-child{border-left:4px solid var(--pink)}
-.hi{color:var(--ok);font-weight:600}.lo{color:var(--low)}
-.gate{max-width:440px;margin:50px auto 0}
-.err{color:#B00020;font-size:14px;margin:10px 0 0;min-height:20px}
-.top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+tr:hover td{background:#FFF5FA}
+tr.top td{background:#FFF1C9;font-weight:600}
+tr.mine td{background:#FFD9EA}tr.mine td:first-child{border-left:5px solid var(--pink)}
+.hi{color:var(--ok);font-weight:700}.lo{color:var(--low)}
+.bar{height:6px;background:#F4E1EB;border-radius:3px;margin-top:3px;min-width:70px}.bar i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--pink),#FFB300)}
+.rk{font-size:20px;line-height:1}
+.dhh{margin:22px 0 6px;font-size:18px;color:var(--deep);font-weight:700}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:10px 0 18px;flex-wrap:nowrap}
+.pd{flex:1 1 0;max-width:210px;text-align:center;min-width:0}
+.pd .medal{font-size:38px;animation:bob 3s ease-in-out infinite}
+.pd .pn{font-weight:700;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+.pd .ps{font:700 20px "Hind Siliguri",sans-serif}
+.pd .step{border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;color:#1B1B1F;font-size:22px}
+.p1 .step{height:92px;background:linear-gradient(#FFE27A,#F5B800)}.p2 .step{height:66px;background:linear-gradient(#EEF0F3,#C4CAD2)}.p3 .step{height:50px;background:linear-gradient(#F2C9A0,#D99A62)}
+.pd.mine .pn{color:var(--pink)}
+.gate{max-width:480px;margin:34px auto 0}
+.err{color:#B00020;font-size:15px;margin:10px 0 0;min-height:22px;font-weight:600}
+.cf{position:fixed;top:-16px;width:10px;height:14px;z-index:9;animation:fall 3.2s linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:560px){.hero .tr{display:none}.hero h1{font-size:24px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <section id="gate" class="gate">
-<img class="logo" src="logo.jpg" alt="Achievers’ Club" style="height:110px">
-<div class="mut" style="color:var(--pink);font-weight:600;margin-top:8px">Gazipur Central</div>
-<p style="font-size:16px;color:var(--mut)">Enter your wallet number to see the leaderboard and where you stand.</p>
+<div class="hero" style="flex-direction:column;align-items:flex-start;gap:14px">
+<span class="sp" style="top:12px;right:22px">✦</span><span class="sp" style="top:60px;right:70px;animation-delay:.8s;font-size:14px">✦</span><span class="sp" style="bottom:16px;right:30px;animation-delay:1.4s">★</span>
+<div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:96px"></div>
+<div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>গাজীপুর সেন্ট্রাল · আপনার র‍্যাঙ্ক দেখুন</p></div>
+</div>
 <form id="f" class="panel">
-<label for="w">RA / DSO wallet number</label>
+<label for="w">আরএ / ডিএসও ওয়ালেট নম্বর</label>
 <input id="w" inputmode="numeric" autocomplete="off" placeholder="01896043411">
 <div class="err" id="e" role="alert"></div>
-<button type="submit" style="width:100%">View leaderboard</button>
+<button type="submit" style="width:100%">লিডারবোর্ড দেখুন 🚀</button>
 </form>
-<p class="mut">Wallet not recognised? Contact your DSS or the Territory Manager.</p>
+<p class="mut">ওয়ালেট নম্বর চিনতে পারছি না? আপনার ডিএসএস বা টেরিটরি ম্যানেজারের সাথে যোগাযোগ করুন।</p>
 </section>
 
 <section id="app" hidden>
-<div class="top-row">
-<div><img class="logo" src="logo.jpg" alt="Achievers’ Club">
-<h1>Territory overview</h1>
-<div class="mut" id="sub"></div></div>
-<button class="ghost" id="out" type="button">Sign out</button>
-</div>
-<div class="cards" id="cards" style="margin-top:20px"></div>
+<header class="hero">
+<span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
+<div class="badge"><img src="logo.jpg" alt="Achievers’ Club"></div>
+<div><h1>গাজীপুর সেন্ট্রাল লিডারবোর্ড</h1><p id="sub"></p></div>
+<div class="tr" aria-hidden="true">🏆</div>
+<button class="ghost" id="out" type="button">সাইন আউট</button>
+</header>
+<div class="cards" id="cards"></div>
 <div class="panel filters">
-<div><label for="fdh">DH (distributor)</label><select id="fdh"></select></div>
-<div><label for="fdss">DSS</label><select id="fdss"></select></div>
-<div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">Reset filters</button></div>
+<div><label for="fdh">🏢 ডিএইচ (ডিস্ট্রিবিউটর)</label><select id="fdh"></select></div>
+<div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
+<div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
 </div>
-<div class="panel"><h2>Distributor and territory scores</h2><div class="mut" style="margin-bottom:10px">Achievement against target, then weighted score.</div><div class="scroll"><table id="tdh"></table></div></div>
-<div class="panel"><h2>DSS teams</h2><div class="mut" style="margin-bottom:10px">Ranked by overall score.</div><div class="scroll"><table id="tt"></table></div></div>
-<div class="panel"><h2>RA leaderboard</h2><div class="mut" style="margin-bottom:10px">Sorted by score. Green = at or above target; brown = below half of target. Top 3 shaded, your row outlined.</div><div class="scroll"><table id="tr"></table></div></div>
+<div class="panel"><h2>📊 ডিস্ট্রিবিউটর ও টেরিটরি স্কোর</h2><div class="mut" style="margin-bottom:10px">টার্গেটের বিপরীতে অর্জন, তারপর ওজনভিত্তিক স্কোর।</div><div class="scroll"><table id="tdh"></table></div></div>
+<div class="panel"><h2>⚡ ডিএসএস টিম</h2><div class="mut" style="margin-bottom:10px">সামগ্রিক স্কোর অনুযায়ী র‍্যাঙ্ক।</div><div class="scroll"><table id="tt"></table></div></div>
+<div class="panel"><h2>🏅 আরএ লিডারবোর্ড</h2><div class="mut">প্রতিটি ডিএইচ-এর ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক। সবুজ = টার্গেট বা তার বেশি; বাদামী = টার্গেটের অর্ধেকের কম। আপনার সারি গোলাপি দাগে চিহ্নিত।</div><div id="tr"></div></div>
 </section>
 </div>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tc=s=>String(s).trim().toLowerCase().replace(/(^|[\s.\-])([a-z])/g,(m,a,b)=>a+b.toUpperCase());
-const dl=n=>/BANGLABAZAR/i.test(n)?'Firoza Banglabazar':'Firoza Global';
-const norm=w=>{w=String(w).replace(/\D/g,'');if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
+const dl=n=>/BANGLABAZAR/i.test(n)?'ফিরোজা বাংলাবাজার':'ফিরোজা গ্লোবাল';
+const norm=w=>{w=String(w).replace(/[^\d০-৯]/g,'').replace(/[০-৯]/g,c=>'০১২৩৪৫৬৭৮৯'.indexOf(c));if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
 const pc=x=>{const v=Math.round((x||0)*100);return `<td class="${v>=100?'hi':v<50?'lo':''}">${v}%</td>`};
+const MED=['🥇','🥈','🥉'];
 let D=null,me=null;
-fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{D=j;const w=sessionStorage.getItem('w');if(w)enter(w)}).catch(()=>{$('#e').textContent='Data could not be loaded. Try again later.'});
-$('#f').addEventListener('submit',e=>{e.preventDefault();if(!D){$('#e').textContent='Data is still loading. Try again.';return}enter($('#w').value,true)});
+function rankDH(){[...new Set(D.ra.map(x=>x.dh))].forEach(g=>D.ra.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.dhRank=i+1))}
+fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{D=j;rankDH();const w=sessionStorage.getItem('w');if(w)enter(w)}).catch(()=>{$('#e').textContent='ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।'});
+$('#f').addEventListener('submit',e=>{e.preventDefault();if(!D){$('#e').textContent='ডেটা লোড হচ্ছে, আবার চেষ্টা করুন।';return}enter($('#w').value,true)});
 function enter(w,fresh){
   const x=D.ra.find(r=>norm(r.wallet)===norm(w));
-  if(!x){if(fresh)$('#e').textContent='Wallet number not recognised.';sessionStorage.removeItem('w');return}
-  me=x;sessionStorage.setItem('w',w);$('#gate').hidden=true;$('#app').hidden=false;setup();
+  if(!x){if(fresh)$('#e').textContent='ওয়ালেট নম্বরটি পাওয়া যায়নি। আবার দেখুন।';sessionStorage.removeItem('w');return}
+  me=x;sessionStorage.setItem('w',w);$('#gate').hidden=true;$('#app').hidden=false;setup();if(fresh)confetti(x.dhRank<=3?90:45);
 }
 $('#out').onclick=()=>{sessionStorage.removeItem('w');location.reload()};
+function confetti(n){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const cols=['#E2136E','#FFB300','#0B9C8F','#FF6FA8','#7C4DFF'];
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='cf';s.style.left=Math.random()*100+'vw';s.style.background=cols[i%5];s.style.animationDelay=Math.random()*.8+'s';s.style.animationDuration=2.4+Math.random()*1.6+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),5000)}
+}
 function setup(){
-  $('#sub').textContent='Gazipur Central · data as of '+new Date(D.updated+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const ord=[...D.ra].sort((a,b)=>b.score-a.score);const rank=ord.indexOf(me)+1;
-  const c=(k,v,s,cls)=>`<div class="card ${cls||''}"><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div></div>`;
-  $('#cards').innerHTML=c('Your score',me.score.toFixed(1),`Rank ${rank} of ${D.ra.length} · rank ${me.dhRank} in your DH · rank ${me.teamRank} in your team`,'me')+c('Territory score',D.territory.score.toFixed(1),'Gazipur Central')+D.dh.map(d=>c(dl(d.name),d.score.toFixed(1),'Distributor rank '+d.rank)).join('');
+  $('#sub').textContent='ডেটার তারিখ: '+new Date(D.updated+'T00:00:00').toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});
+  const list=D.ra.filter(x=>x.dh===me.dh).sort((a,b)=>a.dhRank-b.dhRank);
+  let m;
+  if(me.dhRank===1)m='🏆 অভিনন্দন! আপনি আপনার ডিএইচ-এ এক নম্বরে!';
+  else if(me.dhRank<=3)m=MED[me.dhRank-1]+' আপনি শীর্ষ ৩-এ আছেন, চালিয়ে যান!';
+  else m=`💪 পরের র‍্যাঙ্কে যেতে আর ${(list[me.dhRank-2].score-me.score).toFixed(1)} পয়েন্ট দরকার — আপনি পারবেন!`;
+  const c=(ic,k,v,s,cls,extra)=>`<div class="card ${cls||''}"><div class="ic">${ic}</div><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div>${extra||''}</div>`;
+  $('#cards').innerHTML=c('🎯','আপনার স্কোর',me.score.toFixed(1),`${dl(me.dh)}-এ ${me.dhRank}/${list.length} নম্বর · টিমে ${me.teamRank} নম্বর`,'me',`<div class="msg">${m}</div>`)+c('🏆','টেরিটরি স্কোর',D.territory.score.toFixed(1),'গাজীপুর সেন্ট্রাল')+D.dh.map(d=>c('🏅',dl(d.name),d.score.toFixed(1),'ডিস্ট্রিবিউটর র‍্যাঙ্ক '+d.rank)).join('');
   const dhs=[...new Set(D.ra.map(r=>r.dh))];
-  $('#fdh').innerHTML='<option value="">All distributors</option>'+dhs.map(d=>`<option value="${esc(d)}">${dl(d)}</option>`).join('');
+  $('#fdh').innerHTML='<option value="">সব ডিস্ট্রিবিউটর</option>'+dhs.map(d=>`<option value="${esc(d)}">${dl(d)}</option>`).join('');
   $('#fdh').onchange=()=>{dssOpts();draw()};$('#fdss').onchange=draw;
   $('#rs').onclick=()=>{$('#fdh').value='';dssOpts();draw()};
   dssOpts();draw();
 }
 function dssOpts(){
   const d=$('#fdh').value;const l=[...new Set(D.ra.filter(r=>!d||r.dh===d).map(r=>r.dss))].sort();
-  $('#fdss').innerHTML='<option value="">All DSS</option>'+l.map(s=>`<option value="${esc(s)}">${esc(tc(s))}</option>`).join('');
+  $('#fdss').innerHTML='<option value="">সব ডিএসএস</option>'+l.map(s=>`<option value="${esc(s)}">${esc(tc(s))}</option>`).join('');
 }
 function head(a,n=1){return '<tr>'+a.map((h,i)=>`<th class="${i<n?'l':''}">${h}</th>`).join('')+'</tr>'}
+const rk=n=>n<=3?`<span class="rk">${MED[n-1]}</span>`:n;
+const bar=s=>`<div class="bar"><i style="width:${Math.min(100,s/1.3)}%"></i></div>`;
+function podium(list){
+  if(list.length<3)return '';
+  return `<div class="podium">${[1,0,2].map(i=>{const x=list[i];return `<div class="pd p${i+1} ${x===me?'mine':''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(tc(x.name))}${x===me?' (আপনি)':''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step"><b>${i+1}</b></div></div>`}).join('')}</div>`;
+}
 function draw(){
   const d=$('#fdh').value,s=$('#fdss').value;
   const six=['TRX','REG','VOL','CNT','UBP','A2M'];
-  let h=head(['Distributor',...six,'Score','Rank']);
-  D.dh.filter(x=>!d||x.name===d).forEach(x=>h+=`<tr><td>${dl(x.name)}</td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.rank}</td></tr>`);
-  if(!d){const t=D.territory;h+=`<tr class="top"><td>Territory</td>${['t','r','vo','c','u','a'].map(k=>pc(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`}
+  let h=head(['ডিস্ট্রিবিউটর',...six,'স্কোর','র‍্যাঙ্ক']);
+  D.dh.filter(x=>!d||x.name===d).forEach(x=>h+=`<tr><td>${dl(x.name)}</td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
+  if(!d){const t=D.territory;h+=`<tr class="top"><td>🏆 টেরিটরি</td>${['t','r','vo','c','u','a'].map(k=>pc(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`}
   $('#tdh').innerHTML=h;
-  let t=head(['Team (DSS)',...six,'Score','Rank']);
-  D.teams.filter(x=>(!d||x.dh===d)&&(!s||x.dss===s)).sort((a,b)=>a.rank-b.rank).forEach(x=>t+=`<tr><td>${esc(tc(x.team))}<div class="mut">${esc(tc(x.dss))}</div></td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.rank}</td></tr>`);
+  let t=head(['টিম (ডিএসএস)',...six,'স্কোর','র‍্যাঙ্ক']);
+  D.teams.filter(x=>(!d||x.dh===d)&&(!s||x.dss===s)).sort((a,b)=>a.rank-b.rank).forEach(x=>t+=`<tr><td>${esc(tc(x.team))}<div class="mut">${esc(tc(x.dss))}</div></td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
   $('#tt').innerHTML=t;
-  const ord=[...D.ra].sort((a,b)=>b.score-a.score);
-  let r=head(['#','RA / DSO','Team (DSS)','TRX','REG','VOL','CNT','UBP','Score','DH rank','Team rank'],3);
-  ord.forEach((x,i)=>{if(d&&x.dh!==d||s&&x.dss!==s)return;
-    r+=`<tr class="${i<3?'top':''} ${x===me?'mine':''}"><td>${i+1}</td><td class="l">${esc(tc(x.name))}${x===me?' (you)':''}</td><td class="l">${esc(tc(x.dss))}</td>${['t','r','vo','c','u'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.dhRank}</td><td>${x.teamRank}</td></tr>`});
+  let r='';
+  [...new Set(D.ra.map(x=>x.dh))].filter(g=>!d||g===d).forEach(g=>{
+    const list=D.ra.filter(x=>x.dh===g).sort((a,b)=>a.dhRank-b.dhRank);
+    let tb=head(['র‍্যাঙ্ক','আরএ / ডিএসও','টিম (ডিএসএস)','TRX','REG','VOL','CNT','UBP','স্কোর','টিমে র‍্যাঙ্ক'],3);
+    list.forEach(x=>{if(s&&x.dss!==s)return;
+      tb+=`<tr class="${x.dhRank<=3?'top':''} ${x===me?'mine':''}"><td>${rk(x.dhRank)}</td><td class="l">${esc(tc(x.name))}${x===me?' (আপনি)':''}</td><td class="l">${esc(tc(x.dss))}</td>${['t','r','vo','c','u'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`});
+    r+=`<div class="dhh">🏢 ${dl(g)} · ${list.length} জন আরএ</div>${podium(list)}<div class="scroll"><table>${tb}</table></div>`;
+  });
   $('#tr').innerHTML=r;
 }
 </script>
