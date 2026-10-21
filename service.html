@@ -64,7 +64,7 @@ a.card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(122,12,67,.1
 .card .more{margin-top:8px;color:var(--pink);font-weight:700;font-size:14px}
 .msg{margin-top:8px;font-weight:600;color:var(--deep);font-size:14.5px}
 /* ---- আমার ড্যাশবোর্ড ---- */
-.mine-grid{display:grid;grid-template-columns:minmax(250px,320px) 1fr;gap:18px}
+.mine-grid{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:18px;align-items:start}
 @media (max-width:820px){.mine-grid{grid-template-columns:1fr}}
 .scorebox{border-radius:22px;padding:20px;text-align:center;color:#fff;background:linear-gradient(160deg,var(--plum),var(--deep) 55%,var(--pink));position:relative;overflow:hidden}
 .scorebox::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(255,224,138,.35),transparent 40%);pointer-events:none}
@@ -137,7 +137,7 @@ td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
 td b{font-family:var(--fh)}
 .hi{color:var(--ok);font-weight:700}.lo{color:var(--low)}
 .bar{height:6px;background:#F4E1EB;border-radius:3px;margin-top:3px;min-width:70px}.bar i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--pink),var(--gold))}
-.rk{font-size:20px;line-height:1}
+.rk{font-size:20px;line-height:1;white-space:nowrap}
 .dhh{margin:22px 0 8px;font:700 19px var(--fh);color:var(--deep)}
 .tchip{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 8px;margin-left:6px;vertical-align:middle}
 .tchip.pt{background:#E8F0FF;color:#2B4C9B}.tchip.gd{background:#FFF1C2;color:#8A5A00}.tchip.sv{background:#EEF0F3;color:#4B5563}.tchip.bz{background:#F8E5D6;color:#8A4B16}
@@ -171,6 +171,54 @@ footer.ft a{color:var(--mut)}
 
 .pnote{font-size:12px;color:var(--deep);font-weight:600;line-height:1.35;margin:2px 4px 4px}
 .reward{border-radius:16px;padding:10px 16px;margin-bottom:10px;background:linear-gradient(90deg,#FFF3C4,#FFE3F0);border:1px solid #F2C94C;font:700 16px var(--fh);color:var(--plum);text-align:center}
+/* ---- স্কোর কার্ড: নাম ও লিডার ---- */
+.sb-name{font:800 26px/1.2 var(--fh);margin:2px 0 4px;letter-spacing:.01em;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+.tier.leader{font:800 18px/1.3 var(--fh);padding:6px 18px;color:var(--plum);background:linear-gradient(90deg,#FFE58A,#F2B705);border:0;box-shadow:0 6px 18px rgba(242,183,5,.35)}
+.sb-link{display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:#FFE9A8;text-decoration:none;border-bottom:1px dashed rgba(255,233,168,.6);padding-bottom:1px}
+.sb-link:hover{color:#fff}
+/* ---- ১ নম্বরের দৌড় ---- */
+.race{border-radius:20px;padding:16px 18px 14px;background:linear-gradient(135deg,#2A0719,#5B0B33 60%,#8E1050);color:#fff;position:relative;overflow:hidden}
+.race::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(242,183,5,.35),transparent 70%);pointer-events:none}
+.race>*{position:relative;z-index:1}
+.rk2{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#FFD86B;font-weight:700}
+.rbig{font:700 22px/1.25 var(--fh);margin-top:2px}.rbig b{color:#FFD86B;font-size:30px}
+.rsub{font-size:13px;opacity:.85}
+.track{position:relative;height:44px;margin:16px 6px 4px}
+.lane{position:absolute;left:0;right:0;top:20px;height:8px;border-radius:999px;background:rgba(255,255,255,.16)}
+.lane i{display:block;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--pink2),var(--gold))}
+.dot{position:absolute;top:18px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:rgba(255,255,255,.45);border:2px solid rgba(42,7,25,.6)}
+.dot.me{width:20px;height:20px;top:14px;margin-left:-10px;background:var(--pink2);border:3px solid #fff;box-shadow:0 0 0 4px rgba(255,79,154,.35);animation:pulse 1.8s ease-in-out infinite}
+.dot.lead{width:20px;height:20px;top:14px;margin-left:-10px;background:var(--gold);border:3px solid #fff}
+.dot em{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font:700 11.5px var(--fb);font-style:normal;white-space:nowrap;background:#fff;color:var(--plum);border-radius:999px;padding:0 7px}
+.dot.me em{top:22px;bottom:auto;background:var(--pink2);color:#fff}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(255,79,154,0)}}
+.levers{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.lv-h{font-size:12.5px;font-weight:700;color:#FFD86B;margin-right:2px}
+.lever{font-size:13px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
+.lever i{font-style:normal;font-weight:700;color:#FFD86B;margin-left:4px}
+.lv-more{font-size:12.5px;color:#FFE9A8;margin-left:auto}
+/* ---- আজকের লক্ষ্য: ছোট টাইল ---- */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.kt{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.kt.done{background:#F2FBF9;border-color:#BFE6DF}
+.kt-t{display:flex;justify-content:space-between;align-items:baseline}
+.kt-n{font:700 14px var(--fh);color:var(--plum)}
+.kt-p{font:800 18px var(--fh)}
+.kt-b{height:6px;border-radius:999px;background:#F6E6EF;margin:6px 0}
+.kt-b i{display:block;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--gold))}
+.kt-f{display:flex;justify-content:space-between;gap:6px;font-size:12px;color:var(--mut)}
+.kt-f b{color:var(--deep)}
+.kt.done .kt-f span:first-child{color:var(--ok);font-weight:600}
+.badges{gap:8px}.bd{padding:5px 10px;font-size:12.5px;border-radius:12px}.bd i{font-size:17px}
+
+/* ---- টিম ব্যাটল ---- */
+.battle{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.bt{border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#fff,#FFF7FB);position:relative}
+.bt.mine{border:2px solid var(--pink);background:linear-gradient(135deg,#FFF0F7,#FFF8E2);box-shadow:0 10px 24px rgba(226,19,110,.15)}
+.bt-r{position:absolute;top:10px;right:12px;font:800 20px var(--fh);color:var(--deep)}
+.bt-n{font:800 17px/1.25 var(--fh);color:var(--plum);padding-right:44px;letter-spacing:.02em}
+.bt-s{font:800 28px/1.1 var(--fh);color:var(--pink);margin-top:6px}.bt-s small{font:500 12px var(--fb);color:var(--mut)}
+.bt-f{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--mut);margin-top:3px}
 </style>
 </head>
 <body>
@@ -230,6 +278,8 @@ const LV = {
 };
 const capTxt = c => isFinite(c) ? Math.round(c * 100) + '% ক্যাপ' : 'ক্যাপ নেই';
 
+/* ---------- টিমের নাম (ডিফল্ট; অ্যাডমিন সেটিংসে বদলানো যায়) ---------- */
+const TEAMS = { 'JUWEL RANA': 'CHOWRASTA TIGERS', 'MD. SHAH ALAM': 'SALNA TITANS', 'MD. TOHIN HOSSAIN': 'KONABARI 7STARS', 'MORSHADUL': 'NAWJOR WARRIORS', 'MD. HAMIDUR RAHMAN': 'MIRZAPUR KINGS', 'MD. MOMINUL ISLAM': 'BAGHERBAZAR FIGHTERS', 'MD. SHAKIL HOSSAIN': 'BANGLABAZAR LIONS', 'MD. SHOIDUL HASAN': 'MONIPUR GLADIATORS' };
 /* ---------- সহায়ক ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -317,6 +367,8 @@ function prep(D) {
   D.ra.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
   D.teams.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
   D.dh.forEach(x => x.name = up(x.name));
+  D.teams.forEach(t => { t.team = String(t.team || TEAMS[up(t.dss)] || '').trim(); });
+  D.ra.forEach(x => { const t = D.teams.find(y => y.dh === x.dh && y.dss === x.dss); x.team = t ? t.team : ''; });
   D.territory = D.territory || { v: {} };
   compute(D);
 }
@@ -367,7 +419,7 @@ function canMS(role) { return role === 'om' || role === 'admin'; }
 function header(o) {
   const months = (o.IDX.months || []).slice().sort().reverse();
   const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'Admin' }[o.who.role] || '';
-  const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) : o.who.myDH ? o.who.myDH.name : '';
+  const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) + (o.who.myTeam.team ? ' · ' + o.who.myTeam.team : '') : o.who.myDH ? o.who.myDH.name : '';
   const tabs = [['index.html', '🏆 Achievers’ Club', 'ac']];
   if (canMS(o.who.role)) tabs.push(['service.html', '🛠️ Market Service', 'ms']);
   if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ Admin', 'ad']);
@@ -447,7 +499,8 @@ function footer() {
   document.body.appendChild(f);
 }
 
-return { capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+const tn = t => t.team ? t.team : tc(t.dss);    // টিমের নাম (না থাকলে ডিএসএস-এর নাম)
+return { TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
 })();
 </script>
 <script>
@@ -489,7 +542,7 @@ function start() {
 }
 function dssOpts() {
   const d = $('#fdh').value;
-  $('#fdss').innerHTML = '<option value="">সব ডিএসএস</option>' + D.teams.filter(t => !d || t.dh === d).map(t => `<option value="${esc(t.dh + '\u0001' + t.dss)}">${esc(tc(t.dss))}${d ? '' : ' · ' + esc(t.dh)}</option>`).join('');
+  $('#fdss').innerHTML = '<option value="">সব ডিএসএস</option>' + D.teams.filter(t => !d || t.dh === d).map(t => `<option value="${esc(t.dh + '\u0001' + t.dss)}">${esc(GC.tn(t))} (${esc(tc(t.dss))})${d ? '' : ' · ' + esc(t.dh)}</option>`).join('');
 }
 
 /* ---------- হিসাব ---------- */
@@ -514,8 +567,8 @@ function draw() {
     lead = ['ডিএইচ'];
     D.dh.filter(x => !ed || x.name === ed).forEach(x => { const r = rawDH(x); add(tot, r); rows.push({ k: [x.name], r, mine: x.name === my }); });
   } else if (level === 'dss') {
-    lead = ['ডিএসএস', 'ডিএইচ'];
-    D.teams.filter(t => (!ed || t.dh === ed) && (!ss || t.dss === ss)).forEach(t => { const r = rawDSS(t); add(tot, r); rows.push({ k: [tc(t.dss), t.dh], r, mine: t.dh === my }); });
+    lead = ['টিম (ডিএসএস)', 'ডিএইচ'];
+    D.teams.filter(t => (!ed || t.dh === ed) && (!ss || t.dss === ss)).forEach(t => { const r = rawDSS(t); add(tot, r); rows.push({ k: [GC.tn(t) + (t.team ? ' (' + tc(t.dss) + ')' : ''), t.dh], r, mine: t.dh === my }); });
     if (!ss) D.dh.filter(x => (!ed || x.name === ed) && SV.un && SV.un[x.name]).forEach(x => { rows.push({ k: ['অনির্ধারিত আরএ', x.name], r: SV.un[x.name], muted: true }); add(tot, SV.un[x.name]); });
   } else {
     lead = ['ডিএসও', 'ডিএসএস', 'ডিএইচ'];
