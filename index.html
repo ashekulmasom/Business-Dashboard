@@ -5,16 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Achievers’ Club · গাজীপুর সেন্ট্রাল</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:wght@400;700&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 <style>
 /* ---- ফন্ট: রিপোজিটরিতে font-title.ttf (শিরোনাম ও সংখ্যা) ও font-body.ttf (লেখা) রাখলে সেগুলো ব্যবহার হবে ---- */
 @font-face{font-family:"ACTitle";src:url("font-title.woff2") format("woff2"),url("font-title.ttf") format("truetype");font-display:swap}
+/* ইংরেজি লেখা ও সংখ্যা: কম্পিউটারে থাকা Calibri, না থাকলে (ফোনে) Carlito — একই মাপের ফ্রি ফন্ট */
+@font-face{font-family:"ACLatin";src:local("Calibri"),local("Calibri Regular");font-weight:400;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:"ACLatin";src:local("Calibri Bold"),local("Calibri-Bold");font-weight:700;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
 @font-face{font-family:"ACBody";src:url("font-body.woff2") format("woff2"),url("font-body.ttf") format("truetype");font-display:swap}
 :root{
   --pink:#E2136E;--pink2:#FF4F9A;--deep:#7A0C43;--plum:#3B0A26;--gold:#F2B705;--gold2:#FFE08A;
   --bg:#FBF5F8;--card:#FFFFFF;--line:#F1DCE7;--ink:#24121C;--mut:#6B5561;--ok:#0B7A6E;--low:#A34A00;
-  --fh:"ACTitle","Baloo Da 2","Hind Siliguri",system-ui,sans-serif;
-  --fb:"ACBody","Hind Siliguri","Noto Sans Bengali",system-ui,"Segoe UI",sans-serif;
+  --fh:"ACLatin","Carlito","ACTitle","Baloo Da 2","Hind Siliguri",system-ui,sans-serif;
+  --fb:"ACLatin","Carlito","ACBody","Hind Siliguri","Noto Sans Bengali",system-ui,"Segoe UI",sans-serif;
   --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
 }
 *{box-sizing:border-box}
@@ -75,7 +78,7 @@ a.card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(122,12,67,.1
 .kpis b{display:block;font:700 22px/1.1 var(--fh)}
 .kpis span{font-size:12px;opacity:.85}
 .plist{display:grid;gap:10px}
-.prow{border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}
+.prow{border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:170px 1fr auto;gap:12px;align-items:center}
 @media (max-width:560px){.prow{grid-template-columns:1fr auto}.prow .pb{grid-column:1/-1;order:3}}
 .prow .pn{font:700 16px/1.2 var(--fh);color:var(--plum)}
 .prow .pn small{display:block;font:400 12px var(--fb);color:var(--mut)}
@@ -215,12 +218,15 @@ const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct
 const MED = ['🥇', '🥈', '🥉'];
 
 /* ---------- Achievers' Club ওজন ---------- */
-/* [key, নাম, MTD/TTL, ওজন] — MTD: MTD টার্গেটের বিপরীতে, TTL: মোট মাসিক টার্গেটের বিপরীতে */
+/* [key, নাম, MTD/TTL, ওজন, ক্যাপ] — MTD: MTD টার্গেটের বিপরীতে, TTL: মোট মাসিক টার্গেটের বিপরীতে
+   ক্যাপ: অর্জন % এর বেশি হলেও পয়েন্ট এই সীমা পর্যন্ত (KPI Wise Weightage and Capping শিট অনুযায়ী); N = ক্যাপ নেই */
+const N_ = Infinity;
 const LV = {
-  dso: { lab: 'ডিএসও', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 30], ['vo', 'SAV-VOL', 'TTL', 10], ['c', 'SAV-CNT', 'TTL', 10], ['u', 'UBP', 'MTD', 20]] },
-  dss: { lab: 'ডিএসএস', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 20], ['vo', 'SAV-VOL', 'TTL', 10], ['c', 'SAV-CNT', 'TTL', 10], ['u', 'UBP', 'MTD', 25], ['a', 'A2M', 'MTD', 5]] },
-  om: { lab: 'অপারেশন ম্যানেজার', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 20], ['vo', 'SAV-VOL', 'TTL', 7.5], ['c', 'SAV-CNT', 'TTL', 7.5], ['u', 'UBP', 'MTD', 20], ['a', 'BZP (A2M+D2C)', 'MTD', 15]] }
+  dso: { lab: 'ডিএসও', ps: [['t', 'TRX', 'MTD', 30, 1.3], ['r', 'REG', 'MTD', 30, 1.5], ['vo', 'SAV-VOL', 'TTL', 10, 2], ['c', 'SAV-CNT', 'TTL', 10, 2], ['u', 'UBP', 'MTD', 20, 2]] },
+  dss: { lab: 'ডিএসএস', ps: [['t', 'TRX', 'MTD', 30, N_], ['r', 'REG', 'MTD', 20, N_], ['vo', 'SAV-VOL', 'TTL', 10, 1.3], ['c', 'SAV-CNT', 'TTL', 10, 2.2], ['u', 'UBP', 'MTD', 25, N_], ['a', 'A2M', 'MTD', 5, 1.1]] },
+  om: { lab: 'অপারেশন ম্যানেজার', ps: [['t', 'TRX', 'MTD', 30, N_], ['r', 'REG', 'MTD', 20, N_], ['vo', 'SAV-VOL', 'TTL', 5, 1.1], ['c', 'SAV-CNT', 'TTL', 5, 1.5], ['u', 'UBP', 'MTD', 20, N_], ['a', 'BZP (A2M+D2C)', 'MTD', 20, N_]] }
 };
+const capTxt = c => isFinite(c) ? Math.round(c * 100) + '% ক্যাপ' : 'ক্যাপ নেই';
 
 /* ---------- সহায়ক ---------- */
 const $ = s => document.querySelector(s);
@@ -290,9 +296,9 @@ function frac(D, rec, lv, p, basis) {
   const { day, dim } = dayInfo(D, p, lv);
   return (ach || 0) / (basis === 'MTD' ? trg * day / dim : trg);
 }
-/* স্কোর = Σ ওজন × min(অর্জন %, ১০০%) */
+/* স্কোর = Σ ওজন × min(অর্জন %, KPI ক্যাপ) — ১০০-এর বেশি হতে পারে */
 function compute(D) {
-  const run = (rec, lv) => { let s = 0; LV[lv].ps.forEach(([p, , b, w]) => { const f = frac(D, rec, lv, p, b); rec[p] = f; s += w * Math.min(f, 1); }); rec.score = s; };
+  const run = (rec, lv) => { let s = 0; LV[lv].ps.forEach(([p, , b, w, cap]) => { const f = frac(D, rec, lv, p, b); rec[p] = f; s += w * Math.min(f, cap); }); rec.score = s; };
   const rankIn = (arr, key, set) => [...new Set(arr.map(key))].forEach(g => arr.filter(x => key(x) === g).sort((a, b) => b.score - a.score).forEach((x, i) => x[set] = i + 1));
   D.ra.forEach(x => run(x, 'dso'));
   D.teams.forEach(x => run(x, 'dss'));
@@ -319,8 +325,12 @@ function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); i
 function session() { try { return JSON.parse(ss('gcd_s') || 'null'); } catch (e) { return null; } }
 function setSession(s) { ss('gcd_s', s ? JSON.stringify(s) : null); }
 /* অ্যাডমিন: অ্যাডমিন পেজে টোকেন দিয়ে সাইন ইন করলে, অথবা এই কম্পিউটারে মনে রাখা টোকেন বৈধ হলে */
-async function adminCheck() {           // শুধু এই ট্যাবে অ্যাডমিন পেজে সাইন ইন করলে
-  return ss('gcd_admin') === '1';
+/* অ্যাডমিন ভিউ: অ্যাডমিন পেজে সাইন ইন করে সেখানকার বোতাম (?as=admin) দিয়ে এলে তবেই।
+   সাধারণ লিংকে সবসময় লগইন পেজ আসে — ওয়ালেট দিলে সেই ভূমিকাই। */
+async function adminCheck() {
+  if (ss('gcd_admin') !== '1') return false;
+  if (new URLSearchParams(location.search).get('as') === 'admin') { setSession({ role: 'admin' }); history.replaceState(null, '', location.pathname + location.hash); return true; }
+  const s = session(); return !!(s && s.role === 'admin');
 }
 /* ওয়ালেট → ভূমিকা: ডিএসও (আরএ ওয়ালেট) বা ওএম (ডিস্ট্রিবিউটরের MA ওয়ালেট) */
 /* ওয়ালেট / DSS ID → ভূমিকা: ডিএসও (আরএ ওয়ালেট), ডিএসএস (DSS ID বা সেটিংসে দেওয়া ওয়ালেট), ওএম (MA ওয়ালেট) */
@@ -335,7 +345,7 @@ function identify(D, w) {
 }
 function resolve(D, s, isAdmin) {
   if (isAdmin) return { role: 'admin', me: null, myDH: null };
-  if (!s) return null;
+  if (!s || s.role === 'admin') return null;
   const n = norm(s.w);
   if (s.role === 'dss') {
     const t = D.teams.find(x => (x.id && up(x.id) === up(s.w)) || (x.w && norm(x.w) === n)) || null;
@@ -401,17 +411,17 @@ const QUOTES = [
 ];
 const quote = D => QUOTES[(dt(D.tillDate || D.updated).getDate() || 0) % QUOTES.length];
 function tier(s) {
-  return s >= 95 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎' } : s >= 85 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : s >= 70 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : { n: 'ব্রোঞ্জ', c: 'bz', i: '🥉' };
+  return s >= 100 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎' } : s >= 85 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : s >= 70 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : { n: 'ব্রোঞ্জ', c: 'bz', i: '🥉' };
 }
 const tierChip = s => { const t = tier(s); return `<span class="tchip ${t.c}">${t.i} ${t.n}</span>`; };
 /* এই গতিতে চললে মাস শেষে স্কোর */
 function projected(D, rec, lv) {
   let s = 0;
-  LV[lv].ps.forEach(([p, , b, w]) => {
+  LV[lv].ps.forEach(([p, , b, w, cap]) => {
     let f;
     if (b === 'MTD') f = rec[p] || 0;
     else { const { ach, trg } = vv(rec, p, lv), { day, dim } = dayInfo(D, p, lv); f = trg > 0 && day ? (ach || 0) * dim / day / trg : 0; }
-    s += w * Math.min(f, 1);
+    s += w * Math.min(f, cap);
   });
   return s;
 }
@@ -421,7 +431,7 @@ function badges(rec, lv, rank) {
   return [
     { i: '👑', n: 'নম্বর ১', on: rank === 1 },
     { i: '🏅', n: 'শীর্ষ ৩', on: rank <= 3 },
-    { i: '🔥', n: '৯০+ ক্লাব', on: rec.score >= 90 },
+    { i: '🔥', n: '১০০+ ক্লাব', on: rec.score >= 100 },
     { i: '⚡', n: 'TRX স্টার', on: ok('t') },
     { i: '📝', n: 'REG হিরো', on: ok('r') },
     { i: '💡', n: 'বিল পে মাস্টার', on: ok('u') },
@@ -435,7 +445,7 @@ function footer() {
   document.body.appendChild(f);
 }
 
-return { QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+return { capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
 })();
 </script>
 <script>
@@ -496,23 +506,23 @@ function mineHTML(F) {
   else if (F.rank > 1) { const ahead = F.list[F.rank - 2]; msg = `💪 ${esc(F.nameOf(ahead))}-কে ছাড়িয়ে যেতে আর মাত্র <b>${(ahead.score - r.score + 0.1).toFixed(1)}</b> পয়েন্ট!`; }
   else msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
   const rows = LV[F.lv].ps.map(p => {
-    const [k, name, basis, w] = p, V = GC.vv(r, k, F.lv), di = GC.dayInfo(D, k, F.lv);
-    const f = r[k] || 0, pct = Math.round(f * 100), pts = w * Math.min(f, 1);
+    const [k, name, basis, w, cap] = p, V = GC.vv(r, k, F.lv), di = GC.dayInfo(D, k, F.lv);
+    const f = r[k] || 0, pct = Math.round(f * 100), pts = w * Math.min(f, cap);
     const rem = V.trg != null ? Math.max(0, V.trg - (V.ach || 0)) : null;
     const per = rem != null ? (di.left > 0 ? rem / di.left : rem) : null;
     const done = rem === 0 && V.trg > 0;
     const fmtN = k === 't' || k === 'vo' || k === 'a' ? GC.nf : GC.nd;
     const todo = V.trg == null ? 'টার্গেট দেওয়া নেই' : done ? '✅ মাসিক টার্গেট পূর্ণ — দারুণ!' : di.left > 0 ? `🎯 মাসিক টার্গেট পূর্ণ করতে প্রতিদিন <b>${fmtN(per)}</b> (বাকি ${GC.nf(rem)}, ${di.left} দিন)` : `বাকি ${GC.nf(rem)}`;
     const lab = name.replace(' (A2M+D2C)', '');
-    return `<div class="prow ${done ? 'done' : ''}"><div class="pn">${esc(lab)}<small>${basis === 'MTD' ? 'MTD' : 'মোট'} · ওজন ${w}</small></div>
+    return `<div class="prow ${done ? 'done' : ''}"><div class="pn">${esc(lab)}<small>${basis === 'MTD' ? 'MTD' : 'মোট'} · ওজন ${w} · ${GC.capTxt(cap)}</small></div>
       <div class="pb" title="${pct}%"><i style="width:${Math.min(100, pct)}%"></i></div>
-      <div class="pv"><b class="${pct >= 100 ? 'hi' : pct < 50 ? 'lo' : ''}">${pct}%</b><small>${GC.nd(pts)} / ${w} পয়েন্ট</small></div>
+      <div class="pv"><b class="${pct >= 100 ? 'hi' : pct < 50 ? 'lo' : ''}">${pct}%</b><small>${GC.nd(pts)} পয়েন্ট${isFinite(cap) ? ' (সর্বোচ্চ ' + GC.nd(w * cap) + ')' : ''}</small></div>
       <div class="todo">${todo}</div></div>`;
   }).join('');
   const bds = GC.badges(r, F.lv, F.rank || 99);
   return `<div class="panel"><div class="mine-grid">
     <div class="scorebox"><div class="kick">${esc(F.sub)}</div><div class="fh" style="font-size:20px;font-weight:700">${esc(F.title)}</div>
-      <div class="ring" style="--p:${Math.min(100, r.score).toFixed(1)}"><div><b>${r.score.toFixed(1)}</b><small>১০০-এর মধ্যে</small></div></div>
+      <div class="ring" style="--p:${Math.min(100, r.score).toFixed(1)}"><div><b>${r.score.toFixed(1)}</b><small>পয়েন্ট</small></div></div>
       <span class="tier">${t.i} ${t.n} লেভেল</span>
       <div class="kpis"><div><b>${F.rank ? F.rank + '/' + F.list.length : D.dh.length}</b><span>${F.rankLab}</span></div><div><b>${F.extra[1]}</b><span>${F.extra[0]}</span></div><div><b>${proj.toFixed(0)}</b><span>মাস শেষে (এই গতিতে)</span></div></div>
       <div class="msg" style="color:#FFE9A8">${msg}</div>
@@ -563,7 +573,7 @@ function dssOpts() {
 const th = (n, b) => `${n}<small>${b}</small>`;
 const rk = n => n <= 3 ? `<span class="rk">${MED[n - 1]}</span>` : n;
 const bar = s => `<div class="bar"><i style="width:${Math.min(100, s)}%"></i></div>`;
-const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3]));
+const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3] + (isFinite(p[4]) ? ' · ক্যাপ ' + Math.round(p[4] * 100) + '%' : '')));
 const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine) {
   if (list.length < 3) return '';
@@ -607,24 +617,24 @@ document.addEventListener('click', e => {
 
 /* ---------- বিস্তারিত পাতা ---------- */
 const nf = GC.nf, nd = GC.nd;
-function calc(rec, lv, [p, name, basis, w]) {
+function calc(rec, lv, [p, name, basis, w, cap]) {
   const di = GC.dayInfo(D, p, lv), V = GC.vv(rec, p, lv), { ach, trg, lm } = V;
   const mtd = trg != null ? trg * di.day / di.dim : null;
   const f = GC.frac(D, rec, lv, p, basis);
   const rem = trg != null ? Math.max(0, trg - (ach || 0)) : null;
   const gr = lm > 0 && ach != null ? (ach / lm - 1) * 100 : null;
-  return { V, name, basis, w, trg, mtd, ach, lm, gr, pct: f * 100, rem, per: rem != null ? (di.left > 0 ? rem / di.left : rem) : null, need: rem != null && trg > 0 ? rem / trg * 100 : null, left: di.left, till: di.till, p, pts: w * Math.min(f, 1) };
+  return { V, name, basis, w, trg, mtd, ach, lm, gr, pct: f * 100, rem, per: rem != null ? (di.left > 0 ? rem / di.left : rem) : null, need: rem != null && trg > 0 ? rem / trg * 100 : null, left: di.left, till: di.till, p, cap, pts: w * Math.min(f, cap) };
 }
 function renderDetail(lv, rec, title, sub) {
   const Lx = LV[lv], rows = Lx.ps.map(p => calc(rec, lv, p));
   const body = rows.map(r => {
     const miss = r.trg == null;
     const extra = r.p === 'a' && lv === 'om' ? `<small>A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · টার্গেট A2M ${nf(r.V.a2mT)} + D2C ${r.V.d2cT == null ? 'দেওয়া নেই' : nf(r.V.d2cT)}</small>` : '';
-    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
+    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
       <td>${nf(r.trg)}</td><td>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</td><td>${nf(r.ach)}</td>
       <td class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}"><b>${Math.round(r.pct)}%</b></td>
       <td>${r.lm == null ? '—' : nf(r.lm)}</td><td class="${r.gr == null ? '' : r.gr >= 0 ? 'hi' : 'lo'}">${r.gr == null ? '—' : (r.gr >= 0 ? '▲ ' : '▼ ') + nd(Math.abs(r.gr)) + '%'}</td>
-      <td>${miss ? '—' : nf(r.rem)}</td><td class="need">${miss ? '—' : nd(r.per)}</td><td class="need">${r.need == null ? '—' : (r.need <= 0 ? '✅ পূর্ণ' : nd(r.need) + '%')}</td><td><b>${nd(r.pts)}</b> / ${r.w}</td></tr>`;
+      <td>${miss ? '—' : nf(r.rem)}</td><td class="need">${miss ? '—' : nd(r.per)}</td><td class="need">${r.need == null ? '—' : (r.need <= 0 ? '✅ পূর্ণ' : nd(r.need) + '%')}</td><td><b>${nd(r.pts)}</b>${isFinite(r.cap) ? ' / ' + nd(r.w * r.cap) : ''}</td></tr>`;
   }).join('');
   const noAch = rows.every(r => r.ach == null);
   const left = rows[0].left, proj = GC.projected(D, rec, lv), t = GC.tier(rec.score);
@@ -635,7 +645,7 @@ function renderDetail(lv, rec, title, sub) {
       <div class="scorebox"><div class="ring" style="--p:${Math.min(100, rec.score).toFixed(1)}"><div><b>${rec.score.toFixed(1)}</b><small>স্কোর</small></div></div><span class="tier">${t.i} ${t.n}</span></div>
       <div><div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</div>
         <h2 style="font-size:28px;margin-top:2px">${esc(title)}</h2>
-        <div class="kpis" style="max-width:520px"><div class="stat"><span class="mut">মাসের বাকি</span><b>${left} দিন</b></div><div class="stat"><span class="mut">এই গতিতে মাস শেষে</span><b>${proj.toFixed(1)}</b></div><div class="stat"><span class="mut">সর্বোচ্চ সম্ভব</span><b>১০০</b></div></div>
+        <div class="kpis" style="max-width:520px"><div class="stat"><span class="mut">মাসের বাকি</span><b>${left} দিন</b></div><div class="stat"><span class="mut">এই গতিতে মাস শেষে</span><b>${proj.toFixed(1)}</b></div><div class="stat"><span class="mut">লেভেল</span><b style="font-size:22px">${t.i} ${t.n}</b></div></div>
       </div>
     </div>
     <div class="how"><b>কীভাবে পড়বেন</b>
@@ -643,7 +653,7 @@ function renderDetail(lv, rec, title, sub) {
         <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে রিপোর্টের তারিখ পর্যন্ত যতটা অর্জন করার কথা।</li>
         <li><b>MTD অর্জন %:</b> TRX, REG, UBP${lv === 'dso' ? '' : lv === 'dss' ? ', A2M' : ', BZP'}-এর % MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % মোট (TTL) টার্গেটের বিপরীতে।</li>
         <li><b>LMTD ও MoM গ্রোথ:</b> গত মাসের একই তারিখ পর্যন্ত অর্জন এবং তার তুলনায় এ মাসে কত বেশি/কম (TRX ও UBP)।</li>
-        <li><b>পয়েন্ট:</b> ওজন × অর্জন % (সর্বোচ্চ ১০০%)। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
+        <li><b>পয়েন্ট:</b> ওজন × অর্জন %, প্রতিটি KPI-র নিজস্ব ক্যাপ পর্যন্ত (যেমন ডিএসও-র TRX ১৩০%, REG ১৫০%)। তাই মোট স্কোর ১০০-এর বেশিও হতে পারে। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
       </ul></div>
     ${noAch ? '<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি।</div>' : ''}
     <div class="scroll"><table style="min-width:1080px">${GC.head(['প্যারামিটার', 'মাসিক টার্গেট', 'MTD টার্গেট', 'MTD অর্জন', 'MTD অর্জন %', 'LMTD', 'MoM গ্রোথ', 'বাকি', 'প্রতিদিন প্রয়োজন', 'আরও কত % বাকি', 'পয়েন্ট'])}${body}</table></div>
