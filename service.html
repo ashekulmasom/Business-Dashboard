@@ -22,6 +22,7 @@
   --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;color:var(--ink);font:400 16px/1.6 var(--fb);background:var(--bg);min-height:100vh;
   background-image:radial-gradient(900px 400px at 0% -10%,#FFE1EF 0,transparent 60%),radial-gradient(700px 360px at 100% 0%,#FFF1CF 0,transparent 55%)}
@@ -167,6 +168,9 @@ footer.ft a{color:var(--mut)}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:560px){.hero h1{font-size:24px}.badge img{height:54px}.hero{padding:18px}.hero .side{margin-left:0}.panel{padding:16px}.ring{width:150px;height:150px}.ring>div{width:122px;height:122px}}
+
+.pnote{font-size:12px;color:var(--deep);font-weight:600;line-height:1.35;margin:2px 4px 4px}
+.reward{border-radius:16px;padding:10px 16px;margin-bottom:10px;background:linear-gradient(90deg,#FFF3C4,#FFE3F0);border:1px solid #F2C94C;font:700 16px var(--fh);color:var(--plum);text-align:center}
 </style>
 </head>
 <body>
@@ -279,11 +283,11 @@ function vv(rec, p, lv) {
   const n = x => x == null ? null : x;
   if (p === 'a') {
     if (lv !== 'om') return { ach: n(g('a2m').ach), trg: n(g('a2m').trg), lm: null };
-    const a = g('a2m'), d = g('d2c');
+    const a = g('a2m'), d = g('d2c'), z = g('bzp');
     return {
       ach: (a.ach == null && d.ach == null) ? null : (a.ach || 0) + (d.ach || 0),
-      trg: (a.trg == null && d.trg == null) ? null : (a.trg || 0) + (d.trg || 0),
-      lm: null, a2m: a.ach, d2c: d.ach, a2mT: a.trg, d2cT: d.trg
+      trg: z.trg != null ? z.trg : n(a.trg),          // BZP টার্গেট (না দিলে A2M টার্গেট)
+      lm: null, a2m: a.ach, d2c: d.ach, bzpSet: z.trg != null
     };
   }
   return { ach: n(g(p).ach), trg: n(g(p).trg), lm: n(g(p).lm) };
@@ -362,11 +366,11 @@ function canMS(role) { return role === 'om' || role === 'admin'; }
 /* ---------- হেডার ও নেভিগেশন ---------- */
 function header(o) {
   const months = (o.IDX.months || []).slice().sort().reverse();
-  const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'অ্যাডমিন' }[o.who.role] || '';
+  const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'Admin' }[o.who.role] || '';
   const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) : o.who.myDH ? o.who.myDH.name : '';
   const tabs = [['index.html', '🏆 Achievers’ Club', 'ac']];
   if (canMS(o.who.role)) tabs.push(['service.html', '🛠️ Market Service', 'ms']);
-  if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ অ্যাডমিন', 'ad']);
+  if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ Admin', 'ad']);
   $('#hdr').innerHTML = `
   <header class="hero">
     <span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
