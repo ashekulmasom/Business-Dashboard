@@ -130,7 +130,8 @@ td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
    ===================================================================== */
 const GC = (function () {
 'use strict';
-const OWNER = 'ashekulmasom', REPO = 'Gazipur-Central-Dashboard';
+const _gh = location.hostname.match(/^([^.]+)\.github\.io$/i);
+const OWNER = _gh ? _gh[1] : 'ashekulmasom', REPO = _gh ? (location.pathname.split('/')[1] || 'Business-Dashboard') : 'Business-Dashboard';   // রিপোর নাম ওয়েব ঠিকানা থেকে নিজে বের করে
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MED = ['🥇', '🥈', '🥉'];
