@@ -11,16 +11,22 @@
 *{box-sizing:border-box}
 body{margin:0;color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#FFE3F0 0,transparent 40%),radial-gradient(circle at 95% 15%,#FFEFD2 0,transparent 35%),var(--bg);min-height:100vh}
 .wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
-.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--pink),var(--deep));color:#fff;border-radius:24px;padding:22px 26px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;box-shadow:0 14px 34px rgba(226,19,110,.32)}
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--pink),var(--deep));color:#fff;border-radius:24px;padding:22px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 14px 34px rgba(226,19,110,.32)}
 .badge{background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 6px 18px rgba(0,0,0,.22);transform:rotate(-3deg);animation:bob 4s ease-in-out infinite}
 .badge img{height:78px;display:block}
 .hero h1{margin:0;font-size:30px;line-height:1.25;font-weight:700}
 .hero p{margin:4px 0 0;font-size:15px;opacity:.95}
-.till{display:inline-block;font:400 11px/1.4 system-ui,"Segoe UI",sans-serif;letter-spacing:.02em;background:rgba(255,255,255,.2);border-radius:999px;padding:1px 9px;margin-top:6px}
-.hero .tr{margin-left:auto;font-size:64px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.till{display:inline-block;font:400 12px/1.4 system-ui,"Segoe UI",sans-serif;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;margin-top:6px}
+.hero .side{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.hero select{min-height:40px;width:auto;border:2px solid #fff;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:4px 12px;font:600 14px "Hind Siliguri",sans-serif}
+.hero select option{color:#1B1B1F}
 .sp{position:absolute;color:#FFE27A;animation:tw 2.4s ease-in-out infinite;pointer-events:none;font-size:20px}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
 @keyframes tw{50%{opacity:.15;transform:scale(.6)}}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+nav.tabs a{padding:9px 18px;border-radius:999px;background:#fff;border:2px solid var(--line);color:var(--deep);font-weight:700;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+nav.tabs a.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.who{font-size:13px;color:var(--mut);margin-left:auto;align-self:center}
 .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 4px 14px rgba(226,19,110,.07)}
 h2{font-size:21px;margin:0 0 2px}
 .mut{color:var(--mut);font-size:14px}
@@ -33,23 +39,27 @@ h2{font-size:21px;margin:0 0 2px}
 .card .more{margin-top:8px;color:var(--pink);font-weight:700;font-size:14px}
 .msg{margin-top:8px;font-weight:600;color:var(--deep);font-size:14px}
 label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
-input,select{width:100%;min-height:50px;border:2px solid #D9B8C8;border-radius:12px;padding:10px 14px;font:inherit;background:#fff}
-input:focus,select:focus{outline:3px solid #FFC2DC;border-color:var(--pink)}
-button,a.btn{min-height:50px;border-radius:999px;padding:10px 26px;font:700 16px "Hind Siliguri",sans-serif;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;transition:transform .15s;text-decoration:none;display:inline-flex;align-items:center}
-button:hover,a.btn:hover{transform:scale(1.04)}
+input,select,textarea{width:100%;min-height:48px;border:2px solid #D9B8C8;border-radius:12px;padding:8px 12px;font:inherit;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:3px solid #FFC2DC;border-color:var(--pink)}
+button,a.btn{min-height:48px;border-radius:999px;padding:10px 22px;font:700 15px "Hind Siliguri",sans-serif;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;transition:transform .15s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button:hover,a.btn:hover{transform:scale(1.03)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 button.ghost,a.btn.ghost{background:#fff;color:var(--pink)}
-.hero button.ghost{border-color:#fff;background:rgba(255,255,255,.14);color:#fff}
+.hero button.ghost,.hero a.btn.ghost{border-color:#fff;background:rgba(255,255,255,.14);color:#fff;min-height:40px;padding:6px 16px}
+button.sm{min-height:36px;padding:4px 12px;font-size:13px}
 .filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}.filters>div{flex:1 1 220px}
-.scroll{overflow-x:auto}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;min-width:660px;font-variant-numeric:tabular-nums}
 th{text-align:right;font-size:13px;color:var(--mut);padding:8px 10px;white-space:nowrap;vertical-align:bottom}
 th small{display:block;font-weight:400;font-size:10.5px;opacity:.85}
 td{padding:9px 10px;border-top:1px solid #F4E1EB;text-align:right}
 th:first-child,td:first-child,th.l,td.l{text-align:left}
+td.l small{display:block;color:var(--mut);font-size:12px}
 tr:hover td{background:#FFF5FA}
 tr.go{cursor:pointer}
 tr.top td{background:#FFF1C9;font-weight:600}
 tr.mine td{background:#FFD9EA}tr.mine td:first-child{border-left:5px solid var(--pink)}
+tr.tot td{background:#FDF3F8;font-weight:700}
 td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
 .hi{color:var(--ok);font-weight:700}.lo{color:var(--low)}
 .bar{height:6px;background:#F4E1EB;border-radius:3px;margin-top:3px;min-width:70px}.bar i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--pink),#FFB300)}
@@ -69,264 +79,407 @@ td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
 .how b{color:var(--deep)}
 .how ul{margin:6px 0 0;padding-left:20px}
 .how li{margin:3px 0;font-size:14.5px}
-.dt td{font-size:15px}
-.dt td.l small{display:block;color:var(--mut);font-size:12px}
 .need{font-weight:700;color:var(--deep)}
+.seg{display:inline-flex;border:2px solid var(--pink);border-radius:999px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;border-radius:0;background:#fff;color:var(--pink);min-height:42px}
+.seg button.on{background:var(--pink);color:#fff}
+.chip{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;font-weight:600;background:#FFE3F0;color:var(--deep)}
 .cf{position:fixed;top:-16px;width:10px;height:14px;z-index:9;animation:fall 3.2s linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:560px){.hero .tr{display:none}.hero h1{font-size:24px}}
+@media (max-width:560px){.hero h1{font-size:23px}.badge img{height:60px}.hero{padding:18px}.hero .side{margin-left:0}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <section id="gate" class="gate">
-<div class="hero" style="flex-direction:column;align-items:flex-start;gap:14px">
-<span class="sp" style="top:12px;right:22px">✦</span><span class="sp" style="top:60px;right:70px;animation-delay:.8s;font-size:14px">✦</span><span class="sp" style="bottom:16px;right:30px;animation-delay:1.4s">★</span>
-<div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:96px"></div>
-<div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>গাজীপুর সেন্ট্রাল · আপনার র‍্যাঙ্ক দেখুন</p></div>
-</div>
-<form id="f" class="panel">
-<label for="w">ডিএসও ওয়ালেট নম্বর</label>
-<input id="w" inputmode="numeric" autocomplete="off" placeholder="01896043411">
-<div class="err" id="e" role="alert"></div>
-<button type="submit" style="width:100%">লিডারবোর্ড দেখুন 🚀</button>
-</form>
-<p class="mut">ওয়ালেট নম্বর চিনতে পারছি না? আপনার ডিএসএস বা টেরিটরি ম্যানেজারের সাথে যোগাযোগ করুন।</p>
+  <div class="hero" style="flex-direction:column;align-items:flex-start;gap:14px">
+    <span class="sp" style="top:12px;right:22px">✦</span><span class="sp" style="top:60px;right:70px;animation-delay:.8s;font-size:14px">✦</span><span class="sp" style="bottom:16px;right:30px;animation-delay:1.4s">★</span>
+    <div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:96px"></div>
+    <div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>গাজীপুর সেন্ট্রাল · আপনার র‍্যাঙ্ক দেখুন</p></div>
+  </div>
+  <form id="f" class="panel">
+    <label for="w" id="wl">ওয়ালেট নম্বর</label>
+    <input id="w" inputmode="numeric" autocomplete="off" placeholder="01XXXXXXXXX">
+    <div class="mut" id="wh" style="margin-top:6px">ডিএসও: আপনার আরএ (DSO) ওয়ালেট · অপারেশন ম্যানেজার: ডিস্ট্রিবিউটরের MA ওয়ালেট</div>
+    <div class="err" id="e" role="alert"></div>
+    <button type="submit" style="width:100%">লিডারবোর্ড দেখুন 🚀</button>
+  </form>
+  <p class="mut">ওয়ালেট নম্বর চিনতে পারছি না? আপনার ডিএসএস বা টেরিটরি ম্যানেজারের সাথে যোগাযোগ করুন। · <a href="admin.html" style="color:var(--pink)">অ্যাডমিন সাইন ইন</a></p>
 </section>
 
 <section id="app" hidden>
-<header class="hero">
-<span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
-<div class="badge"><img src="logo.jpg" alt="Achievers’ Club"></div>
-<div><h1>গাজীপুর সেন্ট্রাল লিডারবোর্ড</h1><span class="till" id="till"></span></div>
-<div class="tr" aria-hidden="true">🏆</div>
-<button class="ghost" id="out" type="button">সাইন আউট</button>
-</header>
-
-<div id="main">
-<div class="cards" id="cards"></div>
-<div class="panel filters">
-<div><label for="fdh">🏢 ডিএইচ (ডিস্ট্রিবিউটর)</label><select id="fdh"></select></div>
-<div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
-<div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
-</div>
-<div class="panel"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><div class="mut" style="margin-bottom:10px">বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div class="scroll"><table id="tdh"></table></div></div>
-<div class="panel"><h2>⚡ ডিএসএস টিম</h2><div class="mut" style="margin-bottom:10px">প্রতিটি ডিএইচ-এর ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tt"></div></div>
-<div class="panel"><h2>🏅 ডিএসও লিডারবোর্ড</h2><div class="mut">প্রতিটি ডিএইচ-এর ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক। সবুজ = টার্গেট বা তার বেশি; বাদামী = টার্গেটের অর্ধেকের কম। আপনার সারি গোলাপি দাগে চিহ্নিত। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tr"></div></div>
-</div>
-
-<div id="detail" hidden></div>
+  <div id="hdr"></div>
+  <div id="main">
+    <div class="cards" id="cards"></div>
+    <div class="panel filters">
+      <div><label for="fdh">🏢 ডিএইচ (ডিস্ট্রিবিউটর)</label><select id="fdh"></select></div>
+      <div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
+      <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
+    </div>
+    <div class="panel"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><div class="mut" style="margin-bottom:10px">ওএম-এর A2M-এর বদলে BZP (A2M + D2C) টার্গেট। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div class="scroll"><table id="tdh"></table></div></div>
+    <div class="panel"><h2>⚡ ডিএসএস পারফরম্যান্স</h2><div class="mut" style="margin-bottom:10px">সব ডিএসএস একসাথে, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক (ডিএইচ আলাদা নয়)। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tt"></div></div>
+    <div class="panel"><h2>🏅 ডিএসও লিডারবোর্ড</h2><div class="mut">প্রতিটি ডিএইচ-এর ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক। সবুজ = টার্গেট বা তার বেশি; বাদামী = টার্গেটের অর্ধেকের কম। আপনার সারি গোলাপি দাগে চিহ্নিত। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tr"></div></div>
+  </div>
+  <div id="detail" hidden></div>
 </section>
 </div>
 <script>
-const $=s=>document.querySelector(s);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const tc=s=>String(s).trim().toLowerCase().replace(/(^|[\s.\-])([a-z])/g,(m,a,b)=>a+b.toUpperCase());
-const up=s=>String(s==null?'':s).replace(/\s+/g,' ').trim().toUpperCase();
-const norm=w=>{w=String(w).replace(/[^\d০-৯]/g,'').replace(/[০-৯]/g,c=>'০১২৩৪৫৬৭৮৯'.indexOf(c));if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
-const pc=x=>{const v=Math.round((x||0)*100);return `<td class="${v>=100?'hi':v<50?'lo':''}">${v}%</td>`};
-const MED=['🥇','🥈','🥉'];
-const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-/* প্যারামিটার: [key, নাম, MTD/TTL, ওজন] */
-const LV={
-  dso:{lab:'ডিএসও',ps:[['t','TRX','MTD',30],['r','REG','MTD',30],['vo','SAV-VOL','TTL',10],['c','SAV-CNT','TTL',10],['u','UBP','MTD',20]]},
-  dss:{lab:'ডিএসএস',ps:[['t','TRX','MTD',30],['r','REG','MTD',20],['vo','SAV-VOL','TTL',10],['c','SAV-CNT','TTL',10],['u','UBP','MTD',25],['a','A2M','MTD',5]]},
-  om:{lab:'অপারেশন ম্যানেজার',ps:[['t','TRX','MTD',30],['r','REG','MTD',20],['vo','SAV-VOL','TTL',7.5],['c','SAV-CNT','TTL',7.5],['u','UBP','MTD',20],['a','BZP (A2M+D2C)','MTD',15]]}
+/* =====================================================================
+   Gazipur Central Dashboard — শেয়ার্ড কোড (Achievers' Club ও Market Service পেজ)
+   ===================================================================== */
+const GC = (function () {
+'use strict';
+const OWNER = 'ashekulmasom', REPO = 'Gazipur-Central-Dashboard';
+const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MED = ['🥇', '🥈', '🥉'];
+
+/* ---------- Achievers' Club ওজন ---------- */
+/* [key, নাম, MTD/TTL, ওজন] — MTD: MTD টার্গেটের বিপরীতে, TTL: মোট মাসিক টার্গেটের বিপরীতে */
+const LV = {
+  dso: { lab: 'ডিএসও', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 30], ['vo', 'SAV-VOL', 'TTL', 10], ['c', 'SAV-CNT', 'TTL', 10], ['u', 'UBP', 'MTD', 20]] },
+  dss: { lab: 'ডিএসএস', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 20], ['vo', 'SAV-VOL', 'TTL', 10], ['c', 'SAV-CNT', 'TTL', 10], ['u', 'UBP', 'MTD', 25], ['a', 'A2M', 'MTD', 5]] },
+  om: { lab: 'অপারেশন ম্যানেজার', ps: [['t', 'TRX', 'MTD', 30], ['r', 'REG', 'MTD', 20], ['vo', 'SAV-VOL', 'TTL', 7.5], ['c', 'SAV-CNT', 'TTL', 7.5], ['u', 'UBP', 'MTD', 20], ['a', 'BZP (A2M+D2C)', 'MTD', 15]] }
 };
-const REPOF={t:'dtr',r:'reg',u:'ubp',vo:'sav',c:'sav',a:'a2m'};
-let D=null,me=null;
 
-const tm=()=>{const tl=tillD(),dim=new Date(tl.getFullYear(),tl.getMonth()+1,0).getDate(),day=tl.getDate();return{day,dim,left:dim-day}};
-/* একটি রেকর্ড থেকে প্যারামিটারের অর্জন ও মাসিক টার্গেট */
-function vv(rec,p,lv){
-  const v=rec.v||{},g=k=>v[k]||{};
-  if(p==='a'){
-    if(lv==='dss')return {ach:g('a2m').ach==null?null:g('a2m').ach,trg:g('a2m').trg==null?null:g('a2m').trg};
-    const a=g('a2m'),d=g('d2c');
-    return {ach:(a.ach==null&&d.ach==null)?null:(a.ach||0)+(d.ach||0),trg:(a.trg==null&&d.trg==null)?null:(a.trg||0)+(d.trg||0)};
+/* ---------- সহায়ক ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const tc = s => String(s == null ? '' : s).trim().toLowerCase().replace(/(^|[\s.\-])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+const up = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toUpperCase();
+const norm = w => { w = String(w == null ? '' : w).replace(/[০-৯]/g, c => '০১২৩৪৫৬৭৮৯'.indexOf(c)).replace(/[^\d]/g, ''); if (w.startsWith('880')) w = w.slice(2); if (w.length === 10) w = '0' + w; return w; };
+const nf = n => n == null || !isFinite(n) ? '—' : Math.round(n).toLocaleString('en-IN');
+const nd = n => n == null || !isFinite(n) ? '—' : (Math.abs(n) >= 100 ? Math.round(n) : Math.round(n * 10) / 10).toLocaleString('en-IN');
+const pcCell = x => { const v = Math.round((x || 0) * 100); return `<td class="${v >= 100 ? 'hi' : v < 50 ? 'lo' : ''}">${v}%</td>`; };
+const dt = s => new Date(String(s).slice(0, 10) + 'T00:00:00');
+const fmtTill = s => { if (!s) return '—'; const d = dt(s); return `${d.getDate()} ${MON[d.getMonth()]}`; };
+const monLabel = m => { if (!m) return ''; const [y, mo] = m.split('-'); return `${MON[+mo - 1]} ${y}`; };
+
+/* ---------- ডেটা লোড ---------- */
+async function getJSON(path) {
+  try { const r = await fetch(path + (path.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return null; return await r.json(); } catch (e) { return null; }
+}
+async function loadIndex() {
+  const j = await getJSON('index.json');
+  return j && Array.isArray(j.months) ? j : { months: [], latest: '' };
+}
+function pickMonth(IDX) {
+  const q = new URLSearchParams(location.search).get('m');
+  let m = q || ss('gcd_m') || IDX.latest || IDX.months[0];
+  if (!IDX.months.includes(m)) m = IDX.latest || IDX.months[0];
+  return m;
+}
+async function loadMonth(m) {
+  const D = await getJSON(`${m}.json`);
+  if (!D) return null;
+  prep(D);
+  return D;
+}
+
+/* ---------- স্কোর ---------- */
+const REPOF = { t: 'dtr', r: 'reg', u: 'ubp', vo: 'sav', c: 'sav', a: 'a2m' };
+function tillOf(D, p, lv) {
+  const T = D.tills || {}, base = D.tillDate || D.updated;
+  const ok = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && s.slice(0, 7) === D.month;
+  if (p === 'a' && lv === 'om') { const c = ['a2m', 'd2c'].map(k => T[k]).filter(ok).sort(); return c[0] || base; }
+  const t = T[REPOF[p]];
+  return ok(t) ? t : base;
+}
+function dayInfo(D, p, lv) {
+  const tl = dt(tillOf(D, p, lv)), dim = new Date(tl.getFullYear(), tl.getMonth() + 1, 0).getDate(), day = tl.getDate();
+  return { day, dim, left: dim - day, till: tillOf(D, p, lv) };
+}
+/* রেকর্ড থেকে প্যারামিটারের অর্জন, টার্গেট, গত মাস */
+function vv(rec, p, lv) {
+  const v = rec.v || {}, g = k => v[k] || {};
+  const n = x => x == null ? null : x;
+  if (p === 'a') {
+    if (lv !== 'om') return { ach: n(g('a2m').ach), trg: n(g('a2m').trg), lm: null };
+    const a = g('a2m'), d = g('d2c');
+    return {
+      ach: (a.ach == null && d.ach == null) ? null : (a.ach || 0) + (d.ach || 0),
+      trg: (a.trg == null && d.trg == null) ? null : (a.trg || 0) + (d.trg || 0),
+      lm: null, a2m: a.ach, d2c: d.ach, a2mT: a.trg, d2cT: d.trg
+    };
   }
-  return {ach:g(p).ach==null?null:g(p).ach,trg:g(p).trg==null?null:g(p).trg};
+  return { ach: n(g(p).ach), trg: n(g(p).trg), lm: n(g(p).lm) };
 }
-/* অর্জন %: MTD প্যারামিটারে MTD টার্গেটের বিপরীতে, SAV-এ মোট (TTL) টার্গেটের বিপরীতে */
-function frac(rec,lv,p,basis){
-  const {ach,trg}=vv(rec,p,lv),{day,dim}=tm();
-  if(!(trg>0))return 0;
-  return (ach||0)/(basis==='MTD'?trg*day/dim:trg);
+function frac(D, rec, lv, p, basis) {
+  const { ach, trg } = vv(rec, p, lv);
+  if (!(trg > 0)) return 0;
+  const { day, dim } = dayInfo(D, p, lv);
+  return (ach || 0) / (basis === 'MTD' ? trg * day / dim : trg);
 }
-/* স্কোর = Σ ওজন × min(অর্জন %, ১০০%) — ১০০-র মধ্যে */
-function compute(){
-  const run=(rec,lv)=>{let s=0;LV[lv].ps.forEach(([p,n,b,w])=>{const f=frac(rec,lv,p,b);rec[p]=f;s+=w*Math.min(f,1)});rec.score=s};
-  const rankIn=(arr,key,set)=>[...new Set(arr.map(key))].forEach(g=>arr.filter(x=>key(x)===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x[set]=i+1));
-  D.ra.forEach(x=>run(x,'dso'));
-  D.teams.forEach(x=>{x.team=x.dss;run(x,'dss')});
-  D.dh.forEach(x=>run(x,'om'));
-  if(D.territory)run(D.territory,'om');
-  rankIn(D.ra,x=>x.dh,'dhRank');
-  rankIn(D.ra,x=>x.dh+'\u0001'+x.dss,'teamRank');
-  rankIn(D.teams,x=>x.dh,'rank');
-  [...D.dh].sort((a,b)=>b.score-a.score).forEach((x,i)=>x.rank=i+1);
+/* স্কোর = Σ ওজন × min(অর্জন %, ১০০%) */
+function compute(D) {
+  const run = (rec, lv) => { let s = 0; LV[lv].ps.forEach(([p, , b, w]) => { const f = frac(D, rec, lv, p, b); rec[p] = f; s += w * Math.min(f, 1); }); rec.score = s; };
+  const rankIn = (arr, key, set) => [...new Set(arr.map(key))].forEach(g => arr.filter(x => key(x) === g).sort((a, b) => b.score - a.score).forEach((x, i) => x[set] = i + 1));
+  D.ra.forEach(x => run(x, 'dso'));
+  D.teams.forEach(x => run(x, 'dss'));
+  D.dh.forEach(x => run(x, 'om'));
+  run(D.territory, 'om');
+  rankIn(D.ra, x => x.dh, 'dhRank');
+  rankIn(D.ra, x => x.dh + '\u0001' + x.dss, 'teamRank');
+  [...D.ra].sort((a, b) => b.score - a.score).forEach((x, i) => x.allRank = i + 1);
+  [...D.teams].sort((a, b) => b.score - a.score).forEach((x, i) => x.rank = i + 1);   // ডিএসএস: পুরো টেরিটরিতে এক র‍্যাঙ্ক
+  [...D.dh].sort((a, b) => b.score - a.score).forEach((x, i) => x.rank = i + 1);
 }
-function normalize(){
-  D.ra.forEach(x=>{x.dh=up(x.dh);x.dss=String(x.dss).replace(/\s+/g,' ').trim()});
-  D.teams.forEach(x=>{x.dh=up(x.dh);x.dss=String(x.dss).replace(/\s+/g,' ').trim()});
-  D.dh.forEach(x=>x.name=up(x.name));
-  D.territory=D.territory||{v:{}};
-  compute();
+function prep(D) {
+  D.ra = D.ra || []; D.teams = D.teams || []; D.dh = D.dh || []; D.tills = D.tills || {};
+  D.ra.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
+  D.teams.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
+  D.dh.forEach(x => x.name = up(x.name));
+  D.territory = D.territory || { v: {} };
+  compute(D);
 }
-fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{D=j;normalize();const w=sessionStorage.getItem('w');if(w)enter(w)}).catch(()=>{$('#e').textContent='ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।'});
-$('#f').addEventListener('submit',e=>{e.preventDefault();if(!D){$('#e').textContent='ডেটা লোড হচ্ছে, আবার চেষ্টা করুন।';return}enter($('#w').value,true)});
-function enter(w,fresh){
-  const x=D.ra.find(r=>norm(r.wallet)===norm(w));
-  if(!x){if(fresh)$('#e').textContent='ওয়ালেট নম্বরটি পাওয়া যায়নি। আবার দেখুন।';sessionStorage.removeItem('w');return}
-  me=x;sessionStorage.setItem('w',w);$('#gate').hidden=true;$('#app').hidden=false;setup();route();if(fresh)confetti(x.dhRank<=3?90:45);
-}
-$('#out').onclick=()=>{sessionStorage.removeItem('w');location.hash='';location.reload()};
-function confetti(n){
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  const cols=['#E2136E','#FFB300','#0B9C8F','#FF6FA8','#7C4DFF'];
-  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='cf';s.style.left=Math.random()*100+'vw';s.style.background=cols[i%5];s.style.animationDelay=Math.random()*.8+'s';s.style.animationDuration=2.4+Math.random()*1.6+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),5000)}
-}
-/* ---------- তারিখ ---------- */
-const tillD=()=>new Date((D.tillDate||D.updated)+'T00:00:00');
-const fmtTill=d=>`${d.getDate()} ${MON[d.getMonth()]}`;
-/* ---------- লিংক ---------- */
-const hDSO=x=>`#/d/dso/${encodeURIComponent(x.wallet)}`;
-const hDSS=x=>`#/d/dss/${encodeURIComponent(x.dh)}/${encodeURIComponent(x.dss)}`;
-const hOM=n=>`#/d/om/${encodeURIComponent(n)}`;
 
-function setup(){
-  $('#till').textContent='Till '+fmtTill(tillD());
-  const list=D.ra.filter(x=>x.dh===me.dh).sort((a,b)=>a.dhRank-b.dhRank);
-  let m;
-  if(me.dhRank===1)m='🏆 অভিনন্দন! আপনি আপনার ডিএইচ-এ এক নম্বরে!';
-  else if(me.dhRank<=3)m=MED[me.dhRank-1]+' আপনি শীর্ষ ৩-এ আছেন, চালিয়ে যান!';
-  else m=`💪 পরের র‍্যাঙ্কে যেতে আর ${(list[me.dhRank-2].score-me.score).toFixed(1)} পয়েন্ট দরকার — আপনি পারবেন!`;
-  const c=(ic,k,v,s,cls,extra,href)=>`<${href?`a href="${href}"`:'div'} class="card ${cls||''}"><div class="ic">${ic}</div><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div>${extra||''}</${href?'a':'div'}>`;
-  $('#cards').innerHTML=c('🎯','আপনার স্কোর',me.score.toFixed(1),`${esc(me.dh)}-এ ${me.dhRank}/${list.length} নম্বর · টিমে ${me.teamRank} নম্বর`,'me',`<div class="msg">${m}</div><div class="more">বিস্তারিত দেখুন →</div>`,hDSO(me))
-    +c('🏆','টেরিটরি স্কোর',D.territory.score.toFixed(1),'গাজীপুর সেন্ট্রাল','','<div class="more">বিস্তারিত দেখুন →</div>',hOM('*'))
-    +D.dh.map(d=>c('🏅',esc(d.name),d.score.toFixed(1),'ডিস্ট্রিবিউটর র‍্যাঙ্ক '+d.rank,'','<div class="more">বিস্তারিত দেখুন →</div>',hOM(d.name))).join('');
-  const dhs=[...new Set(D.ra.map(r=>r.dh))];
-  $('#fdh').innerHTML='<option value="">সব ডিস্ট্রিবিউটর</option>'+dhs.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('');
-  $('#fdh').onchange=()=>{dssOpts();draw()};$('#fdss').onchange=draw;
-  $('#rs').onclick=()=>{$('#fdh').value='';dssOpts();$('#fdss').value='';draw()};
-  dssOpts();draw();
+/* ---------- সেশন ও লগইন ---------- */
+function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { } return null; }
+function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } return null; }
+function session() { try { return JSON.parse(ss('gcd_s') || 'null'); } catch (e) { return null; } }
+function setSession(s) { ss('gcd_s', s ? JSON.stringify(s) : null); }
+/* অ্যাডমিন: অ্যাডমিন পেজে টোকেন দিয়ে সাইন ইন করলে, অথবা এই কম্পিউটারে মনে রাখা টোকেন বৈধ হলে */
+async function adminCheck() {
+  if (ss('gcd_admin') === '1') return true;
+  const t = ls('gt'); if (!t) return false;
+  try {
+    const r = await fetch(API, { headers: { Authorization: 'Bearer ' + t, Accept: 'application/vnd.github+json' } });
+    const j = await r.json();
+    if (r.ok && j.permissions && j.permissions.push) { ss('gcd_admin', '1'); return true; }
+  } catch (e) { }
+  return false;
 }
-/* ডিএসএস ফিল্টার: ডিএইচ + ডিএসএস জোড়া, যাতে অন্য ডিএইচ-এর ডেটা না আসে */
-function dssOpts(){
-  const d=$('#fdh').value;
-  const groups=[...new Set(D.teams.filter(t=>!d||t.dh===d).map(t=>t.dh))];
-  $('#fdss').innerHTML='<option value="">সব ডিএসএস</option>'+groups.map(g=>{
-    const l=[...new Set(D.teams.filter(t=>t.dh===g).map(t=>t.dss))].sort();
-    const o=l.map(s=>`<option value="${esc(g+'\u0001'+s)}">${esc(tc(s))}</option>`).join('');
-    return d?o:`<optgroup label="${esc(g)}">${o}</optgroup>`;
+/* ওয়ালেট → ভূমিকা: ডিএসও (আরএ ওয়ালেট) বা ওএম (ডিস্ট্রিবিউটরের MA ওয়ালেট) */
+function identify(D, w) {
+  const n = norm(w); if (n.length !== 11) return null;
+  const ra = D.ra.find(r => norm(r.wallet) === n); if (ra) return { role: 'dso', w: n };
+  const dh = D.dh.find(d => d.ma && norm(d.ma) === n); if (dh) return { role: 'om', w: n };
+  return null;
+}
+function resolve(D, s, isAdmin) {
+  if (isAdmin) return { role: 'admin', me: null, myDH: null };
+  if (!s) return null;
+  const n = norm(s.w);
+  const me = D.ra.find(r => norm(r.wallet) === n) || null;
+  const myDH = D.dh.find(d => d.ma && norm(d.ma) === n) || null;
+  if (me) return { role: 'dso', me, myDH: null };
+  if (myDH) return { role: 'om', me: null, myDH };
+  if (s.role) return { role: s.role, me: null, myDH: null, missing: true };
+  return null;
+}
+function signOut() { setSession(null); ss('gcd_admin', null); location.href = 'index.html'; }
+
+/* ---------- হেডার ও নেভিগেশন ---------- */
+function header(o) {
+  const months = (o.IDX.months || []).slice().sort().reverse();
+  const roleLab = { dso: 'ডিএসও', om: 'অপারেশন ম্যানেজার', admin: 'অ্যাডমিন' }[o.who.role] || '';
+  const name = o.who.me ? tc(o.who.me.name) : o.who.myDH ? o.who.myDH.name : '';
+  $('#hdr').innerHTML = `
+  <header class="hero">
+    <span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
+    <div class="badge"><img src="logo.jpg" alt="Achievers’ Club"></div>
+    <div><h1>${esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
+    <div class="side">
+      ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
+      <button class="ghost" id="out" type="button">সাইন আউট</button>
+    </div>
+  </header>
+  <nav class="tabs" aria-label="পেজ">
+    <a href="index.html" class="${o.page === 'ac' ? 'on' : ''}">🏆 Achievers’ Club</a>
+    ${o.who.role === 'om' || o.who.role === 'admin' ? `<a href="service.html" class="${o.page === 'ms' ? 'on' : ''}">🛠️ Market Service</a>` : ''}
+    ${o.who.role === 'admin' ? `<a href="admin.html">⚙️ অ্যাডমিন</a>` : ''}
+    <span class="who">${esc(roleLab)}${name ? ' · ' + esc(name) : ''}</span>
+  </nav>`;
+  $('#out').onclick = signOut;
+  const ms = $('#msel'); if (ms) ms.onchange = () => { ss('gcd_m', ms.value); o.onMonth(ms.value); };
+}
+function head(a, n = 1) { return '<tr>' + a.map((h, i) => `<th class="${i < n ? 'l' : ''}">${h}</th>`).join('') + '</tr>'; }
+function confetti(n) {
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const cols = ['#E2136E', '#FFB300', '#0B9C8F', '#FF6FA8', '#7C4DFF'];
+  for (let i = 0; i < n; i++) { const s = document.createElement('span'); s.className = 'cf'; s.style.left = Math.random() * 100 + 'vw'; s.style.background = cols[i % 5]; s.style.animationDelay = Math.random() * .8 + 's'; s.style.animationDuration = 2.4 + Math.random() * 1.6 + 's'; document.body.appendChild(s); setTimeout(() => s.remove(), 5000); }
+}
+
+return { OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+})();
+</script>
+<script>
+const {$, esc, tc, MED, LV} = GC;
+let IDX = null, D = null, who = null;
+const asOM = new URLSearchParams(location.search).get('as') === 'om';
+if (asOM) { $('#wl').textContent = 'MA ওয়ালেট নম্বর (অপারেশন ম্যানেজার)'; }
+
+(async function init() {
+  IDX = await GC.loadIndex();
+  if (!IDX.months.length) { $('#e').textContent = 'এখনও কোনো ডেটা প্রকাশ হয়নি।'; return; }
+  D = await GC.loadMonth(GC.pickMonth(IDX));
+  if (!D) { $('#e').textContent = 'ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।'; return; }
+  const admin = await GC.adminCheck();
+  who = GC.resolve(D, GC.session(), admin);
+  if (who) start();
+})();
+$('#f').addEventListener('submit', e => {
+  e.preventDefault();
+  if (!D) { $('#e').textContent = 'ডেটা লোড হচ্ছে, আবার চেষ্টা করুন।'; return; }
+  const s = GC.identify(D, $('#w').value);
+  if (!s) { $('#e').textContent = 'ওয়ালেট নম্বরটি পাওয়া যায়নি। আবার দেখুন।'; return; }
+  GC.setSession(s);
+  who = GC.resolve(D, s, false);
+  start(true);
+});
+async function onMonth(m) {
+  const nd = await GC.loadMonth(m); if (!nd) return;
+  D = nd; who = GC.resolve(D, GC.session(), GC.ss('gcd_admin') === '1'); start();
+}
+function start(fresh) {
+  $('#gate').hidden = true; $('#app').hidden = false;
+  GC.header({ IDX, D, who, page: 'ac', title: 'গাজীপুর সেন্ট্রাল লিডারবোর্ড', onMonth });
+  setup(); route();
+  if (fresh && who.me) GC.confetti(who.me.dhRank <= 3 ? 90 : 45);
+}
+
+/* ---------- লিংক ---------- */
+const hDSO = x => `#/d/dso/${encodeURIComponent(x.wallet)}`;
+const hDSS = x => `#/d/dss/${encodeURIComponent(x.dh)}/${encodeURIComponent(x.dss)}`;
+const hOM = n => `#/d/om/${encodeURIComponent(n)}`;
+
+function setup() {
+  const me = who.me, my = who.myDH;
+  const c = (ic, k, v, s, cls, extra, href) => `<${href ? `a href="${href}"` : 'div'} class="card ${cls || ''}"><div class="ic">${ic}</div><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div>${extra || ''}</${href ? 'a' : 'div'}>`;
+  let h = '';
+  if (me) {
+    const list = D.ra.filter(x => x.dh === me.dh).sort((a, b) => a.dhRank - b.dhRank);
+    let m;
+    if (me.dhRank === 1) m = '🏆 অভিনন্দন! আপনি আপনার ডিএইচ-এ এক নম্বরে!';
+    else if (me.dhRank <= 3) m = MED[me.dhRank - 1] + ' আপনি শীর্ষ ৩-এ আছেন, চালিয়ে যান!';
+    else m = `💪 পরের র‍্যাঙ্কে যেতে আর ${(list[me.dhRank - 2].score - me.score).toFixed(1)} পয়েন্ট দরকার — আপনি পারবেন!`;
+    h += c('🎯', 'আপনার স্কোর', me.score.toFixed(1), `${esc(me.dh)}-এ ${me.dhRank}/${list.length} নম্বর · টিমে ${me.teamRank} নম্বর`, 'me', `<div class="msg">${m}</div><div class="more">বিস্তারিত দেখুন →</div>`, hDSO(me));
+  } else if (who.missing) {
+    h += c('ℹ️', 'এই মাস', '—', 'নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই', 'me');
+  }
+  h += c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', '<div class="more">বিস্তারিত দেখুন →</div>', hOM('*'));
+  [...D.dh].sort((a, b) => (b === my) - (a === my) || a.rank - b.rank).forEach(d => {
+    h += c('🏅', esc(d.name) + (d === my ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank, d === my ? 'me' : '', '<div class="more">বিস্তারিত দেখুন →</div>', hOM(d.name));
+  });
+  $('#cards').innerHTML = h;
+  const dhs = [...new Set(D.ra.map(r => r.dh))];
+  $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + dhs.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw;
+  $('#rs').onclick = () => { $('#fdh').value = ''; dssOpts(); $('#fdss').value = ''; draw(); };
+  dssOpts(); draw();
+}
+function dssOpts() {
+  const d = $('#fdh').value;
+  const groups = [...new Set(D.teams.filter(t => !d || t.dh === d).map(t => t.dh))];
+  $('#fdss').innerHTML = '<option value="">সব ডিএসএস</option>' + groups.map(g => {
+    const o = [...new Set(D.teams.filter(t => t.dh === g).map(t => t.dss))].sort().map(s => `<option value="${esc(g + '\u0001' + s)}">${esc(tc(s))}</option>`).join('');
+    return d ? o : `<optgroup label="${esc(g)}">${o}</optgroup>`;
   }).join('');
 }
-function head(a,n=1){return '<tr>'+a.map((h,i)=>`<th class="${i<n?'l':''}">${h}</th>`).join('')+'</tr>'}
-const th=(n,b)=>`${n}<small>${b}</small>`;
-const rk=n=>n<=3?`<span class="rk">${MED[n-1]}</span>`:n;
-const bar=s=>`<div class="bar"><i style="width:${Math.min(100,s)}%"></i></div>`;
-function podium(list){
-  if(list.length<3)return '';
-  return `<div class="podium">${[1,0,2].map(i=>{const x=list[i];return `<div class="pd p${i+1} ${x===me?'mine':''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(tc(x.name))}${x===me?' (আপনি)':''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step"><b>${i+1}</b></div></div>`}).join('')}</div>`;
+const th = (n, b) => `${n}<small>${b}</small>`;
+const rk = n => n <= 3 ? `<span class="rk">${MED[n - 1]}</span>` : n;
+const bar = s => `<div class="bar"><i style="width:${Math.min(100, s)}%"></i></div>`;
+const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3]));
+const keys = lv => LV[lv].ps.map(p => p[0]);
+function podium(list, nameOf, mine) {
+  if (list.length < 3) return '';
+  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step"><b>${i + 1}</b></div></div>`; }).join('')}</div>`;
 }
-const cols=lv=>LV[lv].ps.map(p=>th(p[1],p[2]));
-function draw(){
-  const d=$('#fdh').value;
-  const [sd,ss]=($('#fdss').value||'').split('\u0001');
-  const ed=d||sd||'';           // কার্যকর ডিএইচ ফিল্টার
-  const keys=lv=>LV[lv].ps.map(p=>p[0]);
+function draw() {
+  const me = who.me, my = who.myDH;
+  const d = $('#fdh').value;
+  const [sd, ss] = ($('#fdss').value || '').split('\u0001');
+  const ed = d || sd || '';
   /* ওএম */
-  let h=head(['ডিস্ট্রিবিউটর',...cols('om'),'স্কোর','র‍্যাঙ্ক']);
-  D.dh.filter(x=>!ed||x.name===ed).forEach(x=>h+=`<tr class="go" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a></td>${keys('om').map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
-  if(!ed){const t=D.territory;h+=`<tr class="top go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k=>pc(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`}
-  $('#tdh').innerHTML=h;
-  /* ডিএসএস টিম — প্রতি হাউজে আলাদা র‍্যাঙ্ক */
-  let t='';
-  [...new Set(D.teams.map(x=>x.dh))].filter(g=>!ed||g===ed).forEach(g=>{
-    const l=D.teams.filter(x=>x.dh===g&&(!ss||x.dss===ss)).sort((a,b)=>a.rank-b.rank);
-    if(!l.length)return;
-    let tb=head(['র‍্যাঙ্ক','টিম (ডিএসএস)',...cols('dss'),'স্কোর'],2);
-    l.forEach(x=>tb+=`<tr class="go ${x.rank<=3?'top':''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.team))}</a><div class="mut">${esc(tc(x.dss))}</div></td>${keys('dss').map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
-    t+=`<div class="dhh">🏢 ${esc(g)}</div><div class="scroll"><table>${tb}</table></div>`;
+  let h = GC.head(['ডিস্ট্রিবিউটর', ...cols('om'), 'স্কোর', 'র‍্যাঙ্ক']);
+  [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a></td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
+  if (!ed) { const t = D.territory; h += `<tr class="top go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k => GC.pcCell(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`; }
+  $('#tdh').innerHTML = h;
+  /* ডিএসএস — পুরো টেরিটরিতে এক র‍্যাঙ্ক */
+  const all = [...D.teams].sort((a, b) => a.rank - b.rank);
+  const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
+  let tb = GC.head(['র‍্যাঙ্ক', 'ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
+  l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${me && me.dh === x.dh && me.dss === x.dss ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.dss))}</a></td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
+  $('#tt').innerHTML = (!ed && !ss ? podium(all, x => tc(x.dss), null) : '') + `<div class="scroll"><table>${tb}</table></div>`;
+  /* ডিএসও — প্রতি ডিএইচ-এ র‍্যাঙ্ক */
+  let r = '';
+  [...new Set(D.ra.map(x => x.dh))].filter(g => !ed || g === ed).forEach(g => {
+    const list = D.ra.filter(x => x.dh === g).sort((a, b) => a.dhRank - b.dhRank);
+    let tb2 = GC.head(['র‍্যাঙ্ক', 'ডিএসও', 'টিম (ডিএসএস)', ...cols('dso'), 'স্কোর', 'টিমে র‍্যাঙ্ক'], 3);
+    let n = 0;
+    list.forEach(x => {
+      if (ss && x.dss !== ss) return; n++;
+      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' (আপনি)' : ''}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
+    });
+    if (!n) return;
+    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me)}<div class="scroll"><table>${tb2}</table></div>`;
   });
-  $('#tt').innerHTML=t;
-  /* ডিএসও */
-  let r='';
-  [...new Set(D.ra.map(x=>x.dh))].filter(g=>!ed||g===ed).forEach(g=>{
-    const list=D.ra.filter(x=>x.dh===g).sort((a,b)=>a.dhRank-b.dhRank);
-    let tb=head(['র‍্যাঙ্ক','ডিএসও','টিম (ডিএসএস)',...cols('dso'),'স্কোর','টিমে র‍্যাঙ্ক'],3);
-    let n=0;
-    list.forEach(x=>{if(ss&&x.dss!==ss)return;n++;
-      tb+=`<tr class="go ${x.dhRank<=3?'top':''} ${x===me?'mine':''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x===me?' (আপনি)':''}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`});
-    if(!n)return;
-    r+=`<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss?'':podium(list)}<div class="scroll"><table>${tb}</table></div>`;
-  });
-  $('#tr').innerHTML=r;
+  $('#tr').innerHTML = r;
 }
-document.addEventListener('click',e=>{
-  const tr=e.target.closest&&e.target.closest('tr[data-h]');
-  if(tr&&!e.target.closest('a'))location.hash=tr.dataset.h;
+document.addEventListener('click', e => {
+  const tr = e.target.closest && e.target.closest('tr[data-h]');
+  if (tr && !e.target.closest('a')) location.hash = tr.dataset.h;
 });
 
 /* ---------- বিস্তারিত পাতা ---------- */
-const nf=n=>n==null||!isFinite(n)?'—':Math.round(n).toLocaleString('en-IN');
-const nd=n=>n==null||!isFinite(n)?'—':(n>=100?Math.round(n):Math.round(n*10)/10).toLocaleString('en-IN');
-function calc(rec,lv,[p,name,basis,w]){
-  const {day,dim,left}=tm(),{ach,trg}=vv(rec,p,lv);
-  const mtd=trg!=null?trg*day/dim:null;
-  const f=frac(rec,lv,p,basis);
-  const rem=trg!=null&&ach!=null?Math.max(0,trg-ach):(trg!=null?trg:null);
-  return {name,basis,w,trg,mtd,ach,pct:f*100,rem,per:rem!=null?(left>0?rem/left:rem):null,need:rem!=null&&trg>0?rem/trg*100:null,left,p,pts:w*Math.min(f,1)};
+const nf = GC.nf, nd = GC.nd;
+function calc(rec, lv, [p, name, basis, w]) {
+  const di = GC.dayInfo(D, p, lv), V = GC.vv(rec, p, lv), { ach, trg, lm } = V;
+  const mtd = trg != null ? trg * di.day / di.dim : null;
+  const f = GC.frac(D, rec, lv, p, basis);
+  const rem = trg != null ? Math.max(0, trg - (ach || 0)) : null;
+  const gr = lm > 0 && ach != null ? (ach / lm - 1) * 100 : null;
+  return { V, name, basis, w, trg, mtd, ach, lm, gr, pct: f * 100, rem, per: rem != null ? (di.left > 0 ? rem / di.left : rem) : null, need: rem != null && trg > 0 ? rem / trg * 100 : null, left: di.left, till: di.till, p, pts: w * Math.min(f, 1) };
 }
-function renderDetail(lv,rec,title,sub){
-  const L=LV[lv],rows=L.ps.map(p=>calc(rec,lv,p));
-  const any=rows[0],tl=tillD();
-  const tills=D.tills||{};
-  const body=rows.map(r=>{
-    const miss=r.trg==null;
-    const tp=tills[REPOF[r.p]];
-    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis==='MTD'?'MTD টার্গেটের বিপরীতে':'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w}${tp?` · Till ${fmtTill(new Date(tp+'T00:00:00'))}`:''}</small></td>
-      <td>${nf(r.trg)}</td><td>${nf(r.mtd)}</td><td>${nf(r.ach)}</td>
-      <td class="${r.pct>=100?'hi':r.pct<50?'lo':''}"><b>${Math.round(r.pct)}%</b></td>
-      <td>${miss?'—':nf(r.rem)}</td><td class="need">${miss?'—':nd(r.per)}</td><td class="need">${r.need==null?'—':(r.need<=0?'✅ পূর্ণ':nd(r.need)+'%')}</td><td><b>${nd(r.pts)}</b> / ${r.w}</td></tr>`}).join('');
-  const noAch=rows.every(r=>r.ach==null);
-  $('#detail').innerHTML=`
+function renderDetail(lv, rec, title, sub) {
+  const Lx = LV[lv], rows = Lx.ps.map(p => calc(rec, lv, p));
+  const body = rows.map(r => {
+    const miss = r.trg == null;
+    const extra = r.p === 'a' && lv === 'om' ? `<small>A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · টার্গেট A2M ${nf(r.V.a2mT)} + D2C ${r.V.d2cT == null ? 'দেওয়া নেই' : nf(r.V.d2cT)}</small>` : '';
+    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
+      <td>${nf(r.trg)}</td><td>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</td><td>${nf(r.ach)}</td>
+      <td class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}"><b>${Math.round(r.pct)}%</b></td>
+      <td>${r.lm == null ? '—' : nf(r.lm)}</td><td class="${r.gr == null ? '' : r.gr >= 0 ? 'hi' : 'lo'}">${r.gr == null ? '—' : (r.gr >= 0 ? '▲ ' : '▼ ') + nd(Math.abs(r.gr)) + '%'}</td>
+      <td>${miss ? '—' : nf(r.rem)}</td><td class="need">${miss ? '—' : nd(r.per)}</td><td class="need">${r.need == null ? '—' : (r.need <= 0 ? '✅ পূর্ণ' : nd(r.need) + '%')}</td><td><b>${nd(r.pts)}</b> / ${r.w}</td></tr>`;
+  }).join('');
+  const noAch = rows.every(r => r.ach == null);
+  const left = rows[0].left;
+  $('#detail').innerHTML = `
   <div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
   <div class="panel">
-    <div class="mut">${L.lab}${sub?' · '+esc(sub):''} · Till ${fmtTill(tl)} · মাসের বাকি ${any.left} দিন</div>
+    <div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)} · মাসের বাকি ${left} দিন</div>
     <h2 style="font-size:26px;margin-top:2px">${esc(title)}</h2>
     <div class="how"><b>কীভাবে পড়বেন</b>
       <ul>
         <li><b>মাসিক টার্গেট (TRG):</b> পুরো মাসের টার্গেট।</li>
-        <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে আজ পর্যন্ত যতটা অর্জন করার কথা।</li>
-        <li><b>MTD অর্জন ও MTD অর্জন %:</b> এখন পর্যন্ত কত হয়েছে এবং তা টার্গেটের কত শতাংশ। TRX, REG, UBP${lv==='dso'?'':lv==='dss'?', A2M':', BZP'}-এর % হলো MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % হলো মোট (TTL) টার্গেটের বিপরীতে।</li>
-        <li><b>পয়েন্ট:</b> ওজন অনুযায়ী এই প্যারামিটার থেকে কত পয়েন্ট পাচ্ছেন (অর্জন ১০০% হলে পূর্ণ পয়েন্ট)।</li>
-        <li><b>বাকি (REMAINING):</b> মাসিক টার্গেট পূর্ণ করতে আর যতটা বাকি।</li>
-        <li><b>প্রতিদিন প্রয়োজন:</b> বাকি ${any.left} দিনে প্রতিদিন গড়ে যতটা করতে হবে।</li>
-        <li><b>আরও কত % অর্জন করতে হবে:</b> মাসিক টার্গেটের যত শতাংশ এখনও বাকি।</li>
+        <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে রিপোর্টের তারিখ পর্যন্ত যতটা অর্জন করার কথা।</li>
+        <li><b>MTD অর্জন %:</b> TRX, REG, UBP${lv === 'dso' ? '' : lv === 'dss' ? ', A2M' : ', BZP'}-এর % MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % মোট (TTL) টার্গেটের বিপরীতে।</li>
+        <li><b>LMTD ও MoM গ্রোথ:</b> গত মাসের একই তারিখ পর্যন্ত অর্জন এবং তার তুলনায় এ মাসে কত বেশি/কম (TRX ও UBP)।</li>
+        <li><b>পয়েন্ট:</b> ওজন × অর্জন % (সর্বোচ্চ ১০০%)।</li>
+        <li><b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
       </ul></div>
-    ${noAch?'<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি, তাই টার্গেট ও অর্জনের সংখ্যা দেখা যাচ্ছে না।</div>':''}
-    <div class="scroll"><table class="dt" style="min-width:900px">${head(['প্যারামিটার','মাসিক টার্গেট (TRG)','MTD টার্গেট','MTD অর্জন','MTD অর্জন %','বাকি (REMAINING)','প্রতিদিন প্রয়োজন','আরও কত % অর্জন করতে হবে','পয়েন্ট (ওজনসহ)'])}${body}</table></div>
-    <p class="mut" style="margin-top:10px">টীকা: MTD টার্গেট = মাসিক টার্গেট × (${any.left>=0?tm().day:''} ÷ ${tm().dim} দিন)। স্কোর = প্রতিটি প্যারামিটারের ওজন × অর্জন % (সর্বোচ্চ ১০০%)।</p>
-    <div style="margin-top:14px;font-weight:600;color:var(--deep)">স্কোর: ${rec.score.toFixed(1)}</div>
+    ${noAch ? '<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি।</div>' : ''}
+    <div class="scroll"><table style="min-width:1080px">${GC.head(['প্যারামিটার', 'মাসিক টার্গেট', 'MTD টার্গেট', 'MTD অর্জন', 'MTD অর্জন %', 'LMTD', 'MoM গ্রোথ', 'বাকি', 'প্রতিদিন প্রয়োজন', 'আরও কত % বাকি', 'পয়েন্ট'])}${body}</table></div>
+    <p class="mut" style="margin-top:10px">টীকা: MTD টার্গেট = মাসিক টার্গেট × (রিপোর্টের দিন ÷ মাসের মোট দিন)। প্রতিটি রিপোর্টের নিজের Till তারিখ ধরা হয়।</p>
+    <div style="margin-top:14px;font-weight:700;color:var(--deep);font-size:18px">স্কোর: ${rec.score.toFixed(1)} / ১০০</div>
   </div>`;
 }
-function route(){
-  if(!D||!me)return;
-  const m=location.hash.match(/^#\/d\/(dso|dss|om)\/(.+)$/);
-  if(!m){$('#detail').hidden=true;$('#main').hidden=false;return}
-  const lv=m[1],a=m[2].split('/').map(decodeURIComponent);
-  let rec=null,title='',sub='';
-  if(lv==='dso'){rec=D.ra.find(x=>x.wallet===a[0]);if(rec){title=tc(rec.name);sub=rec.dh+' · '+tc(rec.dss)}}
-  else if(lv==='dss'){rec=D.teams.find(x=>x.dh===a[0]&&x.dss===a[1]);if(rec){title=tc(rec.team);sub=rec.dh}}
-  else if(a[0]==='*'){rec=D.territory;title='গাজীপুর সেন্ট্রাল টেরিটরি'}
-  else{rec=D.dh.find(x=>x.name===a[0]);if(rec)title=rec.name}
-  if(!rec){location.hash='';return}
-  renderDetail(lv,rec,title,sub);
-  $('#main').hidden=true;$('#detail').hidden=false;scrollTo(0,0);
+function route() {
+  if (!D || !who) return;
+  const m = location.hash.match(/^#\/d\/(dso|dss|om)\/(.+)$/);
+  if (!m) { $('#detail').hidden = true; $('#main').hidden = false; return; }
+  const lv = m[1], a = m[2].split('/').map(decodeURIComponent);
+  let rec = null, title = '', sub = '';
+  if (lv === 'dso') { rec = D.ra.find(x => x.wallet === a[0]); if (rec) { title = tc(rec.name); sub = rec.dh + ' · ' + tc(rec.dss); } }
+  else if (lv === 'dss') { rec = D.teams.find(x => x.dh === a[0] && x.dss === a[1]); if (rec) { title = tc(rec.dss); sub = rec.dh + ' · টেরিটরিতে র‍্যাঙ্ক ' + rec.rank; } }
+  else if (a[0] === '*') { rec = D.territory; title = 'গাজীপুর সেন্ট্রাল টেরিটরি'; }
+  else { rec = D.dh.find(x => x.name === a[0]); if (rec) title = rec.name; }
+  if (!rec) { location.hash = ''; return; }
+  renderDetail(lv, rec, title, sub);
+  $('#main').hidden = true; $('#detail').hidden = false; scrollTo(0, 0);
 }
-addEventListener('hashchange',route);
+addEventListener('hashchange', route);
 </script>
 </body>
 </html>
