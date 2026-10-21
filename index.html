@@ -3,79 +3,152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Achievers’ Club</title>
+<title>Achievers’ Club · গাজীপুর সেন্ট্রাল</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 <style>
-:root{--pink:#E2136E;--deep:#A80B52;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
+/* ---- ফন্ট: রিপোজিটরিতে font-title.ttf (শিরোনাম ও সংখ্যা) ও font-body.ttf (লেখা) রাখলে সেগুলো ব্যবহার হবে ---- */
+@font-face{font-family:"ACTitle";src:url("font-title.woff2") format("woff2"),url("font-title.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"ACBody";src:url("font-body.woff2") format("woff2"),url("font-body.ttf") format("truetype");font-display:swap}
+:root{
+  --pink:#E2136E;--pink2:#FF4F9A;--deep:#7A0C43;--plum:#3B0A26;--gold:#F2B705;--gold2:#FFE08A;
+  --bg:#FBF5F8;--card:#FFFFFF;--line:#F1DCE7;--ink:#24121C;--mut:#6B5561;--ok:#0B7A6E;--low:#A34A00;
+  --fh:"ACTitle","Baloo Da 2","Hind Siliguri",system-ui,sans-serif;
+  --fb:"ACBody","Hind Siliguri","Noto Sans Bengali",system-ui,"Segoe UI",sans-serif;
+  --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
+}
 *{box-sizing:border-box}
-body{margin:0;color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#FFE3F0 0,transparent 40%),radial-gradient(circle at 95% 15%,#FFEFD2 0,transparent 35%),var(--bg);min-height:100vh}
-.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
-.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--pink),var(--deep));color:#fff;border-radius:24px;padding:22px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 14px 34px rgba(226,19,110,.32)}
-.badge{background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 6px 18px rgba(0,0,0,.22);transform:rotate(-3deg);animation:bob 4s ease-in-out infinite}
-.badge img{height:78px;display:block}
-.hero h1{margin:0;font-size:30px;line-height:1.25;font-weight:700}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font:400 16px/1.6 var(--fb);background:var(--bg);min-height:100vh;
+  background-image:radial-gradient(900px 400px at 0% -10%,#FFE1EF 0,transparent 60%),radial-gradient(700px 360px at 100% 0%,#FFF1CF 0,transparent 55%)}
+h1,h2,h3,.fh{font-family:var(--fh);letter-spacing:.005em}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+/* ---- হিরো ---- */
+.hero{position:relative;overflow:hidden;color:#fff;border-radius:26px;padding:22px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  background:linear-gradient(115deg,var(--plum) 0%,var(--deep) 38%,var(--pink) 100%);box-shadow:0 18px 40px rgba(122,12,67,.28)}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(255,224,138,.35),transparent 35%),repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 2px,transparent 2px 14px);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.badge{background:#fff;border-radius:18px;padding:8px 12px;box-shadow:0 8px 20px rgba(0,0,0,.25);transform:rotate(-3deg)}
+.badge img{height:70px;display:block}
+.kick{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.hero h1{margin:0;font-size:32px;line-height:1.2;font-weight:700}
 .hero p{margin:4px 0 0;font-size:15px;opacity:.95}
-.till{display:inline-block;font:400 12px/1.4 system-ui,"Segoe UI",sans-serif;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;margin-top:6px}
+.till{display:inline-block;font:500 12.5px/1.4 var(--fb);background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:2px 12px;margin-top:6px}
 .hero .side{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
-.hero select{min-height:40px;width:auto;border:2px solid #fff;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:4px 12px;font:600 14px "Hind Siliguri",sans-serif}
+.hero select{min-height:40px;width:auto;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:4px 12px;font:600 14px var(--fb)}
 .hero select option{color:#1B1B1F}
-.sp{position:absolute;color:#FFE27A;animation:tw 2.4s ease-in-out infinite;pointer-events:none;font-size:20px}
-@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+.sp{position:absolute;color:var(--gold2);animation:tw 2.4s ease-in-out infinite;pointer-events:none;font-size:18px;z-index:1}
+@keyframes bob{50%{transform:translateY(-5px)}}
 @keyframes tw{50%{opacity:.15;transform:scale(.6)}}
-nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
-nav.tabs a{padding:9px 18px;border-radius:999px;background:#fff;border:2px solid var(--line);color:var(--deep);font-weight:700;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+/* ---- নেভিগেশন ---- */
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0;align-items:center}
+nav.tabs a{padding:8px 18px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--deep);font-weight:700;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;box-shadow:var(--sh)}
 nav.tabs a.on{background:var(--pink);border-color:var(--pink);color:#fff}
-.who{font-size:13px;color:var(--mut);margin-left:auto;align-self:center}
-.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 4px 14px rgba(226,19,110,.07)}
-h2{font-size:21px;margin:0 0 2px}
+.who{font-size:14px;color:var(--mut);margin-left:auto;display:flex;gap:8px;align-items:center}
+/* ---- প্যানেল ও কার্ড ---- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin:16px 0;box-shadow:var(--sh)}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+h2{font-size:22px;margin:0;line-height:1.3;color:var(--plum)}
 .mut{color:var(--mut);font-size:14px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;transition:transform .2s,box-shadow .2s;position:relative;color:inherit;text-decoration:none;display:block}
-.card:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(226,19,110,.16)}
-.card .ic{font-size:28px}
-.card b{display:block;font:700 32px "Hind Siliguri",sans-serif;line-height:1.2}
-.card.me{background:linear-gradient(135deg,#FFF0F7,#FFF7DD);border:2px solid var(--pink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;transition:transform .2s,box-shadow .2s;position:relative;color:inherit;text-decoration:none;display:block;box-shadow:var(--sh)}
+a.card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(122,12,67,.14)}
+.card .ic{font-size:24px}
+.card b.big{display:block;font:700 34px/1.15 var(--fh);color:var(--plum)}
+.card.me{background:linear-gradient(135deg,#FFF0F7,#FFF8E2);border:2px solid var(--pink)}
 .card .more{margin-top:8px;color:var(--pink);font-weight:700;font-size:14px}
-.msg{margin-top:8px;font-weight:600;color:var(--deep);font-size:14px}
+.msg{margin-top:8px;font-weight:600;color:var(--deep);font-size:14.5px}
+/* ---- আমার ড্যাশবোর্ড ---- */
+.mine-grid{display:grid;grid-template-columns:minmax(250px,320px) 1fr;gap:18px}
+@media (max-width:820px){.mine-grid{grid-template-columns:1fr}}
+.scorebox{border-radius:22px;padding:20px;text-align:center;color:#fff;background:linear-gradient(160deg,var(--plum),var(--deep) 55%,var(--pink));position:relative;overflow:hidden}
+.scorebox::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(255,224,138,.35),transparent 40%);pointer-events:none}
+.scorebox>*{position:relative}
+.ring{--p:0;width:168px;height:168px;border-radius:50%;margin:6px auto 10px;display:grid;place-items:center;
+  background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.18) 0)}
+.ring>div{width:136px;height:136px;border-radius:50%;background:var(--plum);display:grid;place-items:center;align-content:center}
+.ring b{font:700 42px/1 var(--fh)}
+.ring small{font-size:12px;opacity:.8}
+.tier{display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:3px 14px;font-weight:700;font-size:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpis div{background:rgba(255,255,255,.12);border-radius:14px;padding:8px 4px}
+.kpis b{display:block;font:700 22px/1.1 var(--fh)}
+.kpis span{font-size:12px;opacity:.85}
+.plist{display:grid;gap:10px}
+.prow{border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}
+@media (max-width:560px){.prow{grid-template-columns:1fr auto}.prow .pb{grid-column:1/-1;order:3}}
+.prow .pn{font:700 16px/1.2 var(--fh);color:var(--plum)}
+.prow .pn small{display:block;font:400 12px var(--fb);color:var(--mut)}
+.pb{height:12px;background:#F6E6EF;border-radius:999px;position:relative;overflow:visible}
+.pb i{display:block;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--gold))}
+.pb em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--plum);opacity:.45;left:var(--m)}
+.prow .pv{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.prow .pv b{font:700 18px var(--fh)}
+.prow .pv small{display:block;font-size:12px;color:var(--mut)}
+.prow .todo{grid-column:1/-1;font-size:13.5px;color:var(--deep);background:#FFF7E0;border-radius:10px;padding:6px 10px}
+.prow.done .todo{background:#E6F6F3;color:var(--ok)}
+/* ---- মোটিভেশন ---- */
+.mot{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px}
+@media (max-width:820px){.mot{grid-template-columns:1fr}}
+.quote{border-radius:20px;padding:18px 20px;background:linear-gradient(135deg,#FFF4D6,#FFE7F2);border:1px solid #F7D9A0;font:600 18px/1.5 var(--fh);color:var(--plum);display:flex;gap:12px;align-items:center}
+.quote span{font-size:34px}
+.stat{border-radius:20px;padding:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh)}
+.stat b{display:block;font:700 30px/1.1 var(--fh);color:var(--pink)}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.bd{display:flex;gap:8px;align-items:center;border-radius:14px;padding:8px 12px;border:1px solid var(--line);background:#fff;font-weight:600;font-size:14px}
+.bd i{font-style:normal;font-size:22px}
+.bd.off{opacity:.42;filter:grayscale(1)}
+.bd.on{border-color:var(--gold);background:linear-gradient(135deg,#FFFBEA,#FFF0F7);box-shadow:0 4px 12px rgba(242,183,5,.2)}
+.champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.ch{border-radius:16px;padding:12px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#FFF7FB)}
+.ch .k{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.ch b{display:block;font:700 16px/1.3 var(--fh);color:var(--plum);margin-top:2px}
+.ch span{font-weight:700;color:var(--pink)}
+/* ---- ফর্ম ও বোতাম ---- */
 label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
-input,select,textarea{width:100%;min-height:48px;border:2px solid #D9B8C8;border-radius:12px;padding:8px 12px;font:inherit;background:#fff;color:var(--ink)}
+input,select,textarea{width:100%;min-height:48px;border:1.5px solid #DCC2D0;border-radius:12px;padding:8px 12px;font:inherit;background:#fff;color:var(--ink)}
 input:focus,select:focus,textarea:focus{outline:3px solid #FFC2DC;border-color:var(--pink)}
-button,a.btn{min-height:48px;border-radius:999px;padding:10px 22px;font:700 15px "Hind Siliguri",sans-serif;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;transition:transform .15s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-button:hover,a.btn:hover{transform:scale(1.03)}
+button,a.btn{min-height:48px;border-radius:999px;padding:10px 22px;font:700 15px var(--fb);cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;transition:transform .15s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button:hover,a.btn:hover{transform:translateY(-1px)}
 button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 button.ghost,a.btn.ghost{background:#fff;color:var(--pink)}
-.hero button.ghost,.hero a.btn.ghost{border-color:#fff;background:rgba(255,255,255,.14);color:#fff;min-height:40px;padding:6px 16px}
+.hero button.ghost{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.12);color:#fff;min-height:40px;padding:6px 16px}
 button.sm{min-height:36px;padding:4px 12px;font-size:13px}
 .filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}.filters>div{flex:1 1 220px}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* ---- টেবিল ---- */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
 table{border-collapse:collapse;width:100%;min-width:660px;font-variant-numeric:tabular-nums}
-th{text-align:right;font-size:13px;color:var(--mut);padding:8px 10px;white-space:nowrap;vertical-align:bottom}
+th{text-align:right;font-size:12.5px;color:var(--mut);padding:9px 10px;white-space:nowrap;vertical-align:bottom;background:#FCF4F8;font-weight:700}
 th small{display:block;font-weight:400;font-size:10.5px;opacity:.85}
-td{padding:9px 10px;border-top:1px solid #F4E1EB;text-align:right}
+td{padding:10px;border-top:1px solid #F4E5ED;text-align:right}
 th:first-child,td:first-child,th.l,td.l{text-align:left}
 td.l small{display:block;color:var(--mut);font-size:12px}
-tr:hover td{background:#FFF5FA}
+tr:hover td{background:#FFF6FA}
 tr.go{cursor:pointer}
-tr.top td{background:#FFF1C9;font-weight:600}
-tr.mine td{background:#FFD9EA}tr.mine td:first-child{border-left:5px solid var(--pink)}
-tr.tot td{background:#FDF3F8;font-weight:700}
+tr.top td{background:#FFF8E1}
+tr.mine td{background:#FFE3EF}tr.mine td:first-child{box-shadow:inset 5px 0 0 var(--pink)}
+tr.tot td{background:#FCF4F8;font-weight:700}
 td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
+td b{font-family:var(--fh)}
 .hi{color:var(--ok);font-weight:700}.lo{color:var(--low)}
-.bar{height:6px;background:#F4E1EB;border-radius:3px;margin-top:3px;min-width:70px}.bar i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--pink),#FFB300)}
+.bar{height:6px;background:#F4E1EB;border-radius:3px;margin-top:3px;min-width:70px}.bar i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--pink),var(--gold))}
 .rk{font-size:20px;line-height:1}
-.dhh{margin:22px 0 6px;font-size:18px;color:var(--deep);font-weight:700}
-.podium{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:10px 0 18px;flex-wrap:nowrap}
-.pd{flex:1 1 0;max-width:210px;text-align:center;min-width:0}
-.pd .medal{font-size:38px;animation:bob 3s ease-in-out infinite}
-.pd .pn{font-weight:700;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
-.pd .ps{font:700 20px "Hind Siliguri",sans-serif}
-.pd .step{border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;color:#1B1B1F;font-size:22px}
-.p1 .step{height:92px;background:linear-gradient(#FFE27A,#F5B800)}.p2 .step{height:66px;background:linear-gradient(#EEF0F3,#C4CAD2)}.p3 .step{height:50px;background:linear-gradient(#F2C9A0,#D99A62)}
+.dhh{margin:22px 0 8px;font:700 19px var(--fh);color:var(--deep)}
+.tchip{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 8px;margin-left:6px;vertical-align:middle}
+.tchip.pt{background:#E8F0FF;color:#2B4C9B}.tchip.gd{background:#FFF1C2;color:#8A5A00}.tchip.sv{background:#EEF0F3;color:#4B5563}.tchip.bz{background:#F8E5D6;color:#8A4B16}
+/* ---- পোডিয়াম ---- */
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:12px;margin:12px 0 18px;flex-wrap:nowrap}
+.pd{flex:1 1 0;max-width:220px;text-align:center;min-width:0}
+.pd .medal{font-size:36px;animation:bob 3s ease-in-out infinite}
+.pd .pn{font:700 15px/1.25 var(--fh);overflow-wrap:anywhere;color:var(--plum)}
+.pd .ps{font:700 22px var(--fh);color:var(--pink)}
+.pd .step{border-radius:14px 14px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;color:#1B1B1F;font:700 22px var(--fh)}
+.p1 .step{height:96px;background:linear-gradient(#FFE38A,#F2B705)}.p2 .step{height:70px;background:linear-gradient(#F1F3F6,#C4CAD2)}.p3 .step{height:54px;background:linear-gradient(#F4CDA6,#D99A62)}
 .pd.mine .pn{color:var(--pink)}
-.gate{max-width:480px;margin:34px auto 0}
+/* ---- অন্যান্য ---- */
+.gate{max-width:500px;margin:30px auto 0}
 .err{color:#B00020;font-size:15px;margin:10px 0 0;min-height:22px;font-weight:600}
-.how{background:#FFF8E1;border:1px solid #F5DFA0;border-radius:14px;padding:14px 18px;margin:14px 0}
+.how{background:#FFF8E1;border:1px solid #F5DFA0;border-radius:16px;padding:14px 18px;margin:14px 0}
 .how b{color:var(--deep)}
 .how ul{margin:6px 0 0;padding-left:20px}
 .how li{margin:3px 0;font-size:14.5px}
@@ -83,43 +156,48 @@ td a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--pink)}
 .seg{display:inline-flex;border:2px solid var(--pink);border-radius:999px;overflow:hidden;flex-wrap:wrap}
 .seg button{border:0;border-radius:0;background:#fff;color:var(--pink);min-height:42px}
 .seg button.on{background:var(--pink);color:#fff}
-.chip{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;font-weight:600;background:#FFE3F0;color:var(--deep)}
+.chip{display:inline-block;font-size:12px;border-radius:999px;padding:1px 10px;font-weight:700;background:#FFE3F0;color:var(--deep)}
+footer.ft{text-align:center;color:var(--mut);font-size:12.5px;padding:18px 0 8px}
+footer.ft a{color:var(--mut)}
 .cf{position:fixed;top:-16px;width:10px;height:14px;z-index:9;animation:fall 3.2s linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:560px){.hero h1{font-size:23px}.badge img{height:60px}.hero{padding:18px}.hero .side{margin-left:0}}
+@media (max-width:560px){.hero h1{font-size:24px}.badge img{height:54px}.hero{padding:18px}.hero .side{margin-left:0}.panel{padding:16px}.ring{width:150px;height:150px}.ring>div{width:122px;height:122px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <section id="gate" class="gate">
   <div class="hero" style="flex-direction:column;align-items:flex-start;gap:14px">
-    <span class="sp" style="top:12px;right:22px">✦</span><span class="sp" style="top:60px;right:70px;animation-delay:.8s;font-size:14px">✦</span><span class="sp" style="bottom:16px;right:30px;animation-delay:1.4s">★</span>
-    <div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:96px"></div>
-    <div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>গাজীপুর সেন্ট্রাল · আপনার র‍্যাঙ্ক দেখুন</p></div>
+    <span class="sp" style="top:14px;right:24px">✦</span><span class="sp" style="top:62px;right:72px;animation-delay:.8s;font-size:13px">✦</span><span class="sp" style="bottom:18px;right:34px;animation-delay:1.4s">★</span>
+    <div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:88px"></div>
+    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>আপনার স্কোর, র‍্যাঙ্ক আর আজকের লক্ষ্য — এক জায়গায়</p></div>
   </div>
   <form id="f" class="panel">
-    <label for="w" id="wl">ওয়ালেট নম্বর</label>
-    <input id="w" inputmode="numeric" autocomplete="off" placeholder="01XXXXXXXXX">
-    <div class="mut" id="wh" style="margin-top:6px">ডিএসও: আপনার আরএ (DSO) ওয়ালেট · অপারেশন ম্যানেজার: ডিস্ট্রিবিউটরের MA ওয়ালেট</div>
+    <label for="w" id="wl">ওয়ালেট নম্বর বা DSS ID</label>
+    <input id="w" autocomplete="off" placeholder="01XXXXXXXXX">
+    <div class="mut" style="margin-top:8px;line-height:1.7">ডিএসও: আরএ (DSO) ওয়ালেট<br>ডিএসএস: DSS ID (যেমন DSOSUP456-3245) বা অ্যাডমিনের দেওয়া ওয়ালেট<br>অপারেশন ম্যানেজার: ডিস্ট্রিবিউটরের MA ওয়ালেট</div>
     <div class="err" id="e" role="alert"></div>
     <button type="submit" style="width:100%">লিডারবোর্ড দেখুন 🚀</button>
   </form>
-  <p class="mut">বুঝতে পারছেন না? আপনার OM বা টেরিটরি ম্যানেজারের সাথে যোগাযোগ করুন। · <a href="admin.html" style="color:var(--pink)">অ্যাডমিন সাইন ইন</a></p>
+  <p class="mut" style="text-align:center">ওয়ালেট চিনতে পারছি না? আপনার ডিএসএস বা টেরিটরি ম্যানেজারের সাথে যোগাযোগ করুন। · <a href="admin.html" style="color:var(--pink)">অ্যাডমিন</a></p>
 </section>
 
 <section id="app" hidden>
   <div id="hdr"></div>
   <div id="main">
+    <div id="mine"></div>
+    <div id="mot"></div>
     <div class="cards" id="cards"></div>
-    <div class="panel filters">
-      <div><label for="fdh">🏢 ডিএইচ (ডিস্ট্রিবিউটর)</label><select id="fdh"></select></div>
+    <div class="panel" id="champP"><div class="ph"><h2>🌟 প্যারামিটার চ্যাম্পিয়ন</h2><span class="mut" id="champS"></span></div><div class="champs" id="champs"></div></div>
+    <div class="panel filters" id="filt">
+      <div id="fdhW"><label for="fdh">🏢 ডিএইচ (ডিস্ট্রিবিউটর)</label><select id="fdh"></select></div>
       <div><label for="fdss">👥 ডিএসএস</label><select id="fdss"></select></div>
       <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
     </div>
-    <div class="panel"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><div class="mut" style="margin-bottom:10px">ওএম-এর A2M-এর বদলে BZP (A2M + D2C) টার্গেট। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div class="scroll"><table id="tdh"></table></div></div>
-    <div class="panel"><h2>⚡ টিম ওয়াইজ পারফরম্যান্সস</h2><div class="mut" style="margin-bottom:10px">সব ডিএসএস একসাথে, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক (ডিএইচ আলাদা নয়)। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tt"></div></div>
-    <div class="panel"><h2>🏅 ডিএসও লিডারবোর্ড</h2><div class="mut">প্রতিটি ডিএইচ-এর ভেতরে স্কোর অনুযায়ী র‍্যাঙ্ক। সবুজ = টার্গেট বা তার বেশি; বাদামী = টার্গেটের অর্ধেকের কম। আপনার সারি গোলাপি দাগে চিহ্নিত। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</div><div id="tr"></div></div>
+    <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll"><table id="tdh"></table></div></div>
+    <div class="panel" id="dssP"><div class="ph"><h2>⚡ ডিএসএস পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
+    <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
   </div>
   <div id="detail" hidden></div>
 </section>
@@ -241,19 +319,16 @@ function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); i
 function session() { try { return JSON.parse(ss('gcd_s') || 'null'); } catch (e) { return null; } }
 function setSession(s) { ss('gcd_s', s ? JSON.stringify(s) : null); }
 /* অ্যাডমিন: অ্যাডমিন পেজে টোকেন দিয়ে সাইন ইন করলে, অথবা এই কম্পিউটারে মনে রাখা টোকেন বৈধ হলে */
-async function adminCheck() {
-  if (ss('gcd_admin') === '1') return true;
-  const t = ls('gt'); if (!t) return false;
-  try {
-    const r = await fetch(API, { headers: { Authorization: 'Bearer ' + t, Accept: 'application/vnd.github+json' } });
-    const j = await r.json();
-    if (r.ok && j.permissions && j.permissions.push) { ss('gcd_admin', '1'); return true; }
-  } catch (e) { }
-  return false;
+async function adminCheck() {           // শুধু এই ট্যাবে অ্যাডমিন পেজে সাইন ইন করলে
+  return ss('gcd_admin') === '1';
 }
 /* ওয়ালেট → ভূমিকা: ডিএসও (আরএ ওয়ালেট) বা ওএম (ডিস্ট্রিবিউটরের MA ওয়ালেট) */
+/* ওয়ালেট / DSS ID → ভূমিকা: ডিএসও (আরএ ওয়ালেট), ডিএসএস (DSS ID বা সেটিংসে দেওয়া ওয়ালেট), ওএম (MA ওয়ালেট) */
 function identify(D, w) {
-  const n = norm(w); if (n.length !== 11) return null;
+  const raw = up(w), n = norm(w);
+  const team = D.teams.find(t => (t.id && up(t.id) === raw) || (t.w && n.length === 11 && norm(t.w) === n));
+  if (team) return { role: 'dss', w: team.id ? up(team.id) : n };
+  if (n.length !== 11) return null;
   const ra = D.ra.find(r => norm(r.wallet) === n); if (ra) return { role: 'dso', w: n };
   const dh = D.dh.find(d => d.ma && norm(d.ma) === n); if (dh) return { role: 'om', w: n };
   return null;
@@ -262,6 +337,10 @@ function resolve(D, s, isAdmin) {
   if (isAdmin) return { role: 'admin', me: null, myDH: null };
   if (!s) return null;
   const n = norm(s.w);
+  if (s.role === 'dss') {
+    const t = D.teams.find(x => (x.id && up(x.id) === up(s.w)) || (x.w && norm(x.w) === n)) || null;
+    return { role: 'dss', me: null, myDH: null, myTeam: t, missing: !t };
+  }
   const me = D.ra.find(r => norm(r.wallet) === n) || null;
   const myDH = D.dh.find(d => d.ma && norm(d.ma) === n) || null;
   if (me) return { role: 'dso', me, myDH: null };
@@ -270,27 +349,29 @@ function resolve(D, s, isAdmin) {
   return null;
 }
 function signOut() { setSession(null); ss('gcd_admin', null); location.href = 'index.html'; }
+function canMS(role) { return role === 'om' || role === 'admin'; }
 
 /* ---------- হেডার ও নেভিগেশন ---------- */
 function header(o) {
   const months = (o.IDX.months || []).slice().sort().reverse();
-  const roleLab = { dso: 'ডিএসও', om: 'অপারেশন ম্যানেজার', admin: 'অ্যাডমিন' }[o.who.role] || '';
-  const name = o.who.me ? tc(o.who.me.name) : o.who.myDH ? o.who.myDH.name : '';
+  const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'অ্যাডমিন' }[o.who.role] || '';
+  const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) : o.who.myDH ? o.who.myDH.name : '';
+  const tabs = [['index.html', '🏆 Achievers’ Club', 'ac']];
+  if (canMS(o.who.role)) tabs.push(['service.html', '🛠️ Market Service', 'ms']);
+  if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ অ্যাডমিন', 'ad']);
   $('#hdr').innerHTML = `
   <header class="hero">
     <span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
     <div class="badge"><img src="logo.jpg" alt="Achievers’ Club"></div>
-    <div><h1>${esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
+    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>${esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
     <div class="side">
       ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
       <button class="ghost" id="out" type="button">সাইন আউট</button>
     </div>
   </header>
   <nav class="tabs" aria-label="পেজ">
-    <a href="index.html" class="${o.page === 'ac' ? 'on' : ''}">🏆 Achievers’ Club</a>
-    ${o.who.role === 'om' || o.who.role === 'admin' ? `<a href="service.html" class="${o.page === 'ms' ? 'on' : ''}">🛠️ Market Service</a>` : ''}
-    ${o.who.role === 'admin' ? `<a href="admin.html">⚙️ অ্যাডমিন</a>` : ''}
-    <span class="who">${esc(roleLab)}${name ? ' · ' + esc(name) : ''}</span>
+    ${tabs.length > 1 ? tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('') : ''}
+    <span class="who"><span class="chip">${esc(roleLab)}</span>${name ? ' ' + esc(name) : ''}</span>
   </nav>`;
   $('#out').onclick = signOut;
   const ms = $('#msel'); if (ms) ms.onchange = () => { ss('gcd_m', ms.value); o.onMonth(ms.value); };
@@ -302,42 +383,97 @@ function confetti(n) {
   for (let i = 0; i < n; i++) { const s = document.createElement('span'); s.className = 'cf'; s.style.left = Math.random() * 100 + 'vw'; s.style.background = cols[i % 5]; s.style.animationDelay = Math.random() * .8 + 's'; s.style.animationDuration = 2.4 + Math.random() * 1.6 + 's'; document.body.appendChild(s); setTimeout(() => s.remove(), 5000); }
 }
 
-return { OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+
+/* ---------- অনুপ্রেরণা ---------- */
+const QUOTES = [
+  'প্রতিদিনের ছোট অর্জনই মাস শেষে বড় সাফল্য।',
+  'আজকের পরিশ্রম, কালকের র‍্যাঙ্ক।',
+  'টার্গেট শুধু একটা সংখ্যা — আপনি তার চেয়ে বড়।',
+  'একটা বাড়তি ভিজিট, একটা বাড়তি রেজিস্ট্রেশন — পার্থক্য এখানেই।',
+  'চ্যাম্পিয়নরা থামে না, তারা গতি বাড়ায়।',
+  'দল জিতলে সবাই জেতে — পাশের সহকর্মীকেও সাথে নিন।',
+  'আজ যেখানে আছেন, কাল তার চেয়ে এক ধাপ ওপরে।',
+  'ধারাবাহিকতাই সেরা কৌশল।',
+  'প্রতিটি এজেন্ট ভিজিট একটি নতুন সুযোগ।',
+  'শুরুটা ভালো হলে শেষটা আরও ভালো হয়।',
+  'সংখ্যা কথা বলে — আজ আপনার সংখ্যাকে কথা বলতে দিন।',
+  'শীর্ষে জায়গা সবসময় খালি থাকে — এবার আপনার পালা।'
+];
+const quote = D => QUOTES[(dt(D.tillDate || D.updated).getDate() || 0) % QUOTES.length];
+function tier(s) {
+  return s >= 95 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎' } : s >= 85 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : s >= 70 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : { n: 'ব্রোঞ্জ', c: 'bz', i: '🥉' };
+}
+const tierChip = s => { const t = tier(s); return `<span class="tchip ${t.c}">${t.i} ${t.n}</span>`; };
+/* এই গতিতে চললে মাস শেষে স্কোর */
+function projected(D, rec, lv) {
+  let s = 0;
+  LV[lv].ps.forEach(([p, , b, w]) => {
+    let f;
+    if (b === 'MTD') f = rec[p] || 0;
+    else { const { ach, trg } = vv(rec, p, lv), { day, dim } = dayInfo(D, p, lv); f = trg > 0 && day ? (ach || 0) * dim / day / trg : 0; }
+    s += w * Math.min(f, 1);
+  });
+  return s;
+}
+function badges(rec, lv, rank) {
+  const ok = k => (rec[k] || 0) >= 1;
+  const all = LV[lv].ps.every(p => ok(p[0]));
+  return [
+    { i: '👑', n: 'নম্বর ১', on: rank === 1 },
+    { i: '🏅', n: 'শীর্ষ ৩', on: rank <= 3 },
+    { i: '🔥', n: '৯০+ ক্লাব', on: rec.score >= 90 },
+    { i: '⚡', n: 'TRX স্টার', on: ok('t') },
+    { i: '📝', n: 'REG হিরো', on: ok('r') },
+    { i: '💡', n: 'বিল পে মাস্টার', on: ok('u') },
+    { i: '🐷', n: 'সেভিংস চ্যাম্প', on: ok('vo') && ok('c') },
+    { i: '🎯', n: 'অল-রাউন্ডার', on: all }
+  ];
+}
+function footer() {
+  const f = document.createElement('footer'); f.className = 'ft';
+  f.innerHTML = 'Achievers’ Club · গাজীপুর সেন্ট্রাল · ওয়েবফন্ট- <a href="https://lipighor.com" target="_blank" rel="noopener">lipighor.com</a>';
+  document.body.appendChild(f);
+}
+
+return { QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
 })();
 </script>
 <script>
 const {$, esc, tc, MED, LV} = GC;
 let IDX = null, D = null, who = null;
-const asOM = new URLSearchParams(location.search).get('as') === 'om';
-if (asOM) { $('#wl').textContent = 'MA ওয়ালেট নম্বর (অপারেশন ম্যানেজার)'; }
+if (new URLSearchParams(location.search).get('as') === 'om') $('#wl').textContent = 'MA ওয়ালেট নম্বর (অপারেশন ম্যানেজার)';
+GC.footer();
 
 (async function init() {
   IDX = await GC.loadIndex();
   if (!IDX.months.length) { $('#e').textContent = 'এখনও কোনো ডেটা প্রকাশ হয়নি।'; return; }
   D = await GC.loadMonth(GC.pickMonth(IDX));
   if (!D) { $('#e').textContent = 'ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।'; return; }
-  const admin = await GC.adminCheck();
-  who = GC.resolve(D, GC.session(), admin);
+  who = GC.resolve(D, GC.session(), await GC.adminCheck());
   if (who) start();
 })();
 $('#f').addEventListener('submit', e => {
   e.preventDefault();
   if (!D) { $('#e').textContent = 'ডেটা লোড হচ্ছে, আবার চেষ্টা করুন।'; return; }
   const s = GC.identify(D, $('#w').value);
-  if (!s) { $('#e').textContent = 'ওয়ালেট নম্বরটি পাওয়া যায়নি। আবার দেখুন।'; return; }
+  if (!s) { $('#e').textContent = 'ওয়ালেট / DSS ID পাওয়া যায়নি। আবার দেখুন।'; return; }
+  GC.ss('gcd_admin', null);                       // ওয়ালেট দিয়ে ঢুকলে অ্যাডমিন ভূমিকা থাকে না
   GC.setSession(s);
   who = GC.resolve(D, s, false);
   start(true);
 });
 async function onMonth(m) {
   const nd = await GC.loadMonth(m); if (!nd) return;
-  D = nd; who = GC.resolve(D, GC.session(), GC.ss('gcd_admin') === '1'); start();
+  D = nd; who = GC.resolve(D, GC.session(), await GC.adminCheck()); start();
 }
+const isDSO = () => who.role === 'dso';
+const scopeDH = () => isDSO() ? (who.me ? [who.me.dh] : []) : [...new Set(D.ra.map(r => r.dh))];
+
 function start(fresh) {
   $('#gate').hidden = true; $('#app').hidden = false;
-  GC.header({ IDX, D, who, page: 'ac', title: 'গাজীপুর সেন্ট্রাল লিডারবোর্ড', onMonth });
+  GC.header({ IDX, D, who, page: 'ac', title: 'Achievers’ Club লিডারবোর্ড', onMonth });
   setup(); route();
-  if (fresh && who.me) GC.confetti(who.me.dhRank <= 3 ? 90 : 45);
+  if (fresh) { const r = focus(); if (r) GC.confetti(r.rank <= 3 ? 90 : 40); }
 }
 
 /* ---------- লিংক ---------- */
@@ -345,37 +481,83 @@ const hDSO = x => `#/d/dso/${encodeURIComponent(x.wallet)}`;
 const hDSS = x => `#/d/dss/${encodeURIComponent(x.dh)}/${encodeURIComponent(x.dss)}`;
 const hOM = n => `#/d/om/${encodeURIComponent(n)}`;
 
+/* যার ড্যাশবোর্ড দেখাব: ডিএসও → নিজে, ডিএসএস → নিজের টিম, ওএম → নিজের ডিএইচ, অ্যাডমিন → টেরিটরি */
+function focus() {
+  if (who.me) { const list = D.ra.filter(x => x.dh === who.me.dh).sort((a, b) => a.dhRank - b.dhRank); return { rec: who.me, lv: 'dso', rank: who.me.dhRank, list, nameOf: x => tc(x.name), title: tc(who.me.name), sub: `${who.me.dh} · ${tc(who.me.dss)}`, rankLab: 'ডিএইচ-এ র‍্যাঙ্ক', extra: ['টিমে র‍্যাঙ্ক', who.me.teamRank], href: hDSO(who.me) }; }
+  if (who.myTeam) { const t = who.myTeam, list = [...D.teams].sort((a, b) => a.rank - b.rank); return { rec: t, lv: 'dss', rank: t.rank, list, nameOf: x => tc(x.dss), title: tc(t.dss), sub: t.dh, rankLab: 'টেরিটরিতে র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === t.dh && x.dss === t.dss).length], href: hDSS(t) }; }
+  if (who.myDH) { const d = who.myDH, list = [...D.dh].sort((a, b) => a.rank - b.rank); return { rec: d, lv: 'om', rank: d.rank, list, nameOf: x => x.name, title: d.name, sub: 'অপারেশন ম্যানেজার', rankLab: 'ডিস্ট্রিবিউটর র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === d.name).length], href: hOM(d.name) }; }
+  if (who.role === 'admin') return { rec: D.territory, lv: 'om', rank: 0, list: [], nameOf: x => x.name, title: 'গাজীপুর সেন্ট্রাল টেরিটরি', sub: 'পুরো টেরিটরি', rankLab: 'ডিএইচ', extra: ['ডিএসও', D.ra.length], href: hOM('*') };
+  return null;
+}
+function mineHTML(F) {
+  const r = F.rec, t = GC.tier(r.score), proj = GC.projected(D, r, F.lv);
+  let msg = '';
+  if (F.rank === 1) msg = '🏆 অভিনন্দন! আপনি এখন এক নম্বরে — জায়গাটা ধরে রাখুন!';
+  else if (F.rank > 1) { const ahead = F.list[F.rank - 2]; msg = `💪 ${esc(F.nameOf(ahead))}-কে ছাড়িয়ে যেতে আর মাত্র <b>${(ahead.score - r.score + 0.1).toFixed(1)}</b> পয়েন্ট!`; }
+  else msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
+  const rows = LV[F.lv].ps.map(p => {
+    const [k, name, basis, w] = p, V = GC.vv(r, k, F.lv), di = GC.dayInfo(D, k, F.lv);
+    const f = r[k] || 0, pct = Math.round(f * 100), pts = w * Math.min(f, 1);
+    const rem = V.trg != null ? Math.max(0, V.trg - (V.ach || 0)) : null;
+    const per = rem != null ? (di.left > 0 ? rem / di.left : rem) : null;
+    const done = rem === 0 && V.trg > 0;
+    const fmtN = k === 't' || k === 'vo' || k === 'a' ? GC.nf : GC.nd;
+    const todo = V.trg == null ? 'টার্গেট দেওয়া নেই' : done ? '✅ মাসিক টার্গেট পূর্ণ — দারুণ!' : di.left > 0 ? `🎯 মাসিক টার্গেট পূর্ণ করতে প্রতিদিন <b>${fmtN(per)}</b> (বাকি ${GC.nf(rem)}, ${di.left} দিন)` : `বাকি ${GC.nf(rem)}`;
+    const lab = name.replace(' (A2M+D2C)', '');
+    return `<div class="prow ${done ? 'done' : ''}"><div class="pn">${esc(lab)}<small>${basis === 'MTD' ? 'MTD' : 'মোট'} · ওজন ${w}</small></div>
+      <div class="pb" title="${pct}%"><i style="width:${Math.min(100, pct)}%"></i></div>
+      <div class="pv"><b class="${pct >= 100 ? 'hi' : pct < 50 ? 'lo' : ''}">${pct}%</b><small>${GC.nd(pts)} / ${w} পয়েন্ট</small></div>
+      <div class="todo">${todo}</div></div>`;
+  }).join('');
+  const bds = GC.badges(r, F.lv, F.rank || 99);
+  return `<div class="panel"><div class="mine-grid">
+    <div class="scorebox"><div class="kick">${esc(F.sub)}</div><div class="fh" style="font-size:20px;font-weight:700">${esc(F.title)}</div>
+      <div class="ring" style="--p:${Math.min(100, r.score).toFixed(1)}"><div><b>${r.score.toFixed(1)}</b><small>১০০-এর মধ্যে</small></div></div>
+      <span class="tier">${t.i} ${t.n} লেভেল</span>
+      <div class="kpis"><div><b>${F.rank ? F.rank + '/' + F.list.length : D.dh.length}</b><span>${F.rankLab}</span></div><div><b>${F.extra[1]}</b><span>${F.extra[0]}</span></div><div><b>${proj.toFixed(0)}</b><span>মাস শেষে (এই গতিতে)</span></div></div>
+      <div class="msg" style="color:#FFE9A8">${msg}</div>
+      <div style="margin-top:10px"><a class="btn ghost" style="min-height:40px;background:transparent;color:#fff;border-color:rgba(255,255,255,.6)" href="${F.href}">পুরো হিসাব দেখুন →</a></div>
+    </div>
+    <div><div class="ph"><h2>🎯 আজকের লক্ষ্য</h2><span class="mut">কোন প্যারামিটারে কত বাকি</span></div><div class="plist">${rows}</div></div>
+  </div>
+  <div style="margin-top:16px"><div class="ph"><h2 style="font-size:18px">🏵️ আমার ব্যাজ</h2><span class="mut">${bds.filter(b => b.on).length}/${bds.length} অর্জিত — বাকিগুলো আনলক করুন!</span></div>
+  <div class="badges">${bds.map(b => `<span class="bd ${b.on ? 'on' : 'off'}"><i>${b.i}</i>${b.n}</span>`).join('')}</div></div></div>`;
+}
 function setup() {
-  const me = who.me, my = who.myDH;
-  const c = (ic, k, v, s, cls, extra, href) => `<${href ? `a href="${href}"` : 'div'} class="card ${cls || ''}"><div class="ic">${ic}</div><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div>${extra || ''}</${href ? 'a' : 'div'}>`;
-  let h = '';
-  if (me) {
-    const list = D.ra.filter(x => x.dh === me.dh).sort((a, b) => a.dhRank - b.dhRank);
-    let m;
-    if (me.dhRank === 1) m = '🏆 অভিনন্দন! আপনি আপনার ডিএইচ-এ এক নম্বরে!';
-    else if (me.dhRank <= 3) m = MED[me.dhRank - 1] + ' আপনি শীর্ষ ৩-এ আছেন, চালিয়ে যান!';
-    else m = `💪 পরের র‍্যাঙ্কে যেতে আর ${(list[me.dhRank - 2].score - me.score).toFixed(1)} পয়েন্ট দরকার — আপনি পারবেন!`;
-    h += c('🎯', 'আপনার স্কোর', me.score.toFixed(1), `${esc(me.dh)}-এ ${me.dhRank}/${list.length} নম্বর · টিমে ${me.teamRank} নম্বর`, 'me', `<div class="msg">${m}</div><div class="more">বিস্তারিত দেখুন →</div>`, hDSO(me));
-  } else if (who.missing) {
-    h += c('ℹ️', 'এই মাস', '—', 'নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই', 'me');
-  }
-  h += c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', '<div class="more">বিস্তারিত দেখুন →</div>', hOM('*'));
-  [...D.dh].sort((a, b) => (b === my) - (a === my) || a.rank - b.rank).forEach(d => {
-    h += c('🏅', esc(d.name) + (d === my ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank, d === my ? 'me' : '', '<div class="more">বিস্তারিত দেখুন →</div>', hOM(d.name));
-  });
-  $('#cards').innerHTML = h;
-  const dhs = [...new Set(D.ra.map(r => r.dh))];
-  $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + dhs.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  const F = focus();
+  $('#mine').innerHTML = F ? mineHTML(F) : (who.missing ? '<div class="panel"><b>ℹ️ নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই।</b></div>' : '');
+  const di = GC.dayInfo(D, 't', 'dso');
+  const top = D.ra.filter(x => scopeDH().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
+  $('#mot').innerHTML = `<div class="mot">
+    <div class="quote"><span>💬</span><div>${esc(GC.quote(D))}</div></div>
+    <div class="stat"><span class="mut">মাস শেষ হতে বাকি</span><b>${di.left} দিন</b><span class="mut">প্রতিটি দিন গুরুত্বপূর্ণ</span></div>
+    <div class="stat"><span class="mut">${isDSO() ? 'ডিএইচ-এর' : 'টেরিটরির'} সেরা ডিএসও</span><b style="font-size:22px">${top ? esc(tc(top.name)) : '—'}</b><span class="mut">${top ? top.score.toFixed(1) + ' পয়েন্ট ' + GC.tierChip(top.score) : ''}</span></div></div>`;
+  /* ডিএইচ কার্ড — ডিএসও দেখবে না */
+  const c = (ic, k, v, s, cls, href) => `<a href="${href}" class="card ${cls || ''}"><div class="ic">${ic}</div><div class="mut">${k}</div><b class="big">${v}</b><div class="mut">${s}</div><div class="more">বিস্তারিত দেখুন →</div></a>`;
+  $('#cards').innerHTML = isDSO() ? '' : c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল ' + GC.tierChip(D.territory.score), '', hOM('*'))
+    + [...D.dh].sort((a, b) => a.rank - b.rank).map(d => c(MED[d.rank - 1] || '🏅', esc(d.name) + (d === who.myDH ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank + ' ' + GC.tierChip(d.score), d === who.myDH ? 'me' : '', hOM(d.name))).join('');
+  $('#omP').hidden = $('#dssP').hidden = isDSO();
+  $('#fdhW').hidden = isDSO();
+  champs();
+  $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + scopeDH().map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
   $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw;
   $('#rs').onclick = () => { $('#fdh').value = ''; dssOpts(); $('#fdss').value = ''; draw(); };
   dssOpts(); draw();
 }
+function champs() {
+  const pool = D.ra.filter(x => scopeDH().includes(x.dh));
+  $('#champS').textContent = isDSO() ? (scopeDH()[0] || '') + '-এর ডিএসও' : 'পুরো টেরিটরির ডিএসও';
+  $('#champs').innerHTML = LV.dso.ps.map(([k, name]) => {
+    const best = pool.slice().sort((a, b) => (b[k] || 0) - (a[k] || 0))[0];
+    return best ? `<div class="ch"><div class="k">${name}</div><b>${esc(tc(best.name))}${best === who.me ? ' (আপনি)' : ''}</b><span>${Math.round((best[k] || 0) * 100)}%</span> <small class="mut">${esc(tc(best.dss))}</small></div>` : '';
+  }).join('') + (isDSO() ? '' : (() => { const t = [...D.teams].sort((a, b) => a.rank - b.rank)[0]; return t ? `<div class="ch"><div class="k">সেরা ডিএসএস</div><b>${esc(tc(t.dss))}</b><span>${t.score.toFixed(1)}</span> <small class="mut">${esc(t.dh)}</small></div>` : ''; })());
+}
 function dssOpts() {
   const d = $('#fdh').value;
-  const groups = [...new Set(D.teams.filter(t => !d || t.dh === d).map(t => t.dh))];
+  const groups = scopeDH().filter(g => !d || g === d);
   $('#fdss').innerHTML = '<option value="">সব ডিএসএস</option>' + groups.map(g => {
     const o = [...new Set(D.teams.filter(t => t.dh === g).map(t => t.dss))].sort().map(s => `<option value="${esc(g + '\u0001' + s)}">${esc(tc(s))}</option>`).join('');
-    return d ? o : `<optgroup label="${esc(g)}">${o}</optgroup>`;
+    return groups.length === 1 ? o : `<optgroup label="${esc(g)}">${o}</optgroup>`;
   }).join('');
 }
 const th = (n, b) => `${n}<small>${b}</small>`;
@@ -385,33 +567,33 @@ const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3]));
 const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine) {
   if (list.length < 3) return '';
-  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step"><b>${i + 1}</b></div></div>`; }).join('')}</div>`;
+  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
 function draw() {
-  const me = who.me, my = who.myDH;
+  const me = who.me, my = who.myDH, mt = who.myTeam;
   const d = $('#fdh').value;
   const [sd, ss] = ($('#fdss').value || '').split('\u0001');
   const ed = d || sd || '';
-  /* ওএম */
-  let h = GC.head(['ডিস্ট্রিবিউটর', ...cols('om'), 'স্কোর', 'র‍্যাঙ্ক']);
-  [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a></td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
-  if (!ed) { const t = D.territory; h += `<tr class="top go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k => GC.pcCell(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`; }
-  $('#tdh').innerHTML = h;
-  /* ডিএসএস — পুরো টেরিটরিতে এক র‍্যাঙ্ক */
-  const all = [...D.teams].sort((a, b) => a.rank - b.rank);
-  const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
-  let tb = GC.head(['র‍্যাঙ্ক', 'ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
-  l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${me && me.dh === x.dh && me.dss === x.dss ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.dss))}</a></td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
-  $('#tt').innerHTML = (!ed && !ss ? podium(all, x => tc(x.dss), null) : '') + `<div class="scroll"><table>${tb}</table></div>`;
-  /* ডিএসও — প্রতি ডিএইচ-এ র‍্যাঙ্ক */
+  if (!isDSO()) {
+    let h = GC.head(['ডিস্ট্রিবিউটর', ...cols('om'), 'স্কোর', 'র‍্যাঙ্ক']);
+    [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a>${GC.tierChip(x.score)}</td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
+    if (!ed) { const t = D.territory; h += `<tr class="tot go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k => GC.pcCell(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`; }
+    $('#tdh').innerHTML = h;
+    const all = [...D.teams].sort((a, b) => a.rank - b.rank);
+    const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
+    let tb = GC.head(['র‍্যাঙ্ক', 'ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
+    l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.dss))}</a>${GC.tierChip(x.score)}</td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
+    $('#tt').innerHTML = (!ed && !ss ? podium(all, x => tc(x.dss), mt) : '') + `<div class="scroll"><table>${tb}</table></div>`;
+  }
   let r = '';
-  [...new Set(D.ra.map(x => x.dh))].filter(g => !ed || g === ed).forEach(g => {
+  scopeDH().filter(g => !ed || g === ed).forEach(g => {
     const list = D.ra.filter(x => x.dh === g).sort((a, b) => a.dhRank - b.dhRank);
-    let tb2 = GC.head(['র‍্যাঙ্ক', 'ডিএসও', 'টিম (ডিএসএস)', ...cols('dso'), 'স্কোর', 'টিমে র‍্যাঙ্ক'], 3);
+    let tb2 = GC.head(['র‍্যাঙ্ক', 'ডিএসও', 'টিম (ডিএসএস)', ...cols('dso'), 'স্কোর', 'টিমে'], 3);
     let n = 0;
     list.forEach(x => {
       if (ss && x.dss !== ss) return; n++;
-      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' (আপনি)' : ''}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
+      const myTeam = mt && mt.dh === x.dh && mt.dss === x.dss;
+      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.score)}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
     });
     if (!n) return;
     r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me)}<div class="scroll"><table>${tb2}</table></div>`;
@@ -445,25 +627,27 @@ function renderDetail(lv, rec, title, sub) {
       <td>${miss ? '—' : nf(r.rem)}</td><td class="need">${miss ? '—' : nd(r.per)}</td><td class="need">${r.need == null ? '—' : (r.need <= 0 ? '✅ পূর্ণ' : nd(r.need) + '%')}</td><td><b>${nd(r.pts)}</b> / ${r.w}</td></tr>`;
   }).join('');
   const noAch = rows.every(r => r.ach == null);
-  const left = rows[0].left;
+  const left = rows[0].left, proj = GC.projected(D, rec, lv), t = GC.tier(rec.score);
   $('#detail').innerHTML = `
   <div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
   <div class="panel">
-    <div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)} · মাসের বাকি ${left} দিন</div>
-    <h2 style="font-size:26px;margin-top:2px">${esc(title)}</h2>
+    <div class="mine-grid" style="grid-template-columns:minmax(220px,280px) 1fr;align-items:center">
+      <div class="scorebox"><div class="ring" style="--p:${Math.min(100, rec.score).toFixed(1)}"><div><b>${rec.score.toFixed(1)}</b><small>স্কোর</small></div></div><span class="tier">${t.i} ${t.n}</span></div>
+      <div><div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</div>
+        <h2 style="font-size:28px;margin-top:2px">${esc(title)}</h2>
+        <div class="kpis" style="max-width:520px"><div class="stat"><span class="mut">মাসের বাকি</span><b>${left} দিন</b></div><div class="stat"><span class="mut">এই গতিতে মাস শেষে</span><b>${proj.toFixed(1)}</b></div><div class="stat"><span class="mut">সর্বোচ্চ সম্ভব</span><b>১০০</b></div></div>
+      </div>
+    </div>
     <div class="how"><b>কীভাবে পড়বেন</b>
       <ul>
-        <li><b>মাসিক টার্গেট (TRG):</b> পুরো মাসের টার্গেট।</li>
         <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে রিপোর্টের তারিখ পর্যন্ত যতটা অর্জন করার কথা।</li>
         <li><b>MTD অর্জন %:</b> TRX, REG, UBP${lv === 'dso' ? '' : lv === 'dss' ? ', A2M' : ', BZP'}-এর % MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % মোট (TTL) টার্গেটের বিপরীতে।</li>
         <li><b>LMTD ও MoM গ্রোথ:</b> গত মাসের একই তারিখ পর্যন্ত অর্জন এবং তার তুলনায় এ মাসে কত বেশি/কম (TRX ও UBP)।</li>
-        <li><b>পয়েন্ট:</b> ওজন × অর্জন % (সর্বোচ্চ ১০০%)।</li>
-        <li><b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
+        <li><b>পয়েন্ট:</b> ওজন × অর্জন % (সর্বোচ্চ ১০০%)। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
       </ul></div>
     ${noAch ? '<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি।</div>' : ''}
     <div class="scroll"><table style="min-width:1080px">${GC.head(['প্যারামিটার', 'মাসিক টার্গেট', 'MTD টার্গেট', 'MTD অর্জন', 'MTD অর্জন %', 'LMTD', 'MoM গ্রোথ', 'বাকি', 'প্রতিদিন প্রয়োজন', 'আরও কত % বাকি', 'পয়েন্ট'])}${body}</table></div>
     <p class="mut" style="margin-top:10px">টীকা: MTD টার্গেট = মাসিক টার্গেট × (রিপোর্টের দিন ÷ মাসের মোট দিন)। প্রতিটি রিপোর্টের নিজের Till তারিখ ধরা হয়।</p>
-    <div style="margin-top:14px;font-weight:700;color:var(--deep);font-size:18px">স্কোর: ${rec.score.toFixed(1)} / ১০০</div>
   </div>`;
 }
 function route() {
@@ -476,11 +660,13 @@ function route() {
   else if (lv === 'dss') { rec = D.teams.find(x => x.dh === a[0] && x.dss === a[1]); if (rec) { title = tc(rec.dss); sub = rec.dh + ' · টেরিটরিতে র‍্যাঙ্ক ' + rec.rank; } }
   else if (a[0] === '*') { rec = D.territory; title = 'গাজীপুর সেন্ট্রাল টেরিটরি'; }
   else { rec = D.dh.find(x => x.name === a[0]); if (rec) title = rec.name; }
+  if (isDSO() && (lv !== 'dso' || !rec || !scopeDH().includes(rec.dh))) rec = null;   // ডিএসও শুধু নিজের ডিএইচ-এর ডিএসও দেখবে
   if (!rec) { location.hash = ''; return; }
   renderDetail(lv, rec, title, sub);
   $('#main').hidden = true; $('#detail').hidden = false; scrollTo(0, 0);
 }
 addEventListener('hashchange', route);
+
 </script>
 </body>
 </html>
