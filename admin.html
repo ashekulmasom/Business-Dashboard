@@ -123,7 +123,7 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
   <h2>১. অ্যাডমিন সাইন-ইন</h2>
   <label for="tk">GitHub অ্যাক্সেস টোকেন</label>
   <input id="tk" type="password" autocomplete="off" placeholder="github_pat_…">
-  <p class="mut">শুধু রিপোজিটরির মালিক (লেখার অনুমতিসহ টোকেন) ডেটা প্রকাশ করতে পারবেন। টোকেন শুধু এই ব্রাউজারেই থাকে।</p>
+  <p class="mut">রিপোজিটরি: <b id="repoName"></b> · শুধু রিপোজিটরির মালিক (লেখার অনুমতিসহ টোকেন) ডেটা প্রকাশ করতে পারবেন। টোকেন শুধু এই ব্রাউজারেই থাকে।</p>
   <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="rem" style="width:auto;min-height:0"> এই কম্পিউটারে মনে রাখুন</label>
   <div class="btns"><button id="con" type="button">অ্যাডমিন হিসেবে সাইন ইন</button></div>
   <div id="m1" class="bad" style="margin-top:8px"></div>
@@ -858,7 +858,8 @@ root.Engine = {
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 <script>
-const OWNER = 'ashekulmasom', REPO = 'Gazipur-Central-Dashboard';
+const _gh = location.hostname.match(/^([^.]+)\.github\.io$/i);
+const OWNER = _gh ? _gh[1] : 'ashekulmasom', REPO = _gh ? (location.pathname.split('/')[1] || 'Business-Dashboard') : 'Business-Dashboard';   // রিপোর নাম ওয়েব ঠিকানা থেকে নিজে বের করে
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 const E = Engine;
 const $ = s => document.querySelector(s);
@@ -894,6 +895,7 @@ async function ghPut(path, obj, msg) {
 }
 
 /* ---------- সাইন ইন ---------- */
+$('#repoName').textContent = OWNER + '/' + REPO;
 if (store('gt')) { $('#tk').value = store('gt'); $('#rem').checked = true; }
 $('#con').onclick = async () => {
   $('#m1').textContent = '';
@@ -1043,7 +1045,7 @@ $('#pub').onclick = async () => {
     m.className = 'ok'; m.textContent = `প্রকাশ হয়েছে (${monLabel(S.month)})! এক-দুই মিনিটে সাইট আপডেট হবে।`;
   } catch (e) {
     m.className = 'bad';
-    m.textContent = (/not accessible|Forbidden|Bad credentials|Not Found|Resource/i.test(e.message) ? 'টোকেনটি এই রিপোজিটরিতে লিখতে পারছে না। GitHub-এ টোকেনের Repository access-এ ' + REPO + ' বেছে নিন এবং Contents = Read and write দিন। ' : e.message + ' ') + 'বিকল্প: ফাইলগুলো ডাউনলোড করে GitHub রিপোজিটরিতে (মূল ফোল্ডারে) আপলোড করুন।';
+    m.textContent = (/not accessible|Forbidden|Bad credentials|Not Found|Resource/i.test(e.message) ? 'টোকেনটি ' + OWNER + '/' + REPO + ' রিপোজিটরিতে লিখতে পারছে না। GitHub-এ টোকেনের Repository access-এ ' + REPO + ' বেছে নিন এবং Contents = Read and write দিন। (GitHub: ' + e.message + ') ' : e.message + ' ') + 'বিকল্প: ফাইলগুলো ডাউনলোড করে GitHub রিপোজিটরিতে (মূল ফোল্ডারে) আপলোড করুন।';
   }
   $('#pub').disabled = false;
 };
