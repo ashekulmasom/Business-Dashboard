@@ -21,6 +21,7 @@
   --sh:0 1px 2px rgba(59,10,38,.05),0 8px 24px rgba(59,10,38,.07);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;color:var(--ink);font:400 16px/1.6 var(--fb);background:var(--bg);min-height:100vh;
   background-image:radial-gradient(900px 400px at 0% -10%,#FFE1EF 0,transparent 60%),radial-gradient(700px 360px at 100% 0%,#FFF1CF 0,transparent 55%)}
@@ -166,6 +167,9 @@ footer.ft a{color:var(--mut)}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:560px){.hero h1{font-size:24px}.badge img{height:54px}.hero{padding:18px}.hero .side{margin-left:0}.panel{padding:16px}.ring{width:150px;height:150px}.ring>div{width:122px;height:122px}}
+
+.pnote{font-size:12px;color:var(--deep);font-weight:600;line-height:1.35;margin:2px 4px 4px}
+.reward{border-radius:16px;padding:10px 16px;margin-bottom:10px;background:linear-gradient(90deg,#FFF3C4,#FFE3F0);border:1px solid #F2C94C;font:700 16px var(--fh);color:var(--plum);text-align:center}
 </style>
 </head>
 <body>
@@ -281,11 +285,11 @@ function vv(rec, p, lv) {
   const n = x => x == null ? null : x;
   if (p === 'a') {
     if (lv !== 'om') return { ach: n(g('a2m').ach), trg: n(g('a2m').trg), lm: null };
-    const a = g('a2m'), d = g('d2c');
+    const a = g('a2m'), d = g('d2c'), z = g('bzp');
     return {
       ach: (a.ach == null && d.ach == null) ? null : (a.ach || 0) + (d.ach || 0),
-      trg: (a.trg == null && d.trg == null) ? null : (a.trg || 0) + (d.trg || 0),
-      lm: null, a2m: a.ach, d2c: d.ach, a2mT: a.trg, d2cT: d.trg
+      trg: z.trg != null ? z.trg : n(a.trg),          // BZP টার্গেট (না দিলে A2M টার্গেট)
+      lm: null, a2m: a.ach, d2c: d.ach, bzpSet: z.trg != null
     };
   }
   return { ach: n(g(p).ach), trg: n(g(p).trg), lm: n(g(p).lm) };
@@ -364,11 +368,11 @@ function canMS(role) { return role === 'om' || role === 'admin'; }
 /* ---------- হেডার ও নেভিগেশন ---------- */
 function header(o) {
   const months = (o.IDX.months || []).slice().sort().reverse();
-  const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'অ্যাডমিন' }[o.who.role] || '';
+  const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'Admin' }[o.who.role] || '';
   const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) : o.who.myDH ? o.who.myDH.name : '';
   const tabs = [['index.html', '🏆 Achievers’ Club', 'ac']];
   if (canMS(o.who.role)) tabs.push(['service.html', '🛠️ Market Service', 'ms']);
-  if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ অ্যাডমিন', 'ad']);
+  if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ Admin', 'ad']);
   $('#hdr').innerHTML = `
   <header class="hero">
     <span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
@@ -502,8 +506,13 @@ function focus() {
 function mineHTML(F) {
   const r = F.rec, t = GC.tier(r.score), proj = GC.projected(D, r, F.lv);
   let msg = '';
-  if (F.rank === 1) msg = '🏆 অভিনন্দন! আপনি এখন এক নম্বরে — জায়গাটা ধরে রাখুন!';
-  else if (F.rank > 1) { const ahead = F.list[F.rank - 2]; msg = `💪 ${esc(F.nameOf(ahead))}-কে ছাড়িয়ে যেতে আর মাত্র <b>${(ahead.score - r.score + 0.1).toFixed(1)}</b> পয়েন্ট!`; }
+  if (F.rank === 1) msg = '🏆🥇 অভিনন্দন! আপনি এখন এক নম্বরে — জায়গাটা ধরে রাখুন!';
+  else if (F.rank > 1) {
+    const first = F.list[0], ahead = F.list[F.rank - 2];
+    if (F.lv === 'dso' && F.rank <= 3) msg = `${RK_ICON[F.rank - 1]} ${DSO_MSG}<br>`;
+    msg += `🥇 ১ম ${esc(F.nameOf(first))}-কে ছাড়াতে আর <b>${GC.nd(first.score - r.score + 0.05)}</b> পয়েন্ট`;
+    if (F.rank > 2) msg += `<br>👣 পরের ধাপ: ${esc(F.nameOf(ahead))}-কে ছাড়াতে <b>${GC.nd(ahead.score - r.score + 0.05)}</b> পয়েন্ট`;
+  }
   else msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
   const rows = LV[F.lv].ps.map(p => {
     const [k, name, basis, w, cap] = p, V = GC.vv(r, k, F.lv), di = GC.dayInfo(D, k, F.lv);
@@ -523,10 +532,10 @@ function mineHTML(F) {
   return `<div class="panel"><div class="mine-grid">
     <div class="scorebox"><div class="kick">${esc(F.sub)}</div><div class="fh" style="font-size:20px;font-weight:700">${esc(F.title)}</div>
       <div class="ring" style="--p:${Math.min(100, r.score).toFixed(1)}"><div><b>${r.score.toFixed(1)}</b><small>পয়েন্ট</small></div></div>
-      <span class="tier">${t.i} ${t.n} লেভেল</span>
+      <span class="tier">${label(F.lv, r.score)}</span>
       <div class="kpis"><div><b>${F.rank ? F.rank + '/' + F.list.length : D.dh.length}</b><span>${F.rankLab}</span></div><div><b>${F.extra[1]}</b><span>${F.extra[0]}</span></div><div><b>${proj.toFixed(0)}</b><span>মাস শেষে (এই গতিতে)</span></div></div>
       <div class="msg" style="color:#FFE9A8">${msg}</div>
-      <div style="margin-top:10px"><a class="btn ghost" style="min-height:40px;background:transparent;color:#fff;border-color:rgba(255,255,255,.6)" href="${F.href}">পুরো হিসাব দেখুন →</a></div>
+      <div style="margin-top:10px"><a class="btn ghost" style="min-height:40px;background:transparent;color:#fff;border-color:rgba(255,255,255,.6)" href="${F.href}">${F.rank > 1 ? 'শীর্ষে যাওয়ার হিসাব দেখুন →' : 'পুরো হিসাব দেখুন →'}</a></div>
     </div>
     <div><div class="ph"><h2>🎯 আজকের লক্ষ্য</h2><span class="mut">কোন প্যারামিটারে কত বাকি</span></div><div class="plist">${rows}</div></div>
   </div>
@@ -571,13 +580,62 @@ function dssOpts() {
   }).join('');
 }
 const th = (n, b) => `${n}<small>${b}</small>`;
-const rk = n => n <= 3 ? `<span class="rk">${MED[n - 1]}</span>` : n;
+const RK_ICON = ['🏆🥇', '🥈', '🥉'];
+const rk = n => n <= 3 ? `<span class="rk">${RK_ICON[n - 1]}</span>` : n;
+const DSO_MSG = 'শুভকামনা, এগিয়ে যাও। পারবে তুমিও।';
+const LEADER = '⭐ সেরাদের সেরা-লিডার';
+const label = (lv, s) => { if (lv === 'dso') { const t = GC.tier(s); return `${t.i} ${t.n} লেভেল`; } return LEADER; };
+/* তুলনার দল: ডিএসও → নিজের ডিএইচ, ডিএসএস → সব ডিএসএস, ওএম → সব ডিএইচ */
+function group(lv, rec) {
+  if (lv === 'dso') return { list: D.ra.filter(x => x.dh === rec.dh).sort((a, b) => b.score - a.score), nameOf: x => tc(x.name), where: rec.dh + '-এ' };
+  if (lv === 'dss') return { list: [...D.teams].sort((a, b) => b.score - a.score), nameOf: x => tc(x.dss), where: 'সব ডিএসএস-এর মধ্যে' };
+  if (rec === D.territory) return null;
+  return { list: [...D.dh].sort((a, b) => b.score - a.score), nameOf: x => x.name, where: 'সব ডিএইচ-এর মধ্যে' };
+}
+/* প্যারামিটার অনুযায়ী: অন্যজনকে ছাড়াতে শুধু এই প্যারামিটারে আর কত লাগবে */
+function gapTable(lv, me, other, oname) {
+  const need = other.score - me.score + 0.05;
+  const rows = LV[lv].ps.map(([k, name, basis, w, cap]) => {
+    const mf = me[k] || 0, of = other[k] || 0, mp = w * Math.min(mf, cap), op = w * Math.min(of, cap);
+    const head = isFinite(cap) ? w * cap - mp : Infinity;
+    const V = GC.vv(me, k, lv), di = GC.dayInfo(D, k, lv);
+    let how;
+    if (need <= 0) how = '—';
+    else if (need > head + 1e-9) how = `<span class="lo">ক্যাপের কারণে শুধু এতে সম্ভব নয় (বাকি সর্বোচ্চ ${GC.nd(head)} পয়েন্ট)</span>`;
+    else if (!(V.trg > 0)) how = '<span class="mut">টার্গেট নেই</span>';
+    else {
+      const ef = need / w, base = basis === 'MTD' ? V.trg * di.day / di.dim : V.trg, units = ef * base;
+      how = `আরও <b>${k === 't' || k === 'vo' || k === 'a' ? GC.nf(units) : GC.nd(Math.ceil(units * 10) / 10)}</b> <small class="mut">(${Math.round(mf * 100)}% → ${Math.round((mf + ef) * 100)}%)</small>`;
+    }
+    const d = mp - op;
+    return `<tr><td class="l"><b>${name}</b><small>ওজন ${w} · ${GC.capTxt(cap)}</small></td><td>${Math.round(mf * 100)}%</td><td>${Math.round(of * 100)}%</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${d >= 0 ? '+' : ''}${GC.nd(d)}</td><td>${how}</td></tr>`;
+  }).join('');
+  return `<div class="scroll"><table style="min-width:820px">${GC.head(['প্যারামিটার', 'অর্জন %', esc(oname) + '-এর %', 'পয়েন্ট', esc(oname) + '-এর পয়েন্ট', 'পার্থক্য', 'শুধু এই প্যারামিটারে আর কত লাগবে'])}${rows}</table></div>`;
+}
+function compareHTML(lv, rec, title) {
+  const G = group(lv, rec); if (!G || G.list.length < 2) return '';
+  const rank = G.list.indexOf(rec) + 1, first = G.list[0];
+  let h = `<div class="panel" id="cmp"><div class="ph"><h2>🏁 শীর্ষে যাওয়ার হিসাব</h2><span class="mut">${esc(G.where)} র‍্যাঙ্ক ${rank}/${G.list.length}</span></div>`;
+  if (rank === 1) {
+    const second = G.list[1];
+    h += `<div class="quote" style="margin-bottom:12px"><span>🏆</span><div>${esc(title)} এখন ১ নম্বরে! ২য় ${esc(G.nameOf(second))}-এর চেয়ে ${GC.nd(rec.score - second.score)} পয়েন্ট এগিয়ে — ব্যবধান ধরে রাখুন।</div></div>` + gapTable(lv, rec, second, G.nameOf(second));
+  } else {
+    h += `<div class="quote" style="margin-bottom:12px"><span>🥇</span><div>১ম ${esc(G.nameOf(first))}-কে ছাড়িয়ে যেতে আর <b>${GC.nd(first.score - rec.score + 0.05)}</b> পয়েন্ট দরকার।</div></div>
+      <div class="mut" style="margin-bottom:8px">যেকোনো একটি প্যারামিটারে বা কয়েকটিতে মিলিয়ে এই পয়েন্ট বাড়ালেই ছাড়িয়ে যাওয়া যাবে। নিচে প্রতিটি প্যারামিটারে আলাদাভাবে কত করলে হবে:</div>` + gapTable(lv, rec, first, G.nameOf(first));
+    if (rank > 2) {
+      const ab = G.list[rank - 2];
+      h += `<h3 style="margin:18px 0 8px;color:var(--deep)">👣 পরের ধাপ: ${rank - 1} নম্বরের ${esc(G.nameOf(ab))}-কে ছাড়াতে আর ${GC.nd(ab.score - rec.score + 0.05)} পয়েন্ট</h3>` + gapTable(lv, rec, ab, G.nameOf(ab));
+    }
+  }
+  return h + '</div>';
+}
 const bar = s => `<div class="bar"><i style="width:${Math.min(100, s)}%"></i></div>`;
 const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3] + (isFinite(p[4]) ? ' · ক্যাপ ' + Math.round(p[4] * 100) + '%' : '')));
 const keys = lv => LV[lv].ps.map(p => p[0]);
-function podium(list, nameOf, mine) {
+function podium(list, nameOf, mine, kind) {
   if (list.length < 3) return '';
-  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${MED[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div><div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
+  const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${DSO_MSG}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
+  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
 function draw() {
   const me = who.me, my = who.myDH, mt = who.myTeam;
@@ -586,14 +644,14 @@ function draw() {
   const ed = d || sd || '';
   if (!isDSO()) {
     let h = GC.head(['ডিস্ট্রিবিউটর', ...cols('om'), 'স্কোর', 'র‍্যাঙ্ক']);
-    [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a>${GC.tierChip(x.score)}</td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
+    [...D.dh].sort((a, b) => a.rank - b.rank).filter(x => !ed || x.name === ed).forEach(x => h += `<tr class="go ${x === my ? 'mine' : ''}" data-h="${hOM(x.name)}"><td class="l"><a href="${hOM(x.name)}">${esc(x.name)}</a></td>${keys('om').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${rk(x.rank)}</td></tr>`);
     if (!ed) { const t = D.territory; h += `<tr class="tot go" data-h="${hOM('*')}"><td class="l"><a href="${hOM('*')}">🏆 টেরিটরি</a></td>${keys('om').map(k => GC.pcCell(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`; }
     $('#tdh').innerHTML = h;
     const all = [...D.teams].sort((a, b) => a.rank - b.rank);
     const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
     let tb = GC.head(['র‍্যাঙ্ক', 'ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
-    l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.dss))}</a>${GC.tierChip(x.score)}</td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
-    $('#tt').innerHTML = (!ed && !ss ? podium(all, x => tc(x.dss), mt) : '') + `<div class="scroll"><table>${tb}</table></div>`;
+    l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}">${esc(tc(x.dss))}</a>${x.rank <= 3 ? ' <span class="chip">🎁 পুরস্কার</span>' : ''}</td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
+    $('#tt').innerHTML = '<div class="reward">🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার! 🏆🥇 ১ম · 🥈 ২য় · 🥉 ৩য়</div>' + (!ed && !ss ? podium(all, x => tc(x.dss), mt, 'dss') : '') + `<div class="scroll"><table>${tb}</table></div>`;
   }
   let r = '';
   scopeDH().filter(g => !ed || g === ed).forEach(g => {
@@ -603,10 +661,10 @@ function draw() {
     list.forEach(x => {
       if (ss && x.dss !== ss) return; n++;
       const myTeam = mt && mt.dh === x.dh && mt.dss === x.dss;
-      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.score)}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
+      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.score)}${x.dhRank === 2 || x.dhRank === 3 ? `<small>${DSO_MSG}</small>` : ''}</td><td class="l">${esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
     });
     if (!n) return;
-    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me)}<div class="scroll"><table>${tb2}</table></div>`;
+    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll"><table>${tb2}</table></div>`;
   });
   $('#tr').innerHTML = r;
 }
@@ -629,7 +687,7 @@ function renderDetail(lv, rec, title, sub) {
   const Lx = LV[lv], rows = Lx.ps.map(p => calc(rec, lv, p));
   const body = rows.map(r => {
     const miss = r.trg == null;
-    const extra = r.p === 'a' && lv === 'om' ? `<small>A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · টার্গেট A2M ${nf(r.V.a2mT)} + D2C ${r.V.d2cT == null ? 'দেওয়া নেই' : nf(r.V.d2cT)}</small>` : '';
+    const extra = r.p === 'a' && lv === 'om' ? `<small>অর্জন: A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · ${r.V.bzpSet ? 'BZP টার্গেট অ্যাডমিন সেটিংস থেকে' : 'BZP টার্গেট দেওয়া নেই — A2M টার্গেট ধরা হয়েছে'}</small>` : '';
     return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
       <td>${nf(r.trg)}</td><td>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</td><td>${nf(r.ach)}</td>
       <td class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}"><b>${Math.round(r.pct)}%</b></td>
@@ -642,12 +700,15 @@ function renderDetail(lv, rec, title, sub) {
   <div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
   <div class="panel">
     <div class="mine-grid" style="grid-template-columns:minmax(220px,280px) 1fr;align-items:center">
-      <div class="scorebox"><div class="ring" style="--p:${Math.min(100, rec.score).toFixed(1)}"><div><b>${rec.score.toFixed(1)}</b><small>স্কোর</small></div></div><span class="tier">${t.i} ${t.n}</span></div>
+      <div class="scorebox"><div class="ring" style="--p:${Math.min(100, rec.score).toFixed(1)}"><div><b>${rec.score.toFixed(1)}</b><small>স্কোর</small></div></div><span class="tier">${label(lv, rec.score)}</span></div>
       <div><div class="mut">${Lx.lab}${sub ? ' · ' + esc(sub) : ''} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</div>
         <h2 style="font-size:28px;margin-top:2px">${esc(title)}</h2>
-        <div class="kpis" style="max-width:520px"><div class="stat"><span class="mut">মাসের বাকি</span><b>${left} দিন</b></div><div class="stat"><span class="mut">এই গতিতে মাস শেষে</span><b>${proj.toFixed(1)}</b></div><div class="stat"><span class="mut">লেভেল</span><b style="font-size:22px">${t.i} ${t.n}</b></div></div>
+        <div class="kpis" style="max-width:520px"><div class="stat"><span class="mut">মাসের বাকি</span><b>${left} দিন</b></div><div class="stat"><span class="mut">এই গতিতে মাস শেষে</span><b>${proj.toFixed(1)}</b></div><div class="stat"><span class="mut">${lv === 'dso' ? 'লেভেল' : 'পরিচয়'}</span><b style="font-size:${lv === 'dso' ? 22 : 17}px">${label(lv, rec.score)}</b></div></div>
       </div>
     </div>
+  </div>
+  ${compareHTML(lv, rec, title)}
+  <div class="panel">
     <div class="how"><b>কীভাবে পড়বেন</b>
       <ul>
         <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে রিপোর্টের তারিখ পর্যন্ত যতটা অর্জন করার কথা।</li>
