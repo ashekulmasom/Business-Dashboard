@@ -9,16 +9,18 @@
 :root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif}
-.wrap{max-width:820px;margin:0 auto;padding:28px 20px 60px}
+.wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
 img.logo{height:90px;width:auto;mix-blend-mode:multiply;display:block}
-h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}
+h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:0 0 6px}
 .mut{color:var(--mut);font-size:13px}
 .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:16px}
 .rc{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;background:#FFFBFD}
-.rc.done{border-color:#7CC4BC;background:#F4FBFA}
+.rc.done{border-color:#7CC4BC;background:#F4FBFA}.rc.err{border-color:#E7A0A8;background:#FFF6F7}
 label{display:block;font-weight:600;margin-bottom:6px}
-input[type=password],input[type=text],input[type=date],select{width:100%;min-height:44px;border:1px solid #8A6A7B;border-radius:8px;padding:8px 12px;font:inherit;background:#fff}
-input[type=file]{width:100%;padding:14px;border:2px dashed #8A6A7B;border-radius:12px;background:#FFF8FB}
+input[type=password],input[type=text],input[type=date],input[type=number],select{width:100%;min-height:44px;border:1px solid #8A6A7B;border-radius:8px;padding:8px 12px;font:inherit;background:#fff}
+#drop{border:2px dashed #8A6A7B;border-radius:14px;background:#FFF8FB;padding:34px 18px;text-align:center;cursor:pointer}
+#drop.over{background:#FFE3F0;border-color:var(--pink)}
+#drop b{font-size:18px;color:var(--pink)}
 .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}.row>div{flex:1 1 180px}
 button{min-height:48px;border-radius:8px;padding:10px 22px;font:600 15px inherit;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;margin:12px 10px 0 0}
 button.ghost{background:#fff;color:var(--pink)}
@@ -26,7 +28,12 @@ button:disabled{opacity:.5;cursor:not-allowed}
 ul{list-style:none;padding:0;margin:8px 0 0}li{margin:4px 0}
 .ok{color:var(--ok);font-weight:600}.warn{color:var(--low);font-weight:600}.bad{color:#B00020;font-weight:600}
 #msg{margin-top:14px;font-weight:600}
-.tag{display:inline-block;font-size:11px;background:#FBE0EE;color:#A80B52;border-radius:999px;padding:0 8px;margin-left:6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 8px;border-top:1px solid #F4E1EB;text-align:left;vertical-align:middle}
+th{font-size:12px;color:var(--mut);border-top:0}
+.b{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;font-weight:600}
+.b.g{background:#DDF3EF;color:var(--ok)}.b.y{background:#FFF0C8;color:var(--low)}.b.n{background:#EEE;color:#555}
+details summary{cursor:pointer;font-weight:600;color:var(--pink)}
 </style>
 </head>
 <body>
@@ -46,19 +53,37 @@ ul{list-style:none;padding:0;margin:8px 0 0}li{margin:4px 0}
 <div id="m1" class="bad"></div>
 </section>
 
-<section class="panel" id="s2" hidden>
-<h2>২. নিয়মিত রিপোর্ট আপলোড করুন</h2>
-<p class="mut">প্রতিটি রিপোর্টের নিচে <b>ডেটার তারিখ (Till)</b> ঠিক করে দিন। মাসের শুরুতে বা টার্গেট বদলালে প্রথমে RA-DSS টার্গেট ফাইল দিন; এতে ডিএসও-ডিএসএস-ডিএইচ তালিকা ও মাসিক টার্গেট আসে। স্কোর ও র‍্যাঙ্ক সাইট নিজেই ওজন অনুযায়ী হিসাব করে। যে রিপোর্টগুলো আজ পাননি সেগুলো বাদ দিন — আগের ডেটা অপরিবর্তিত থাকবে। ফাইল দিলে কলাম নিজে বেছে নেওয়া হবে; ভুল হলে ড্রপডাউন থেকে বদলান। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</p>
-<div id="reps"></div>
+<div id="main" hidden>
+<section class="panel">
+<h2>২. রিপোর্ট আপলোড করুন</h2>
+<p class="mut">যেকোনো রিপোর্ট, যেকোনো ক্রমে, একসাথে বা আলাদা দিনে দিন। কোনটা কী রিপোর্ট এবং কোন তারিখের, সেটা সাইট ফাইল দেখে নিজেই বুঝে নেয়। যেসব রিপোর্ট আজ পাননি সেগুলোর আগের ডেটা অপরিবর্তিত থাকে। মাসের শুরুতে প্রথমে RA-DSS টার্গেট ফাইল দিন।</p>
+<div id="drop" tabindex="0" role="button" aria-label="রিপোর্ট ফাইল বেছে নিন">
+<b>📂 এখানে ফাইল টেনে আনুন, অথবা ক্লিক করে বেছে নিন</b>
+<div class="mut">একসাথে অনেকগুলো ফাইল দেওয়া যায় (.xlsx / .xls / .xlsb)</div>
+<input id="file" type="file" multiple accept=".xlsx,.xls,.xlsb,.csv" hidden>
+</div>
+<div id="files"></div>
 </section>
 
-<section class="panel" id="s2b" hidden>
-<h2>৩. মার্কেট সার্ভিস চেক রিপোর্ট (অতিরিক্ত)</h2>
-<p class="mut">এগুলো আলাদা ফাইল হিসেবে সংরক্ষণ হয় (স্কোরে যুক্ত হয় না)।</p>
-<div id="svc"></div>
+<section class="panel">
+<h2>৩. কোন রিপোর্ট কোন তারিখ পর্যন্ত</h2>
+<div style="overflow-x:auto"><table id="slots"></table></div>
 </section>
 
-<section class="panel" id="s3" hidden>
+<section class="panel">
+<details>
+<summary>⚙️ টার্গেট সেটিংস</summary>
+<div class="row">
+<div><label for="savCnt">SAV-CNT: প্রতি ডিএসও মাসিক টার্গেট</label><input id="savCnt" type="number" min="0" step="1" value="10"></div>
+</div>
+<div class="mut" style="margin-top:8px">ডিএসএস ও ডিএইচ-এর SAV-CNT টার্গেট = ডিএসও সংখ্যা × এই সংখ্যা।</div>
+<h3 style="margin-top:16px">D2C মাসিক টার্গেট (ডিএইচ অনুযায়ী, টাকায়)</h3>
+<div class="mut">টার্গেট ফাইলে D2C টার্গেট নেই, তাই এখানে দিন। ওএম-এর BZP টার্গেট = A2M টার্গেট + D2C টার্গেট। খালি রাখলে শুধু A2M টার্গেট ধরা হবে।</div>
+<div class="row" id="d2cIn"></div>
+</details>
+</section>
+
+<section class="panel" id="s3">
 <h2>৪. প্রকাশ করুন</h2>
 <p class="mut">প্রকাশ করলে GitHub-এর data.json বদলে যাবে। এক-দুই মিনিটের মধ্যে সাইটে নতুন সংখ্যা দেখা যাবে।</p>
 <button id="pub" type="button" disabled>GitHub-এ প্রকাশ করুন</button>
@@ -66,50 +91,53 @@ ul{list-style:none;padding:0;margin:8px 0 0}li{margin:4px 0}
 <div id="msg"></div>
 </section>
 </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const OWNER='ashekulmasom',REPO='Gazipur-Central-Dashboard',PATH='data.json';
+const OWNER='ashekulmasom',REPO='Gazipur-Central-Dashboard',PATH='data.json',AMPATH='service/agentmap.json';
 const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const up=s=>String(s==null?'':s).replace(/\s+/g,' ').trim().toUpperCase();
 const tk=()=>$('#tk').value.trim();
 const hdr=()=>({Authorization:'Bearer '+tk(),Accept:'application/vnd.github+json'});
-const today=()=>new Date().toISOString().slice(0,10);
-const num=v=>typeof v==='number'&&isFinite(v);
-const normW=w=>{w=String(w==null?'':w).replace(/[^\d]/g,'');if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
+const N=s=>String(s==null?'':s).replace(/[^\d]/g,'').replace(/^880/,'').replace(/^0+/,'');   // ওয়ালেট তুলনার জন্য: শুরুর ০ বাদ
+const w11=s=>{const n=N(s);return n.length===10?'0'+n:''};
+const toNum=v=>{if(typeof v==='number'&&isFinite(v))return v;if(typeof v==='string'&&v.trim()!==''){const n=Number(v.replace(/[,\s]/g,''));return isFinite(n)?n:null}return null};
+const iso=d=>new Date(d.getTime()+12*3600e3).toISOString().slice(0,10);
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+const MONS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
-/* ===== রিপোর্টের তালিকা =====
-   t: [{p: প্যারামিটার কী, f: ach | ld | lm, l: লেবেল, re: কলাম অনুমানের প্যাটার্ন}] */
-const REPS=[
- {id:'ra',label:'RA-DSS টার্গেট ফাইল — ডিএসও-ডিএসএস-ডিএইচ ম্যাপিং ও মাসিক টার্গেট',main:true},
- {id:'dtr',label:'DAILY TRX REPORT – DTR',t:[{p:'t',f:'ach',l:'TRX (MTD অর্জন)',re:/trx|txn|trans|count/i}]},
- {id:'lddtr',label:'LD-DTR (গতকাল)',t:[{p:'t',f:'ld',l:'TRX (গতকাল)',re:/trx|txn|trans|count/i}]},
- {id:'lmdtr',label:'LM DTR (গত মাস)',t:[{p:'t',f:'lm',l:'TRX (গত মাস)',re:/trx|txn|trans|count/i}]},
- {id:'reg',label:'REG',t:[{p:'r',f:'ach',l:'REG (MTD অর্জন)',re:/reg/i}]},
- {id:'ldreg',label:'LD-REG (গতকাল)',t:[{p:'r',f:'ld',l:'REG (গতকাল)',re:/reg/i}]},
- {id:'ubp',label:'UBP',t:[{p:'u',f:'ach',l:'UBP (MTD অর্জন)',re:/ubp|bill|count/i}]},
- {id:'sav',label:'SAVINGS (HQ থেকে পাওয়ার পর)',t:[{p:'vo',f:'ach',l:'SAV-VOL (পরিমাণ)',re:/vol|amount|bal/i},{p:'c',f:'ach',l:'SAV-CNT (সংখ্যা)',re:/cnt|count|acc|number/i}]},
- {id:'a2m',label:'A2M (HQ থেকে পাওয়ার পর)',t:[{p:'a2m',f:'ach',l:'A2M (অর্জন)',re:/a2m|amount|value|vol/i}]},
- {id:'d2c',label:'D2C (HQ থেকে পাওয়ার পর)',t:[{p:'d2c',f:'ach',l:'D2C (অর্জন)',re:/d2c|amount|value|vol/i}]}
+/* ===== রিপোর্টের ধরন ===== */
+const SLOTS=[
+ {id:'target',label:'RA-DSS টার্গেট ফাইল',freq:'মাসে একবার',monthly:true},
+ {id:'dtr',label:'DTR — Daily TRX Report',freq:'প্রতিদিন'},
+ {id:'lddtr',label:'LD-DTR (আগের দিন)',freq:'প্রতিদিন'},
+ {id:'lmdtr',label:'LM DTR (গত মাস)',freq:'মাসে একবার',monthly:true},
+ {id:'reg',label:'REG — Daily Acquisition',freq:'প্রতিদিন'},
+ {id:'ldreg',label:'LD-REG (আগের দিন)',freq:'প্রতিদিন'},
+ {id:'ubp',label:'UBP — Assisted Bill Pay',freq:'প্রতিদিন'},
+ {id:'sav',label:'SAVINGS',freq:'HQ থেকে পেলে'},
+ {id:'a2m',label:'A2M',freq:'HQ থেকে পেলে'},
+ {id:'d2c',label:'D2C',freq:'HQ থেকে পেলে'},
+ {id:'r78',label:'REPORT 78',freq:'সার্ভিস চেক',svc:true},
+ {id:'b2bid',label:'B2B TRX ID WISE',freq:'সার্ভিস চেক',svc:true},
+ {id:'b2bagent',label:'B2B – AGENT WISE',freq:'সার্ভিস চেক',svc:true}
 ];
-const SVC=[
- {id:'b2b-trx-id-wise',label:'B2B TRX ID WISE'},
- {id:'b2b-agent-wise',label:'B2B – AGENT WISE'},
- {id:'report-78',label:'REPORT 78'}
-];
+const TYPE_OPTS=[['auto','নিজে চিনুক'],...SLOTS.map(s=>[s.id,s.label])];
 
-/* ===== কাজের কপি (প্রকাশিত data.json থেকে শুরু) ===== */
-let W={updated:'',tillDate:'',tills:{},ra:[],teams:[],dh:[],territory:null};
-const pending={};   // সার্ভিস ফাইল
-const SH={};        // প্রতিটি রিপোর্টের পড়া শিট {head,rows,idx}
-let dirty=false;
+/* ===== অবস্থা ===== */
+let W={updated:'',tillDate:'',tills:{},cfg:{savCnt:10,d2c:{}},ra:[],teams:[],dh:[],territory:null};
+let AM=new Map();            // এজেন্ট (হ্যাশ) → আরএ ওয়ালেট
+let amDirty=false;
+const SVC={};                // সার্ভিস রিপোর্ট (প্রকাশের অপেক্ষায়)
+let dirty=false,jobs=[],jid=0;
 
-fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{
-  W=Object.assign({tills:{}},j);W.tills=W.tills||{};
-  const t=W.tillDate||W.updated;
-  $('#last').textContent=`প্রকাশিত ডেটা: Till ${t} (${j.ra.length} জন ডিএসও, ${j.teams.length}টি টিম)।`;
-}).catch(()=>{$('#last').textContent='এখনও কোনো ডেটা প্রকাশ হয়নি।'});
+const ready=fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{
+  W=Object.assign({tills:{},cfg:{savCnt:10,d2c:{}}},j);W.tills=W.tills||{};W.cfg=W.cfg||{savCnt:10,d2c:{}};W.cfg.d2c=W.cfg.d2c||{};
+  $('#last').textContent=`প্রকাশিত ডেটা: Till ${W.tillDate||W.updated} (${(j.ra||[]).length} জন ডিএসও, ${(j.teams||[]).length}টি টিম)।`;
+}).catch(()=>{$('#last').textContent='এখনও কোনো ডেটা প্রকাশ হয়নি।'})
+.then(()=>fetch(AMPATH+'?'+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.m)AM=new Map(Object.entries(j.m))}).catch(()=>{}));
 
 if(localStorage.getItem('gt')){$('#tk').value=localStorage.getItem('gt');$('#rem').checked=true}
 $('#con').onclick=async()=>{
@@ -119,211 +147,384 @@ $('#con').onclick=async()=>{
     if(!r.ok)throw new Error(j.message||'সাইন ইন হয়নি');
     if(!(j.permissions&&j.permissions.push))throw new Error('এই টোকেন দিয়ে রিপোজিটরিতে লেখা যাবে না। Contents: Read and write অনুমতি দিন।');
     if($('#rem').checked)localStorage.setItem('gt',tk());else localStorage.removeItem('gt');
-    $('#s2').hidden=false;$('#s2b').hidden=false;$('#s3').hidden=false;
-    $('#m1').className='ok';$('#m1').textContent='সাইন ইন সফল।';
-    buildCards();
+    await ready;
+    $('#main').hidden=false;$('#m1').className='ok';$('#m1').textContent='সাইন ইন সফল।';
+    renderAll();
   }catch(e){$('#m1').className='bad';$('#m1').textContent=e.message}
 };
 
-/* ===== কার্ড ===== */
-function buildCards(){
-  $('#reps').innerHTML=REPS.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}${r.main?'<span class="tag">প্রথমে এটি দিন</span>':''}</h3>
-    <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}">
-    ${r.main?'':`<div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" value="${(W.tills&&W.tills[r.id])||''}"></div></div>`}
-    <div class="cfg"></div><ul class="st"></ul></div>`).join('');
-  $('#svc').innerHTML=SVC.map(r=>`<div class="rc" id="c-${r.id}"><h3>${esc(r.label)}</h3>
-    <input type="file" accept=".xlsb,.xlsx,.xls,.csv" data-id="${r.id}" data-svc="1">
-    <div class="row"><div><label>ডেটার তারিখ (Till)</label><input type="date" class="till" data-id="${r.id}" data-svc="1" value="${today()}"></div></div>
-    <ul class="st"></ul></div>`).join('');
-  document.querySelectorAll('input[type=file]').forEach(i=>i.onchange=onFile);
-  document.querySelectorAll('input.till').forEach(i=>i.onchange=()=>{
-    const id=i.dataset.id;
-    if(i.dataset.svc){if(pending[id])pending[id].till=i.value}
-    else{W.tills[id]=i.value;dirty=true}
-    refreshPub();
-  });
-}
-const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'ঠিক আছে':c==='warn'?'সতর্কতা':'সমস্যা'}:</span> ${t}</li>`;
-const setSt=(id,h)=>{$(`#c-${id} .st`).innerHTML=h};
-function refreshPub(){
-  const ok=!!(W.ra.length&&W.teams.length&&W.dh.length&&W.territory);
-  $('#pub').disabled=!ok;$('#dl').disabled=!ok;
-}
+/* ===== ফাইল ড্রপ ===== */
+const drop=$('#drop'),fin=$('#file');
+drop.onclick=()=>fin.click();
+drop.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fin.click()}};
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>handle([...e.dataTransfer.files]));
+fin.onchange=()=>{handle([...fin.files]);fin.value=''};
 
-/* ===== ফাইল পড়া ===== */
-async function readFile(f){
-  const buf=await f.arrayBuffer();
-  return XLSX.read(buf,{type:'array',cellDates:true,...(/\.(csv)$/i.test(f.name)?{}:{})});
-}
-async function onFile(e){
-  const inp=e.target,f=inp.files[0],id=inp.dataset.id;if(!f)return;
-  setSt(id,'<li>ফাইল পড়া হচ্ছে… অপেক্ষা করুন।</li>');
-  try{
-    if(inp.dataset.svc)return await onSvc(id,f);
-    const rep=REPS.find(r=>r.id===id);
-    if(rep.main)return await onMain(f);
-    const wb=await readFile(f);
-    const ws=wb.Sheets[wb.SheetNames[0]];
-    const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
-    const hi=headerRow(aoa);
-    if(hi<0)throw new Error('ফাইলে কলামের নাম (হেডার সারি) পাওয়া যায়নি।');
-    const head=aoa[hi].map((h,i)=>h==null||h===''?`কলাম ${i+1}`:String(h).trim());
-    SH[id]={head,rows:aoa.slice(hi+1)};
-    // কলাম অনুমান
-    const idIdx=guessId(head);
-    const sel=rep.t.map(t=>{let k=head.findIndex(h=>t.re.test(h));return k<0?-1:k});
-    const cfg=$(`#c-${id} .cfg`);
-    const opt=(sel0)=>head.map((h,i)=>`<option value="${i}" ${i===sel0?'selected':''}>${esc(h)}</option>`).join('');
-    cfg.innerHTML=`<div class="row"><div><label>আইডি কলাম (ওয়ালেট / নাম)</label><select class="idc">${opt(idIdx)}</select></div>`+
-      rep.t.map((t,k)=>`<div><label>${esc(t.l)}</label><select class="vc" data-k="${k}"><option value="-1">— বেছে নিন —</option>${opt(sel[k])}</select></div>`).join('')+'</div>';
-    cfg.querySelectorAll('select').forEach(s=>s.onchange=()=>applyRep(id));
-    // তারিখ না দেওয়া থাকলে আজকের তারিখ
-    const ti=$(`#c-${id} input.till`);if(!ti.value){ti.value=today();W.tills[id]=ti.value}
-    applyRep(id);
-  }catch(err){setSt(id,`<li class="bad">${esc(err.message)}</li>`)}
-}
-function headerRow(aoa){
-  for(let i=0;i<Math.min(aoa.length,40);i++){
-    const r=aoa[i]||[];if(r.filter(c=>typeof c==='string'&&c.trim()).length>=2)return i;
+/* ===== শনাক্তকরণ ===== */
+const aoaOf=(wb,sn)=>XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
+function findHdr(aoa,names,max=12){
+  const want=names.map(s=>s.toLowerCase());
+  for(let i=0;i<Math.min(aoa.length,max);i++){
+    const row=(aoa[i]||[]).map(c=>String(c==null?'':c).trim().toLowerCase());
+    if(want.every(w=>row.includes(w)))return {hi:i,ix:n=>row.indexOf(n.toLowerCase()),row};
   }
-  return -1;
+  return null;
 }
-function guessId(head){
-  let k=head.findIndex(h=>/wallet|msisdn|mobile|dso|number/i.test(h));
-  if(k<0)k=head.findIndex(h=>/\bid\b|code|name|dss|house|dh/i.test(h));
-  return k<0?0:k;
+const SIG={
+ dtr:['ra wallet','mtd ci amt','mtd co amt','trx date'],
+ reg:['ra wallet','mtd registration'],
+ ubp:['agent wallet','mtd target','mtd'],
+ a2m:['ag_wlt','trx_amt'],
+ d2c:['d2c_trx_amount','distributor'],
+ b2bid:['trx type','ag wlt','ra wlt','trx amt'],
+ r78:['dso supervisor name','mtd trx amt','ra']
+};
+function detect(wb){
+  const low=wb.SheetNames.map(s=>s.trim().toLowerCase());
+  if(low.includes('ra')&&low.includes('dss')){
+    const sn=wb.SheetNames[low.indexOf('ra')];
+    if(findHdr(aoaOf(wb,sn),['distributor','dss name']))return {type:'target'};
+  }
+  if(low.includes('detail')&&low.includes('ma wise'))return {type:'sav'};
+  for(const sn of wb.SheetNames){
+    const a=aoaOf(wb,sn);
+    for(const t in SIG){const h=findHdr(a,SIG[t]);if(h)return {type:t,aoa:a,h}}
+  }
+  return {type:'unknown'};
 }
-const toNum=v=>{if(num(v))return v;if(typeof v==='string'){const n=Number(v.replace(/[,\s]/g,''));return isFinite(n)&&v.trim()!==''?n:null}return null};
+function dateFromName(n){
+  let m;
+  const mon=s=>MONS.indexOf(s.slice(0,3).toLowerCase());
+  const mk=(y,mo,d)=>{y=+y;if(y<100)y+=2000;return `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`};
+  if(m=n.match(/(\d{1,2})(?:st|nd|rd|th)[_\s-]*([A-Za-z]{3})[a-z]*[\s'_-]*(\d{2,4})/)){if(mon(m[2])>=0)return mk(m[3],mon(m[2]),m[1])}
+  if(m=n.match(/([A-Za-z]{3})[a-z]*[\s'_-]*(\d{2,4})[_\s-]+(\d{1,2})(?:st|nd|rd|th)/)){if(mon(m[1])>=0)return mk(m[2],mon(m[1]),m[3])}
+  if(m=n.match(/Download[_\s]*Date[_\s]*(\d{1,2})-([A-Za-z]{3})-(\d{4})/i)){if(mon(m[2])>=0)return addDays(mk(m[3],mon(m[2]),m[1]),-1)}   // ডাউনলোডের আগের দিন
+  if(m=n.match(/(\d{4})-(\d{2})-(\d{2})/))return m[0];
+  return null;
+}
+const yesterday=()=>addDays(iso(new Date()),-1);
 
-/* ===== রিপোর্ট প্রয়োগ ===== */
-function applyRep(id){
-  const rep=REPS.find(r=>r.id===id),S=SH[id];if(!S)return;
-  if(!W.ra.length){setSt(id,li('bad','আগে বিজনেস ট্র্যাকার (AC শিট) আপলোড করুন, নইলে ডিএসও/টিম মেলানো যাবে না।'));return}
-  const cfg=$(`#c-${id} .cfg`);
-  const ic=+cfg.querySelector('.idc').value;
-  const vcs=[...cfg.querySelectorAll('.vc')].map(s=>+s.value);
-  // প্রতিটি আইডির জন্য যোগফল
-  const maps=rep.t.map(()=>new Map());
-  S.rows.forEach(r=>{
-    const key=r[ic];if(key==null||key==='')return;
-    rep.t.forEach((t,k)=>{
-      if(vcs[k]<0)return;const n=toNum(r[vcs[k]]);if(n==null)return;
-      const kk=String(key);maps[k].set(kk,(maps[k].get(kk)||0)+n);
-    });
-  });
-  const byW=new Map(W.ra.map(x=>[normW(x.wallet),x]));
-  const byTeam=new Map(W.teams.map(x=>[x.dh+'\u0001'+up(x.dss),x]));
-  const teamByDss=new Map();W.teams.forEach(x=>{const k=up(x.dss);if(!teamByDss.has(k))teamByDss.set(k,[]);teamByDss.get(k).push(x)});
-  const byDh=new Map(W.dh.map(x=>[up(x.name),x]));
-  let nR=0,nT=0,nD=0;
-  rep.t.forEach((t,k)=>{
-    if(vcs[k]<0)return;
-    maps[k].forEach((val,key)=>{
-      const set=(o,dir)=>{o.v=o.v||{};o.v[t.p]=o.v[t.p]||{};o.v[t.p][t.f]=val;if(dir)o.v[t.p].agg=false};
-      const w=normW(key);
-      if(w.length===11&&byW.has(w)){set(byW.get(w));if(k===0)nR++;return}
-      const u=up(key);
-      if(teamByDss.has(u)){teamByDss.get(u).forEach(o=>set(o,true));if(k===0)nT++;return}
-      if(byDh.has(u)){set(byDh.get(u),true);if(k===0)nD++}
-    });
-  });
-  aggregate();dirty=true;
-  const matched=nR+nT+nD;
-  let h='';
-  h+=li('ok',`${S.rows.length}টি সারি পড়া হয়েছে`);
-  h+=matched?li('ok',`${nR} জন ডিএসও, ${nT}টি টিম, ${nD}টি ডিএইচ মিলেছে`):li('bad','কোনো আইডি মেলেনি — আইডি কলামটি ঠিক আছে কিনা দেখুন');
-  if(matched&&nR===0&&nT===0&&nD===0)h+='';
-  $(`#c-${id}`).classList.toggle('done',!!matched);
-  setSt(id,h);refreshPub();
+/* ===== হ্যান্ডলার ===== */
+async function handle(files){
+  if(!files.length)return;
+  await ready;
+  const batch=[];
+  for(const f of files){
+    const j={id:++jid,name:f.name,type:'unknown',slot:null,till:'',lines:[li('n','পড়া হচ্ছে… অপেক্ষা করুন।')],state:''};
+    jobs.unshift(j);batch.push(j);renderFiles();
+    try{
+      const buf=await f.arrayBuffer();
+      j.wb=XLSX.read(buf,{type:'array',cellDates:true});
+      const d=detect(j.wb);j.type=d.type;j.det=d;
+    }catch(e){j.type='error';j.lines=[li('bad',esc(e.message))];j.state='err'}
+  }
+  resolveRoles(batch);
+  const order=['target','dtr','lddtr','lmdtr','reg','ldreg','ubp','sav','a2m','d2c','b2bid','b2bagent','r78'];
+  batch.sort((a,b)=>order.indexOf(a.slot||a.type)-order.indexOf(b.slot||b.type));
+  for(const j of batch)await runJob(j);
+  renderAll();
 }
-/* টিম/ডিএইচ/টেরিটরির সংখ্যা সরাসরি না থাকলে নিচের স্তর থেকে যোগ */
+function dtrDate(j){
+  const d=j.det;const h=d.h,i=h.ix('trx date');
+  const v=(d.aoa[h.hi+1]||[])[i];
+  return v instanceof Date?iso(v):String(v||'').slice(0,10);
+}
+function resolveRoles(batch){
+  const dt=batch.filter(j=>j.type==='dtr');
+  dt.forEach(j=>j.date=dtrDate(j));
+  const known=[...dt.map(j=>j.date),W.tills.dtr].filter(Boolean).sort();
+  const latest=known[known.length-1];
+  dt.forEach(j=>{j.slot=j.date.slice(0,7)<latest.slice(0,7)?'lmdtr':(j.date<latest?'lddtr':'dtr')});
+  const rg=batch.filter(j=>j.type==='reg');
+  if(rg.length>1){
+    rg.forEach(j=>{const h=j.det.h,i=h.ix('mtd registration');j.sum=j.det.aoa.slice(h.hi+1).reduce((s,r)=>s+(toNum(r[i])||0),0)});
+    rg.sort((a,b)=>b.sum-a.sum);rg.forEach((j,k)=>j.slot=k===0?'reg':'ldreg');
+  }else rg.forEach(j=>j.slot='reg');
+  batch.forEach(j=>{if(!j.slot&&SLOTS.some(s=>s.id===j.type))j.slot=j.type});
+}
+async function runJob(j,forced){
+  try{
+    if(forced){j.slot=forced;j.type=forced==='lddtr'||forced==='lmdtr'?'dtr':forced==='ldreg'?'reg':forced;j.det=detectFor(j)}
+    if(j.type==='unknown'||!j.slot){j.lines=[li('bad','এই ফাইলটি চেনা যায়নি। ডানের তালিকা থেকে ধরন বেছে নিন।')];j.state='err';return}
+    j.lines=[];
+    const fn=H[j.slot];
+    const r=await fn(j);
+    j.lines=r.lines;
+    if(r.till){j.till=r.till;W.tills[j.slot]=r.till}
+    j.state=r.warn?'':'done';dirty=true;
+    finish();
+  }catch(e){j.lines=[li('bad',esc(e.message))];j.state='err'}
+}
+function detectFor(j){   // হাতে ধরন বেছে নিলে ওই ধরনের হেডার খোঁজা
+  const t=j.type;
+  if(t==='target'||t==='sav')return j.det;
+  const sig=SIG[t];
+  if(sig)for(const sn of j.wb.SheetNames){const a=aoaOf(j.wb,sn);const h=findHdr(a,sig);if(h)return {type:t,aoa:a,h}}
+  if(t==='b2bagent'){const sn=j.wb.SheetNames[0];const a=aoaOf(j.wb,sn);let hi=0;for(let i=0;i<Math.min(a.length,10);i++)if((a[i]||[]).filter(c=>typeof c==='string').length>=3){hi=i;break}return {type:t,aoa:a,h:{hi,row:(a[hi]||[]).map(c=>String(c==null?'':c).trim().toLowerCase()),ix:n=>(a[hi]||[]).map(c=>String(c==null?'':c).trim().toLowerCase()).indexOf(n.toLowerCase())}}}
+  throw new Error('এই ফাইলে ওই রিপোর্টের কলাম পাওয়া যায়নি।');
+}
+
+/* ===== এজেন্ট → আরএ ম্যাপ (হ্যাশ করে সংরক্ষণ) ===== */
+async function hs(s){
+  const t='gcd:'+s;
+  if(crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].slice(0,6).map(x=>x.toString(16).padStart(2,'0')).join('')}
+  let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16).padStart(8,'0')+String(t.length)
+}
+async function addAM(pairs){
+  let n=0;
+  for(let i=0;i<pairs.length;i+=400){
+    const part=pairs.slice(i,i+400);
+    const hh=await Promise.all(part.map(p=>hs(N(p[0]))));
+    part.forEach((p,k)=>{const ra=N(p[1]);if(!ra)return;if(AM.get(hh[k])!==ra){AM.set(hh[k],ra);n++}});
+  }
+  if(n)amDirty=true;
+  return n;
+}
+async function sumByAgent(rows,ai,vi,filter){   // এজেন্ট ম্যাপ ধরে আরএ-ভিত্তিক যোগফল
+  const m=new Map();let un=0,tot=0;
+  const keep=rows.filter(r=>r[ai]!=null&&(!filter||filter(r)));
+  for(let i=0;i<keep.length;i+=400){
+    const part=keep.slice(i,i+400);
+    const hh=await Promise.all(part.map(r=>hs(N(r[ai]))));
+    part.forEach((r,k)=>{const v=vi==null?1:(toNum(r[vi])||0);tot+=v;const ra=AM.get(hh[k]);if(!ra){un+=1;return}m.set(ra,(m.get(ra)||0)+v)});
+  }
+  return {m,un,tot,n:keep.length};
+}
+
+/* ===== আরএ/টিম/ডিএইচ-এ বসানো ===== */
+const raByN=()=>new Map(W.ra.map(x=>[N(x.wallet),x]));
+function setAll(p,f,m){        // সব ডিএসও-র এই ঘর আগে ০, তারপর রিপোর্টের সংখ্যা
+  let hit=0,sum=0;
+  W.ra.forEach(x=>{x.v=x.v||{};x.v[p]=x.v[p]||{};const v=m.get(N(x.wallet))||0;x.v[p][f]=v;if(v>0)hit++;sum+=v});
+  aggregate();
+  return {hit,sum};
+}
+const fmt=n=>Math.round(n).toLocaleString('en-IN');
+const need=()=>{if(!W.ra.length)throw new Error('আগে RA-DSS টার্গেট ফাইল দিন, নইলে ডিএসও মেলানো যাবে না।')};
+function extra(m){let x=0;const set=new Set(W.ra.map(r=>N(r.wallet)));m.forEach((v,k)=>{if(!set.has(k))x++});return x}
+
+const H={};
+/* টার্গেট ফাইল (শিট: RA, DSS) */
+const COL={t:'Transaction',r:'Registration',vo:'Savings New Customer',u:'Bill Pay',a2m:'A2M'};
+function sheetBy(wb,name){
+  const k=wb.SheetNames.find(n=>n.trim().toUpperCase()===name);if(!k)return null;
+  const aoa=aoaOf(wb,k);const h=findHdr(aoa,['distributor']);if(!h)return null;
+  return {rows:aoa.slice(h.hi+1),ix:h.ix};
+}
+H.target=async j=>{
+  const RAs=sheetBy(j.wb,'RA'),DSSs=sheetBy(j.wb,'DSS');
+  if(!RAs)throw new Error('"RA" শিট পাওয়া যায়নি।');
+  const L=[];
+  // নতুন মাস?
+  let reset=false;const mm=j.name.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s'_-]*(\d{2,4})/i);
+  if(mm&&W.tillDate){const mo=MONS.indexOf(mm[1].toLowerCase());let y=+mm[2];if(y<100)y+=2000;const t=W.tillDate;if(+t.slice(5,7)-1!==mo||+t.slice(0,4)!==y)reset=true}
+  const canon=new Map();const cn=n=>{const t=String(n==null?'':n).replace(/\s+/g,' ').trim();const k=up(t);if(!canon.has(k))canon.set(k,t);return canon.get(k)};
+  const tg=(sh,row)=>{const v={};for(const p in COL){const i=sh.ix(COL[p].toLowerCase());if(i<0)continue;const n=toNum(row[i]);if(n!=null)v[p]={trg:n}}return v};
+  const teams=new Map();
+  if(DSSs)DSSs.rows.forEach(r=>{
+    const dh=up(r[DSSs.ix('distributor')]),ds=cn(r[DSSs.ix('dss name')]);if(!dh||!ds)return;
+    const v=tg(DSSs,r);for(const p in v)v[p].tg=false;teams.set(dh+'\u0001'+ds,{dh,dss:ds,v});
+  });
+  const ra=[];let skip=0;const seen=new Set();
+  RAs.rows.forEach(r=>{
+    const dh=up(r[RAs.ix('distributor')]),ds=cn(r[RAs.ix('dss name')]),w=w11(r[RAs.ix('ra')]);
+    if(!dh||!ds||!w||seen.has(w)){if(dh||ds)skip++;return}
+    seen.add(w);
+    const nm=r[RAs.ix('dso name')];
+    ra.push({dh,dss:ds,name:String(nm==null?'':nm).replace(/\s+/g,' ').trim(),wallet:w,v:tg(RAs,r)});
+    const k=dh+'\u0001'+ds;if(!teams.has(k))teams.set(k,{dh,dss:ds,v:{}});
+  });
+  if(!ra.length)throw new Error('কোনো ডিএসও সারি পাওয়া যায়নি।');
+  const FS=['ach','ld','lm'];
+  if(!reset){
+    const old=new Map(W.ra.map(x=>[x.wallet,x.v]));
+    ra.forEach(x=>{const ov=old.get(x.wallet);if(!ov)return;for(const p in ov)for(const f of FS)if(ov[p]&&ov[p][f]!=null){x.v[p]=x.v[p]||{};x.v[p][f]=ov[p][f]}});
+  }
+  const oldD=new Map((W.dh||[]).map(x=>[x.name,x.v]));
+  const dmap=new Map();ra.forEach(x=>dmap.set(x.dh,{name:x.dh,v:{}}));
+  teams.forEach(t=>{if(!dmap.has(t.dh))dmap.set(t.dh,{name:t.dh,v:{}})});
+  if(!reset)dmap.forEach((d,k)=>{const ov=oldD.get(k);if(ov&&ov.d2c&&ov.d2c.ach!=null)d.v.d2c={ach:ov.d2c.ach,agg:false}});
+  W.ra=ra;W.teams=[...teams.values()];W.dh=[...dmap.values()];W.territory={v:{}};
+  if(reset){W.tills={};W.tillDate='';L.push(li('warn','নতুন মাসের ফাইল — আগের মাসের অর্জনের সংখ্যা ও তারিখ মুছে ফেলা হয়েছে। এখন নতুন মাসের রিপোর্টগুলো দিন।'))}
+  aggregate();
+  L.push(li('ok',`${ra.length} জন ডিএসও, ${W.teams.length}টি ডিএসএস টিম, ${W.dh.length}টি ডিএইচ`));
+  L.push(DSSs?li('ok','ডিএসএস ও ওএম টার্গেট "DSS" শিট থেকে নেওয়া হয়েছে'):li('warn','"DSS" শিট নেই — ডিএসএস/ওএম টার্গেট ডিএসও-দের যোগফল ধরা হয়েছে'));
+  if(skip)L.push(li('warn',`${skip}টি সারি বাদ গেছে (ওয়ালেট নেই বা ডুপ্লিকেট)`));
+  return {lines:L,till:null,warn:false};
+};
+/* DTR / LD-DTR / LM DTR : TRX = MTD CI AMT + MTD CO AMT */
+async function dtrJob(j,f){
+  need();const {aoa,h}=j.det;
+  const rows=aoa.slice(h.hi+1),ri=h.ix('ra wallet'),ci=h.ix('mtd ci amt'),oi=h.ix('mtd co amt'),ai=h.ix('agent wallet');
+  const m=new Map();rows.forEach(r=>{const k=N(r[ri]);if(!k)return;m.set(k,(m.get(k)||0)+(toNum(r[ci])||0)+(toNum(r[oi])||0))});
+  const s=setAll('t',f,m);
+  const L=[li('ok',`${rows.length}টি এজেন্ট সারি · ${s.hit}/${W.ra.length} জন ডিএসও-র TRX বসেছে (মোট ${fmt(s.sum)})`)];
+  const x=extra(m);if(x)L.push(li('warn',`${x}টি আরএ ওয়ালেট টার্গেট ফাইলে নেই (বাদ দেওয়া হয়েছে)`));
+  if(f!=='lm'&&ai>=0){const n=await addAM(rows.filter(r=>r[ai]&&r[ri]).map(r=>[r[ai],r[ri]]));L.push(li('ok',`এজেন্ট ম্যাপ হালনাগাদ (${n}টি নতুন/পরিবর্তিত)`))}
+  return {lines:L,till:dtrDate(j)};
+}
+H.dtr=j=>dtrJob(j,'ach');H.lddtr=j=>dtrJob(j,'ld');H.lmdtr=j=>dtrJob(j,'lm');
+/* REG / LD-REG : MTD Registration */
+async function regJob(j,f){
+  need();const {aoa,h}=j.det;
+  const rows=aoa.slice(h.hi+1),ri=h.ix('ra wallet'),vi=h.ix('mtd registration'),ai=h.ix('agent wallet');
+  const m=new Map();rows.forEach(r=>{const k=N(r[ri]);if(!k)return;m.set(k,(m.get(k)||0)+(toNum(r[vi])||0))});
+  const s=setAll('r',f,m);
+  const L=[li('ok',`${rows.length}টি এজেন্ট সারি · ${s.hit}/${W.ra.length} জন ডিএসও-র REG বসেছে (মোট ${fmt(s.sum)})`)];
+  const x=extra(m);if(x)L.push(li('warn',`${x}টি আরএ ওয়ালেট টার্গেট ফাইলে নেই (বাদ দেওয়া হয়েছে)`));
+  if(f==='ach'&&ai>=0){await addAM(rows.filter(r=>r[ai]&&r[ri]).map(r=>[r[ai],r[ri]]))}
+  const t=dateFromName(j.name)||yesterday();
+  L.push(li('n',`তারিখ ধরা হয়েছে: ${t} (ফাইলের নাম থেকে) — ভুল হলে ঠিক করুন`));
+  return {lines:L,till:t};
+}
+H.reg=j=>regJob(j,'ach');H.ldreg=j=>regJob(j,'ld');
+/* UBP : MTD বিল পে (এজেন্ট → আরএ) */
+H.ubp=async j=>{
+  need();const {aoa,h}=j.det;
+  const rows=aoa.slice(h.hi+1);
+  const r=await sumByAgent(rows,h.ix('agent wallet'),h.ix('mtd'));
+  const s=setAll('u','ach',r.m);
+  const L=[li('ok',`${r.n}টি এজেন্ট সারি · ${s.hit}/${W.ra.length} জন ডিএসও-র UBP বসেছে (মোট ${fmt(s.sum)})`)];
+  if(r.un)L.push(li('warn',`${r.un}টি এজেন্ট কোনো আরএ-র সাথে মেলেনি — সর্বশেষ DTR/REG আপলোড করুন`));
+  const t=dateFromName(j.name)||yesterday();
+  L.push(li('n',`তারিখ ধরা হয়েছে: ${t} — ভুল হলে ঠিক করুন`));
+  return {lines:L,till:t,warn:!!r.un};
+};
+/* SAVINGS : নতুন কাস্টমার (Y) — ভলিউম = Instalment Volume, কাউন্ট = সারি সংখ্যা */
+H.sav=async j=>{
+  need();
+  const sn=j.wb.SheetNames.find(n=>n.trim().toLowerCase()==='detail');
+  const a=aoaOf(j.wb,sn);const h=findHdr(a,['assist_ag_wlt','new_customer_status','instalment volume']);
+  if(!h)throw new Error('Detail শিটে ASSIST_AG_WLT / NEW_CUSTOMER_STATUS / Instalment Volume কলাম পাওয়া যায়নি।');
+  const rows=a.slice(h.hi+1),st=h.ix('new_customer_status'),yes=r=>String(r[st]||'').trim().toUpperCase()==='Y';
+  const rv=await sumByAgent(rows,h.ix('assist_ag_wlt'),h.ix('instalment volume'),yes);
+  const rc=await sumByAgent(rows,h.ix('assist_ag_wlt'),null,yes);
+  const s1=setAll('vo','ach',rv.m),s2=setAll('c','ach',rc.m);
+  const L=[li('ok',`${rv.n}টি নতুন সেভিংস · SAV-VOL মোট ${fmt(s1.sum)} · SAV-CNT মোট ${fmt(s2.sum)} (${s2.hit} জন ডিএসও)`)];
+  if(rv.un)L.push(li('warn',`${rv.un}টি এজেন্ট কোনো আরএ-র সাথে মেলেনি — সর্বশেষ DTR/REG আপলোড করুন`));
+  let t=dateFromName(j.name);
+  if(!t){let mx='';const di=h.ix('saving_opn_date');rows.forEach(r=>{const v=r[di];const s=v instanceof Date?iso(v):String(v||'').slice(0,10);if(s>mx)mx=s});t=mx||yesterday()}
+  L.push(li('n',`তারিখ ধরা হয়েছে: ${t} — ভুল হলে ঠিক করুন`));
+  return {lines:L,till:t,warn:!!rv.un};
+};
+/* A2M : TRX_AMT (এজেন্ট → আরএ) */
+H.a2m=async j=>{
+  need();const {aoa,h}=j.det;const rows=aoa.slice(h.hi+1);
+  const r=await sumByAgent(rows,h.ix('ag_wlt'),h.ix('trx_amt'));
+  const s=setAll('a2m','ach',r.m);
+  const L=[li('ok',`${r.n}টি সারি · A2M মোট ${fmt(s.sum)} (${s.hit} জন ডিএসও)`)];
+  if(r.un)L.push(li('warn',`${r.un}টি সারির এজেন্ট কোনো আরএ-র সাথে মেলেনি — সর্বশেষ DTR/REG আপলোড করুন`));
+  const t=dateFromName(j.name)||yesterday();L.push(li('n',`তারিখ ধরা হয়েছে: ${t} — ভুল হলে ঠিক করুন`));
+  return {lines:L,till:t,warn:!!r.un};
+};
+/* D2C : ডিএইচ-ভিত্তিক (Distributor কলাম) */
+H.d2c=async j=>{
+  need();const {aoa,h}=j.det;const rows=aoa.slice(h.hi+1),di=h.ix('distributor'),vi=h.ix('d2c_trx_amount');
+  const m=new Map();rows.forEach(r=>{const k=up(r[di]);if(!k)return;m.set(k,(m.get(k)||0)+(toNum(r[vi])||0))});
+  let hit=0,sum=0;
+  W.dh.forEach(d=>{d.v=d.v||{};d.v.d2c=d.v.d2c||{};const v=m.get(d.name)||0;d.v.d2c.ach=v;d.v.d2c.agg=false;if(v>0)hit++;sum+=v});
+  aggregate();
+  const L=[li('ok',`${rows.length}টি সারি · D2C মোট ${fmt(sum)} (${hit}টি ডিএইচ)`)];
+  const nm=[...m.keys()].filter(k=>!W.dh.some(d=>d.name===k));if(nm.length)L.push(li('warn',`ডিএইচ মেলেনি: ${esc(nm.join(', '))}`));
+  if(!W.dh.some(d=>W.cfg.d2c[d.name]>0))L.push(li('warn','D2C টার্গেট দেওয়া নেই — "টার্গেট সেটিংস"-এ ডিএইচ অনুযায়ী দিন, নইলে BZP-তে শুধু A2M টার্গেট ধরা হবে'));
+  const t=dateFromName(j.name)||yesterday();L.push(li('n',`তারিখ ধরা হয়েছে: ${t} — ভুল হলে ঠিক করুন`));
+  return {lines:L,till:t};
+};
+/* সার্ভিস চেক রিপোর্ট: আরএ-ভিত্তিক সারাংশ (এজেন্ট ওয়ালেট সংরক্ষণ হয় না) */
+function svcSave(id,obj){SVC[id]=obj;}
+H.b2bid=async j=>{
+  const {aoa,h}=j.det;const rows=aoa.slice(h.hi+1);
+  const ti=h.ix('trx type'),ri=h.ix('ra wlt'),vi=h.ix('trx amt'),di=h.ix('distributor');
+  const m=new Map();
+  rows.forEach(r=>{const k=N(r[ri]);if(!k)return;const t=String(r[ti]||'').toUpperCase();const o=m.get(k)||{ra:'0'+k,dh:up(r[di]),send:[0,0],recv:[0,0]};
+    const a=t.includes('SEND')?o.send:o.recv;a[0]+=1;a[1]+=toNum(r[vi])||0;m.set(k,o)});
+  const t=dateFromName(j.name)||yesterday();
+  svcSave('b2b-trx-id-wise',{till:t,rows:[...m.values()]});
+  return {lines:[li('ok',`${rows.length}টি ট্রানজেকশন, ${m.size} জন আরএ-ভিত্তিক সারাংশ করা হয়েছে (প্রকাশের সময় service/ ফোল্ডারে সংরক্ষণ হবে)`)],till:t};
+};
+H.r78=async j=>{
+  const {aoa,h}=j.det;const rows=aoa.slice(h.hi+1);
+  const ri=h.ix('ra'),ai=h.ix('active status'),si=h.ix('star status'),vi=h.ix('mtd trx amt'),di=h.ix('distributor');
+  const m=new Map();
+  rows.forEach(r=>{const k=N(r[ri]);if(!k)return;const o=m.get(k)||{ra:'0'+k,dh:up(r[di]),agents:0,active:0,star:0,mtdTrx:0};
+    o.agents++;if(String(r[ai]||'').toUpperCase()==='ACTIVE')o.active++;if(String(r[si]||'').toUpperCase()==='STAR')o.star++;o.mtdTrx+=toNum(r[vi])||0;m.set(k,o)});
+  const t=dateFromName(j.name)||yesterday();
+  svcSave('report-78',{till:t,rows:[...m.values()]});
+  const L=[li('ok',`${rows.length}টি এজেন্ট, ${m.size} জন আরএ-ভিত্তিক সারাংশ`)];
+  const ci=h.ix('agent wallet');if(ci>=0)await addAM(rows.filter(r=>r[ci]&&r[ri]).map(r=>[r[ci],r[ri]]));
+  return {lines:L,till:t};
+};
+H.b2bagent=async j=>{
+  const {aoa,h}=j.det;const rows=aoa.slice(h.hi+1);
+  const ri=h.row.findIndex(c=>/^ra.*(wallet|wlt)|^ra$/.test(c));
+  if(ri<0)throw new Error('RA Wallet কলাম পাওয়া যায়নি।');
+  const cols=h.row.map((c,i)=>/b2b/.test(c)&&/mtd|amt|cnt|count/.test(c)?i:-1).filter(i=>i>=0);
+  const m=new Map();
+  rows.forEach(r=>{const k=N(r[ri]);if(!k)return;const o=m.get(k)||{ra:'0'+k,v:{}};cols.forEach(i=>{o.v[h.row[i]]=(o.v[h.row[i]]||0)+(toNum(r[i])||0)});m.set(k,o)});
+  const t=dateFromName(j.name)||yesterday();
+  svcSave('b2b-agent-wise',{till:t,rows:[...m.values()]});
+  return {lines:[li('ok',`${rows.length}টি সারি, ${m.size} জন আরএ-ভিত্তিক সারাংশ`)],till:t};
+};
+
+/* ===== যোগফল: এজেন্ট/ডিএসও → টিম → ডিএইচ → টেরিটরি ===== */
+function applyCfg(){
+  W.cfg=W.cfg||{savCnt:10,d2c:{}};W.cfg.d2c=W.cfg.d2c||{};
+  W.ra.forEach(x=>{x.v=x.v||{};x.v.c=x.v.c||{};x.v.c.trg=+W.cfg.savCnt||0});
+  W.dh.forEach(d=>{const t=+W.cfg.d2c[d.name];d.v=d.v||{};
+    if(t>0){d.v.d2c=d.v.d2c||{};d.v.d2c.trg=t;d.v.d2c.tg=false}
+    else if(d.v.d2c&&d.v.d2c.tg===false){delete d.v.d2c.trg;delete d.v.d2c.tg}});
+}
 function aggregate(){
+  applyCfg();
   const P=['t','r','vo','c','u','a2m','d2c'],F=['trg','ach','ld','lm'];
   const sum=(arr,p,f)=>{let s=0,any=false;arr.forEach(x=>{const v=x.v&&x.v[p]&&x.v[p][f];if(v!=null){s+=v;any=true}});return any?s:null};
-  const put=(o,p,f,val)=>{if(val==null)return;o.v=o.v||{};o.v[p]=o.v[p]||{};if(o.v[p][f]==null||o.v[p].agg!==false){o.v[p][f]=val;if(f!=='trg')o.v[p].agg=true}};
+  const put=(o,p,f,val)=>{if(val==null)return;o.v=o.v||{};const q=o.v[p]=o.v[p]||{};if(f==='trg'?q.tg===false:q.agg===false)return;q[f]=val;if(f!=='trg')q.agg=true};
   W.teams.forEach(t=>{const rs=W.ra.filter(x=>x.dh===t.dh&&x.dss===t.dss);P.forEach(p=>F.forEach(f=>put(t,p,f,sum(rs,p,f))))});
   W.dh.forEach(d=>{const ts=W.teams.filter(x=>x.dh===d.name);P.forEach(p=>F.forEach(f=>put(d,p,f,sum(ts,p,f))))});
   W.territory=W.territory||{v:{}};
   P.forEach(p=>F.forEach(f=>put(W.territory,p,f,sum(W.dh,p,f))));
 }
 
-/* ===== RA-DSS টার্গেট ফাইল ===== */
-const RF=[
- {k:'dh',l:'ডিএইচ (ডিস্ট্রিবিউটর)',re:/\bdh\b|distributor|house/i},
- {k:'dss',l:'ডিএসএস নাম',re:/dss/i},
- {k:'name',l:'ডিএসও নাম',re:/dso|ra.?name|^name|\bname\b/i},
- {k:'wallet',l:'ডিএসও ওয়ালেট',re:/wallet|msisdn|mobile|number/i}
-];
-const RT=[
- {p:'t',l:'TRX টার্গেট',re:/trx|txn|trans/i},
- {p:'r',l:'REG টার্গেট',re:/reg/i},
- {p:'vo',l:'SAV-VOL টার্গেট',re:/vol|sav.*(amt|amount)|saving/i},
- {p:'c',l:'SAV-CNT টার্গেট',re:/cnt|count|sav.*(acc|no)/i},
- {p:'u',l:'UBP টার্গেট',re:/ubp|bill/i},
- {p:'a2m',l:'A2M টার্গেট',re:/a2m/i},
- {p:'d2c',l:'D2C টার্গেট',re:/d2c/i}
-];
-async function onMain(f){
-  const wb=await readFile(f);const ws=wb.Sheets[wb.SheetNames[0]];
-  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
-  const hi=headerRow(aoa);if(hi<0)throw new Error('ফাইলে কলামের নাম (হেডার সারি) পাওয়া যায়নি।');
-  const head=aoa[hi].map((h,i)=>h==null||h===''?`কলাম ${i+1}`:String(h).trim());
-  SH.ra={head,rows:aoa.slice(hi+1)};
-  const guess=re=>{let k=head.findIndex(h=>re.test(h)&&/tar|trg/i.test(h));if(k<0)k=head.findIndex(h=>re.test(h));return k};
-  const opt=s0=>head.map((h,i)=>`<option value="${i}" ${i===s0?'selected':''}>${esc(h)}</option>`).join('');
-  const sel=(cls,key,l,g,none)=>`<div><label>${esc(l)}</label><select class="${cls}" data-k="${key}">${none?'<option value="-1">— নেই —</option>':''}${opt(g)}</select></div>`;
-  $('#c-ra .cfg').innerHTML='<div class="row">'+RF.map(x=>sel('rf',x.k,x.l,head.findIndex(h=>x.re.test(h)),false)).join('')+'</div><div class="row">'+RT.map(x=>sel('rt',x.p,x.l,guess(x.re),true)).join('')+'</div>';
-  $('#c-ra .cfg').querySelectorAll('select').forEach(s=>s.onchange=applyRoster);
-  applyRoster();
-}
-function applyRoster(){
-  const S=SH.ra,cfg=$('#c-ra .cfg');
-  const F={};cfg.querySelectorAll('.rf').forEach(s=>F[s.dataset.k]=+s.value);
-  const T=[...cfg.querySelectorAll('.rt')].map(s=>({p:s.dataset.k,i:+s.value}));
-  const ra=[];let skip=0;const seen=new Set();
-  S.rows.forEach(r=>{
-    const w=normW(r[F.wallet]);
-    if(w.length!==11||!r[F.dh]||!r[F.dss]){skip++;return}
-    if(seen.has(w)){skip++;return}seen.add(w);
-    const o={dh:up(r[F.dh]),dss:String(r[F.dss]).replace(/\s+/g,' ').trim(),name:String(r[F.name]==null?'':r[F.name]).trim(),wallet:w,v:{}};
-    T.forEach(t=>{if(t.i<0)return;const n=toNum(r[t.i]);if(n!=null)o.v[t.p]={trg:n}});
-    ra.push(o);
+/* ===== স্ক্রিন ===== */
+const li=(c,t)=>`<li>${c==='n'?'<span class="mut">ℹ️</span>':`<span class="${c}">${c==='ok'?'ঠিক আছে':c==='warn'?'সতর্কতা':'সমস্যা'}:</span>`} ${t}</li>`;
+function finish(){const ok=!!(W.ra.length&&W.teams.length&&W.dh.length);$('#pub').disabled=!ok;$('#dl').disabled=!ok}
+function renderAll(){renderFiles();renderSlots();renderCfg();finish()}
+function renderFiles(){
+  $('#files').innerHTML=jobs.map(j=>{
+    const slot=SLOTS.find(s=>s.id===j.slot);
+    return `<div class="rc ${j.state}" data-j="${j.id}"><h3>${esc(j.name)}</h3>
+    <div class="mut">${slot?'চেনা গেছে: <b>'+esc(slot.label)+'</b>':'চেনা যায়নি'}</div>
+    <div class="row"><div><label>ধরন</label><select class="ty">${TYPE_OPTS.map(([v,l])=>`<option value="${v}" ${(v==='auto'?'':v)===(j.forced||'')&&v!=='auto'||(v==='auto'&&!j.forced)?'selected':''}>${esc(l)}</option>`).join('')}</select></div>
+    <div><label>ডেটা Till তারিখ</label><input type="date" class="tl" value="${j.till||(j.slot&&W.tills[j.slot])||''}"></div></div>
+    <ul>${(j.lines||[]).join('')}</ul></div>`}).join('');
+  document.querySelectorAll('#files .rc').forEach(el=>{
+    const j=jobs.find(x=>x.id==el.dataset.j);
+    el.querySelector('.tl').onchange=e=>{j.till=e.target.value;if(j.slot){W.tills[j.slot]=e.target.value;dirty=true;renderSlots();finish()}};
+    el.querySelector('.ty').onchange=async e=>{const v=e.target.value;j.forced=v==='auto'?'':v;if(v==='auto'){const d=detect(j.wb);j.type=d.type;j.det=d;j.slot=SLOTS.some(s=>s.id===d.type)?d.type:null;await runJob(j)}else await runJob(j,v);renderAll()};
   });
-  // আগের অর্জনের সংখ্যা ধরে রাখা
-  const old=new Map(W.ra.map(x=>[x.wallet,x.v]));
-  ra.forEach(x=>{const ov=old.get(x.wallet);if(!ov)return;for(const p in ov)for(const f of ['ach','ld','lm'])if(ov[p][f]!=null){x.v[p]=x.v[p]||{};x.v[p][f]=ov[p][f]}});
-  const tmap=new Map();ra.forEach(x=>tmap.set(x.dh+'\u0001'+x.dss,{dh:x.dh,dss:x.dss,v:{}}));
-  const dmap=new Map();ra.forEach(x=>dmap.set(x.dh,{name:x.dh,v:{}}));
-  const oldT=new Map(W.teams.map(x=>[x.dh+'\u0001'+x.dss,x.v])),oldD=new Map(W.dh.map(x=>[x.name,x.v]));
-  tmap.forEach((t,k)=>{const ov=oldT.get(k);if(ov)for(const p in ov)for(const f of ['ach','ld','lm'])if(ov[p]&&ov[p][f]!=null&&ov[p].agg===false){t.v[p]={[f]:ov[p][f],agg:false}}});
-  W.ra=ra;W.teams=[...tmap.values()];W.dh=[...dmap.values()];W.territory=W.territory||{v:{}};
-  aggregate();dirty=true;
-  let h=li(ra.length?'ok':'bad',`${ra.length} জন ডিএসও, ${W.teams.length}টি ডিএসএস টিম, ${W.dh.length}টি ডিএইচ পড়া হয়েছে`);
-  if(skip)h+=li('warn',`${skip}টি সারি বাদ গেছে (ওয়ালেট/ডিএইচ/ডিএসএস নেই বা ডুপ্লিকেট)`);
-  if(!T.some(t=>t.i>=0))h+=li('warn','কোনো টার্গেট কলাম বেছে নেওয়া হয়নি');
-  $('#c-ra').classList.toggle('done',ra.length>0);setSt('ra',h);refreshPub();
-  REPS.filter(r=>!r.main&&SH[r.id]).forEach(r=>applyRep(r.id));
 }
-
-/* ===== সার্ভিস রিপোর্ট ===== */
-async function onSvc(id,f){
-  const wb=await readFile(f);const ws=wb.Sheets[wb.SheetNames[0]];
-  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true,dateNF:'yyyy-mm-dd'});
-  const hi=Math.max(0,headerRow(aoa));
-  const rows=aoa.slice(hi+1).filter(r=>r.some(c=>c!=null&&c!==''));
-  const till=$(`#c-${id} input.till`).value||today();
-  pending[id]={path:`service/${id}.json`,till,head:aoa[hi]||[],rows:rows.slice(0,60000)};
-  let h=li('ok',`${rows.length}টি সারি পড়া হয়েছে`);
-  if(rows.length>60000)h+=li('warn','প্রথম ৬০,০০০ সারি রাখা হয়েছে');
-  $(`#c-${id}`).classList.add('done');setSt(id,h);refreshPub();
+function renderSlots(){
+  const main=W.tills.dtr||W.tillDate||'';
+  const day=s=>Math.round((new Date(main+'T00:00:00Z')-new Date(s+'T00:00:00Z'))/864e5);
+  $('#slots').innerHTML='<tr><th>রিপোর্ট</th><th>কখন দেবেন</th><th>ডেটা Till</th><th>অবস্থা</th></tr>'+SLOTS.map(s=>{
+    const t=s.id==='target'?(W.ra.length?'লোড আছে':''):W.tills[s.id]||(s.svc&&SVC[{r78:'report-78',b2bid:'b2b-trx-id-wise',b2bagent:'b2b-agent-wise'}[s.id]]?'নতুন':'');
+    let b='<span class="b n">এখনও নেই</span>';
+    if(t){if(s.monthly||s.svc||s.id==='target')b='<span class="b g">✓ আছে</span>';else{const d=main?day(t):0;b=d<=0?'<span class="b g">✓ সর্বশেষ</span>':`<span class="b y">${d} দিন আগের</span>`}}
+    return `<tr><td>${esc(s.label)}</td><td class="mut">${esc(s.freq)}</td><td>${esc(s.id==='target'?'':(W.tills[s.id]||''))}</td><td>${b}</td></tr>`}).join('');
 }
+function renderCfg(){
+  $('#savCnt').value=(W.cfg&&W.cfg.savCnt)!=null?W.cfg.savCnt:10;
+  $('#d2cIn').innerHTML=(W.dh||[]).map((d,i)=>`<div><label>${esc(d.name)}</label><input type="number" min="0" class="d2c" data-n="${esc(d.name)}" value="${W.cfg.d2c[d.name]||''}" placeholder="যেমন 5000000"></div>`).join('')||'<div class="mut">টার্গেট ফাইল দিলে ডিএইচ তালিকা আসবে।</div>';
+  document.querySelectorAll('.d2c').forEach(i=>i.onchange=()=>{W.cfg.d2c[i.dataset.n]=+i.value||0;aggregate();dirty=true});
+}
+$('#savCnt').onchange=e=>{W.cfg.savCnt=+e.target.value||0;if(W.ra.length)aggregate();dirty=true};
 
 /* ===== প্রকাশ / ডাউনলোড ===== */
 function finalize(){
-  const t=Object.assign({},W.tills);
-  W.tills=t;
-  const ds=Object.values(t).filter(Boolean).sort();
-  W.tillDate=ds[ds.length-1]||W.updated||today();
+  const ds=Object.values(W.tills).filter(Boolean).sort();
+  W.tillDate=W.tills.dtr||ds[ds.length-1]||W.updated||iso(new Date());
   W.updated=W.tillDate;
   return W;
 }
@@ -341,11 +542,12 @@ $('#pub').onclick=async()=>{
   const m=$('#msg');m.className='';m.textContent='প্রকাশ হচ্ছে…';$('#pub').disabled=true;
   try{
     const d=finalize();
-    for(const id in pending)await put(pending[id].path,pending[id],'Update '+id+' '+pending[id].till);
+    for(const id in SVC)await put(`service/${id}.json`,SVC[id],'Update '+id+' '+SVC[id].till);
+    if(amDirty){await put(AMPATH,{v:1,m:Object.fromEntries(AM)},'Update agent map');amDirty=false}
     await put(PATH,d,'Update data '+d.tillDate);
     dirty=false;
     m.className='ok';m.textContent='প্রকাশ হয়েছে! এক-দুই মিনিটে সাইট আপডেট হবে।';
-  }catch(e){m.className='bad';m.textContent=e.message+' বিকল্পে data.json ডাউনলোড করে GitHub-এ আপলোড করুন।'}
+  }catch(e){m.className='bad';m.textContent=(/not accessible|Forbidden|Bad credentials|Not Found/i.test(e.message)?'টোকেনটি এই রিপোজিটরিতে লিখতে পারছে না। GitHub-এ টোকেনের Repository access-এ Gazipur-Central-Dashboard বেছে নিন এবং Contents = Read and write দিন, তারপর টোকেন আবার বসান। ':e.message+' ')+'বিকল্পে data.json ডাউনলোড করে GitHub-এ আপলোড করুন।'}
   $('#pub').disabled=false;
 };
 addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
