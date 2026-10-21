@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Admin · Achievers’ Club</title>
+<title>অ্যাডমিন · Achievers’ Club</title>
 <style>
 :root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Hind Siliguri",system-ui,"Segoe UI",sans-serif}
 .wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
 img.logo{height:90px;width:auto;mix-blend-mode:multiply;display:block}
 h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}
@@ -27,33 +27,33 @@ ul{list-style:none;padding:0;margin:0}li{margin:6px 0}
 </head>
 <body>
 <div class="wrap">
-<img class="logo" src="logo.jpg" alt="Achievers’ Club">
-<div class="mut" style="color:var(--pink);font-weight:600">Admin · private page</div>
-<h1>Publish data</h1>
-<p class="mut" id="last">Checking the published data…</p>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap"><img class="logo" src="logo.jpg" alt="Achievers’ Club">
+<div class="mut" style="color:var(--pink);font-weight:600">⚙️ অ্যাডমিন · প্রাইভেট পেজ</div>
+<h1>📤 ডেটা প্রকাশ করুন</h1>
+<p class="mut" id="last">প্রকাশিত ডেটা দেখা হচ্ছে…</p>
 
 <section class="panel" id="s1">
-<h2>1. Admin sign-in</h2>
-<label for="tk">GitHub access token</label>
+<h2>১. অ্যাডমিন সাইন-ইন</h2>
+<label for="tk">GitHub অ্যাক্সেস টোকেন</label>
 <input id="tk" type="password" autocomplete="off" placeholder="github_pat_…">
-<p class="mut">Only the owner of this repository can publish. The token stays in this browser only.</p>
-<label style="font-weight:400"><input type="checkbox" id="rem"> Remember on this computer</label>
-<button id="con" type="button">Sign in as admin</button>
+<p class="mut">শুধু এই রিপোজিটরির মালিকই ডেটা প্রকাশ করতে পারবেন। টোকেন শুধু এই ব্রাউজারেই থাকে।</p>
+<label style="font-weight:400"><input type="checkbox" id="rem"> এই কম্পিউটারে মনে রাখুন</label>
+<button id="con" type="button">অ্যাডমিন হিসেবে সাইন ইন</button>
 <div id="m1" class="bad"></div>
 </section>
 
 <section class="panel" id="s2" hidden>
-<h2>2. Upload the daily workbook</h2>
-<label for="file" class="mut" style="font-weight:400">Business Tracker file (.xlsb, .xlsx or .xls). Large files take up to a minute to read.</label>
+<h2>২. দৈনিক ওয়ার্কবুক আপলোড করুন</h2>
+<label for="file" class="mut" style="font-weight:400">বিজনেস ট্র্যাকার ফাইল (.xlsb, .xlsx বা .xls)। বড় ফাইল পড়তে এক মিনিট পর্যন্ত লাগতে পারে।</label>
 <input id="file" type="file" accept=".xlsb,.xlsx,.xls">
 <ul id="chk" style="margin-top:14px"></ul>
 </section>
 
 <section class="panel" id="s3" hidden>
-<h2>3. Publish</h2>
-<p class="mut">Publishing replaces data.json in GitHub. The site shows the new numbers in one to two minutes.</p>
-<button id="pub" type="button" disabled>Publish to GitHub</button>
-<button id="dl" type="button" class="ghost" disabled>Download data.json</button>
+<h2>৩. প্রকাশ করুন</h2>
+<p class="mut">প্রকাশ করলে GitHub-এর data.json বদলে যাবে। এক-দুই মিনিটের মধ্যে সাইটে নতুন সংখ্যা দেখা যাবে।</p>
+<button id="pub" type="button" disabled>GitHub-এ প্রকাশ করুন</button>
+<button id="dl" type="button" class="ghost" disabled>data.json ডাউনলোড করুন</button>
 <div id="msg"></div>
 </section>
 </div>
@@ -66,15 +66,15 @@ let OUT=null;
 const tk=()=>$('#tk').value.trim();
 const hdr=()=>({Authorization:'Bearer '+tk(),Accept:'application/vnd.github+json'});
 if(localStorage.getItem('gt')){$('#tk').value=localStorage.getItem('gt');$('#rem').checked=true}
-fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{$('#last').textContent=`Published data is dated ${j.updated} (${j.ra.length} RAs, ${j.teams.length} teams).`}).catch(()=>{$('#last').textContent='No published data yet.'});
+fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{$('#last').textContent=`প্রকাশিত ডেটার তারিখ ${j.updated} (${j.ra.length} জন আরএ, ${j.teams.length}টি টিম)।`}).catch(()=>{$('#last').textContent='এখনও কোনো ডেটা প্রকাশ হয়নি।'});
 $('#con').onclick=async()=>{
   $('#m1').textContent='';
   try{
     const r=await fetch(API,{headers:hdr()});const j=await r.json();
-    if(!r.ok)throw new Error(j.message||'Sign-in failed');
-    if(!(j.permissions&&j.permissions.push))throw new Error('This token cannot write to the repository. Give it Contents: Read and write.');
+    if(!r.ok)throw new Error(j.message||'সাইন ইন হয়নি');
+    if(!(j.permissions&&j.permissions.push))throw new Error('এই টোকেন দিয়ে রিপোজিটরিতে লেখা যাবে না। Contents: Read and write অনুমতি দিন।');
     if($('#rem').checked)localStorage.setItem('gt',tk());else localStorage.removeItem('gt');
-    $('#s2').hidden=false;$('#m1').className='ok';$('#m1').textContent='Signed in.';
+    $('#s2').hidden=false;$('#m1').className='ok';$('#m1').textContent='সাইন ইন সফল।';
   }catch(e){$('#m1').className='bad';$('#m1').textContent=e.message}
 };
 const num=v=>typeof v==='number'&&isFinite(v);
@@ -94,6 +94,7 @@ function parse(wb){
     else if(A==null&&num(r[5])&&num(r[21])&&r[22]==null)
       terr={t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21]};
   });
+  [...new Set(ra.map(x=>x.dh))].forEach(g=>ra.filter(x=>x.dh===g).sort((a,b)=>b.score-a.score).forEach((x,i)=>x.dhRank=i+1));
   let d=null;const w2=wb.Sheets['RA'];
   if(w2&&w2['A7']){const v=w2['A7'].v;d=v instanceof Date?v:(num(v)?new Date(Math.round((v-25569)*864e5)):null)}
   const iso=(d&&!isNaN(d)?d:new Date()).toISOString().slice(0,10);
@@ -101,20 +102,20 @@ function parse(wb){
 }
 $('#file').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;
-  const ul=$('#chk');ul.innerHTML='<li>Reading the file… please wait.</li>';$('#s3').hidden=true;OUT=null;
+  const ul=$('#chk');ul.innerHTML='<li>ফাইল পড়া হচ্ছে… অপেক্ষা করুন।</li>';$('#s3').hidden=true;OUT=null;
   try{
     const buf=await f.arrayBuffer();
     const wb=XLSX.read(buf,{type:'array',sheets:['AC','RA'],cellDates:true});
     const o=parse(wb);
-    const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'Passed':c==='warn'?'Warning':'Problem'}:</span> ${t}</li>`;
+    const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'ঠিক আছে':c==='warn'?'সতর্কতা':'সমস্যা'}:</span> ${t}</li>`;
     let h='';
-    h+=o.ra.length?li('ok',`${o.ra.length} RA rows read`):li('bad','No RA rows found');
-    h+=o.teams.length?li('ok',`${o.teams.length} DSS teams read`):li('bad','No DSS team rows found');
-    h+=o.dh.length?li('ok',`${o.dh.length} distributors read`):li('bad','No distributor rows found');
-    h+=o.territory?li('ok','Territory score read'):li('bad','Territory row not found');
-    h+=o._dateFound?li('ok',`Data date: ${o.updated}`):li('warn',`Date not found in file, using today (${o.updated})`);
+    h+=o.ra.length?li('ok',`${o.ra.length}টি আরএ সারি পড়া হয়েছে`):li('bad','কোনো আরএ সারি পাওয়া যায়নি');
+    h+=o.teams.length?li('ok',`${o.teams.length}টি ডিএসএস টিম পড়া হয়েছে`):li('bad','কোনো ডিএসএস টিম পাওয়া যায়নি');
+    h+=o.dh.length?li('ok',`${o.dh.length}টি ডিস্ট্রিবিউটর পড়া হয়েছে`):li('bad','কোনো ডিস্ট্রিবিউটর পাওয়া যায়নি');
+    h+=o.territory?li('ok','টেরিটরি স্কোর পড়া হয়েছে'):li('bad','টেরিটরি সারি পাওয়া যায়নি');
+    h+=o._dateFound?li('ok',`ডেটার তারিখ: ${o.updated}`):li('warn',`ফাইলে তারিখ পাওয়া যায়নি, আজকের তারিখ ব্যবহার হচ্ছে (${o.updated})`);
     ul.innerHTML=h;
-    if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('The file layout is not the Achievers’ Club tracker, so nothing can be published.');
+    if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('ফাইলটি Achievers’ Club ট্র্যাকারের ফরম্যাটে নেই, তাই প্রকাশ করা যাবে না।');
     delete o._dateFound;OUT=o;$('#s3').hidden=false;$('#pub').disabled=false;$('#dl').disabled=false;
   }catch(err){ul.insertAdjacentHTML('beforeend',`<li class="bad">${err.message}</li>`)}
 };
@@ -122,15 +123,15 @@ $('#dl').onclick=()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(OUT)],{type:'application/json'}));a.download='data.json';a.click();
 };
 $('#pub').onclick=async()=>{
-  const m=$('#msg');m.className='';m.textContent='Publishing…';$('#pub').disabled=true;
+  const m=$('#msg');m.className='';m.textContent='প্রকাশ হচ্ছে…';$('#pub').disabled=true;
   try{
     let sha;const g=await fetch(`${API}/contents/${PATH}`,{headers:hdr()});
     if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw new Error('Could not read the current data.json');
     const content=btoa(unescape(encodeURIComponent(JSON.stringify(OUT))));
     const p=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:'Update data '+OUT.updated,content,sha})});
     const j=await p.json();if(!p.ok)throw new Error(j.message||'Publish failed');
-    m.className='ok';m.textContent='Published. The site updates in one to two minutes.';
-  }catch(e){m.className='bad';m.textContent=e.message+' You can use Download data.json and upload it in GitHub instead.'}
+    m.className='ok';m.textContent='প্রকাশ হয়েছে! এক-দুই মিনিটে সাইট আপডেট হবে।';
+  }catch(e){m.className='bad';m.textContent=e.message+' বিকল্পে data.json ডাউনলোড করে GitHub-এ আপলোড করুন।'}
   $('#pub').disabled=false;
 };
 </script>
