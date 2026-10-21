@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Achievers’ Club</title>
+<style>
+:root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px}
+img.logo{height:84px;width:auto;mix-blend-mode:multiply;display:block}
+h1{font-size:30px;margin:6px 0 2px}h2{font-size:19px;margin:0 0 4px}
+.mut{color:var(--mut);font-size:13px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.card b{display:block;font:600 30px ui-monospace,Menlo,Consolas,monospace;margin:4px 0}
+.me{border:2px solid var(--pink)}
+label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+input,select{width:100%;min-height:48px;border:1px solid #8A6A7B;border-radius:8px;padding:10px 12px;font:inherit;background:#fff}
+button{min-height:48px;border-radius:8px;padding:10px 22px;font:600 15px inherit;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff}
+button.ghost{background:#fff;color:var(--pink)}
+.filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.filters>div{flex:1 1 220px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
+th{text-align:right;font-size:12px;color:var(--mut);padding:8px 10px;white-space:nowrap}
+td{padding:9px 10px;border-top:1px solid #F4E1EB;text-align:right}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+tr.top td{background:#FDE4F0;font-weight:600}
+tr.mine td{background:#FFE9F3;box-shadow:inset 0 0 0 0}
+tr.mine td:first-child{border-left:4px solid var(--pink)}
+.hi{color:var(--ok);font-weight:600}.lo{color:var(--low)}
+.gate{max-width:440px;margin:50px auto 0}
+.err{color:#B00020;font-size:14px;margin:10px 0 0;min-height:20px}
+.top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section id="gate" class="gate">
+<img class="logo" src="logo.jpg" alt="Achievers’ Club" style="height:110px">
+<div class="mut" style="color:var(--pink);font-weight:600;margin-top:8px">Gazipur Central</div>
+<p style="font-size:16px;color:var(--mut)">Enter your wallet number to see the leaderboard and where you stand.</p>
+<form id="f" class="panel">
+<label for="w">RA / DSO wallet number</label>
+<input id="w" inputmode="numeric" autocomplete="off" placeholder="01896043411">
+<div class="err" id="e" role="alert"></div>
+<button type="submit" style="width:100%">View leaderboard</button>
+</form>
+<p class="mut">Wallet not recognised? Contact your DSS or the Territory Manager.</p>
+</section>
+
+<section id="app" hidden>
+<div class="top-row">
+<div><img class="logo" src="logo.jpg" alt="Achievers’ Club">
+<h1>Territory overview</h1>
+<div class="mut" id="sub"></div></div>
+<button class="ghost" id="out" type="button">Sign out</button>
+</div>
+<div class="cards" id="cards" style="margin-top:20px"></div>
+<div class="panel filters">
+<div><label for="fdh">DH (distributor)</label><select id="fdh"></select></div>
+<div><label for="fdss">DSS</label><select id="fdss"></select></div>
+<div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">Reset filters</button></div>
+</div>
+<div class="panel"><h2>Distributor and territory scores</h2><div class="mut" style="margin-bottom:10px">Achievement against target, then weighted score.</div><div class="scroll"><table id="tdh"></table></div></div>
+<div class="panel"><h2>DSS teams</h2><div class="mut" style="margin-bottom:10px">Ranked by overall score.</div><div class="scroll"><table id="tt"></table></div></div>
+<div class="panel"><h2>RA leaderboard</h2><div class="mut" style="margin-bottom:10px">Sorted by score. Green = at or above target; brown = below half of target. Top 3 shaded, your row outlined.</div><div class="scroll"><table id="tr"></table></div></div>
+</section>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tc=s=>String(s).trim().toLowerCase().replace(/(^|[\s.\-])([a-z])/g,(m,a,b)=>a+b.toUpperCase());
+const dl=n=>/BANGLABAZAR/i.test(n)?'Firoza Banglabazar':'Firoza Global';
+const norm=w=>{w=String(w).replace(/\D/g,'');if(w.startsWith('880'))w=w.slice(2);if(w.length===10)w='0'+w;return w};
+const pc=x=>{const v=Math.round((x||0)*100);return `<td class="${v>=100?'hi':v<50?'lo':''}">${v}%</td>`};
+let D=null,me=null;
+fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{D=j;const w=sessionStorage.getItem('w');if(w)enter(w)}).catch(()=>{$('#e').textContent='Data could not be loaded. Try again later.'});
+$('#f').addEventListener('submit',e=>{e.preventDefault();if(!D){$('#e').textContent='Data is still loading. Try again.';return}enter($('#w').value,true)});
+function enter(w,fresh){
+  const x=D.ra.find(r=>norm(r.wallet)===norm(w));
+  if(!x){if(fresh)$('#e').textContent='Wallet number not recognised.';sessionStorage.removeItem('w');return}
+  me=x;sessionStorage.setItem('w',w);$('#gate').hidden=true;$('#app').hidden=false;setup();
+}
+$('#out').onclick=()=>{sessionStorage.removeItem('w');location.reload()};
+function setup(){
+  $('#sub').textContent='Gazipur Central · data as of '+new Date(D.updated+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const ord=[...D.ra].sort((a,b)=>b.score-a.score);const rank=ord.indexOf(me)+1;
+  const c=(k,v,s,cls)=>`<div class="card ${cls||''}"><div class="mut">${k}</div><b>${v}</b><div class="mut">${s}</div></div>`;
+  $('#cards').innerHTML=c('Your score',me.score.toFixed(1),`Rank ${rank} of ${D.ra.length} · rank ${me.dhRank} in your DH · rank ${me.teamRank} in your team`,'me')+c('Territory score',D.territory.score.toFixed(1),'Gazipur Central')+D.dh.map(d=>c(dl(d.name),d.score.toFixed(1),'Distributor rank '+d.rank)).join('');
+  const dhs=[...new Set(D.ra.map(r=>r.dh))];
+  $('#fdh').innerHTML='<option value="">All distributors</option>'+dhs.map(d=>`<option value="${esc(d)}">${dl(d)}</option>`).join('');
+  $('#fdh').onchange=()=>{dssOpts();draw()};$('#fdss').onchange=draw;
+  $('#rs').onclick=()=>{$('#fdh').value='';dssOpts();draw()};
+  dssOpts();draw();
+}
+function dssOpts(){
+  const d=$('#fdh').value;const l=[...new Set(D.ra.filter(r=>!d||r.dh===d).map(r=>r.dss))].sort();
+  $('#fdss').innerHTML='<option value="">All DSS</option>'+l.map(s=>`<option value="${esc(s)}">${esc(tc(s))}</option>`).join('');
+}
+function head(a,n=1){return '<tr>'+a.map((h,i)=>`<th class="${i<n?'l':''}">${h}</th>`).join('')+'</tr>'}
+function draw(){
+  const d=$('#fdh').value,s=$('#fdss').value;
+  const six=['TRX','REG','VOL','CNT','UBP','A2M'];
+  let h=head(['Distributor',...six,'Score','Rank']);
+  D.dh.filter(x=>!d||x.name===d).forEach(x=>h+=`<tr><td>${dl(x.name)}</td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.rank}</td></tr>`);
+  if(!d){const t=D.territory;h+=`<tr class="top"><td>Territory</td>${['t','r','vo','c','u','a'].map(k=>pc(t[k])).join('')}<td>${t.score.toFixed(1)}</td><td>—</td></tr>`}
+  $('#tdh').innerHTML=h;
+  let t=head(['Team (DSS)',...six,'Score','Rank']);
+  D.teams.filter(x=>(!d||x.dh===d)&&(!s||x.dss===s)).sort((a,b)=>a.rank-b.rank).forEach(x=>t+=`<tr><td>${esc(tc(x.team))}<div class="mut">${esc(tc(x.dss))}</div></td>${['t','r','vo','c','u','a'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.rank}</td></tr>`);
+  $('#tt').innerHTML=t;
+  const ord=[...D.ra].sort((a,b)=>b.score-a.score);
+  let r=head(['#','RA / DSO','Team (DSS)','TRX','REG','VOL','CNT','UBP','Score','DH rank','Team rank'],3);
+  ord.forEach((x,i)=>{if(d&&x.dh!==d||s&&x.dss!==s)return;
+    r+=`<tr class="${i<3?'top':''} ${x===me?'mine':''}"><td>${i+1}</td><td class="l">${esc(tc(x.name))}${x===me?' (you)':''}</td><td class="l">${esc(tc(x.dss))}</td>${['t','r','vo','c','u'].map(k=>pc(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b></td><td>${x.dhRank}</td><td>${x.teamRank}</td></tr>`});
+  $('#tr').innerHTML=r;
+}
+</script>
+</body>
+</html>

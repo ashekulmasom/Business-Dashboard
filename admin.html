@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin · Achievers’ Club</title>
+<style>
+:root{--pink:#E2136E;--bg:#FDF3F8;--line:#F0D3E2;--ink:#1B1B1F;--mut:#5C4A54;--ok:#0B5F58;--low:#92400E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+img.logo{height:90px;width:auto;mix-blend-mode:multiply;display:block}
+h1{font-size:30px;margin:6px 0 4px}h2{font-size:19px;margin:0 0 10px}
+.mut{color:var(--mut);font-size:13px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:16px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type=password],input[type=text]{width:100%;min-height:48px;border:1px solid #8A6A7B;border-radius:8px;padding:10px 12px;font:inherit}
+input[type=file]{width:100%;padding:28px;border:2px dashed #8A6A7B;border-radius:12px;background:#FFF8FB}
+button{min-height:48px;border-radius:8px;padding:10px 22px;font:600 15px inherit;cursor:pointer;border:2px solid var(--pink);background:var(--pink);color:#fff;margin:12px 10px 0 0}
+button.ghost{background:#fff;color:var(--pink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+ul{list-style:none;padding:0;margin:0}li{margin:6px 0}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--low);font-weight:600}.bad{color:#B00020;font-weight:600}
+#msg{margin-top:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<img class="logo" src="logo.jpg" alt="Achievers’ Club">
+<div class="mut" style="color:var(--pink);font-weight:600">Admin · private page</div>
+<h1>Publish data</h1>
+<p class="mut" id="last">Checking the published data…</p>
+
+<section class="panel" id="s1">
+<h2>1. Admin sign-in</h2>
+<label for="tk">GitHub access token</label>
+<input id="tk" type="password" autocomplete="off" placeholder="github_pat_…">
+<p class="mut">Only the owner of this repository can publish. The token stays in this browser only.</p>
+<label style="font-weight:400"><input type="checkbox" id="rem"> Remember on this computer</label>
+<button id="con" type="button">Sign in as admin</button>
+<div id="m1" class="bad"></div>
+</section>
+
+<section class="panel" id="s2" hidden>
+<h2>2. Upload the daily workbook</h2>
+<label for="file" class="mut" style="font-weight:400">Business Tracker file (.xlsb, .xlsx or .xls). Large files take up to a minute to read.</label>
+<input id="file" type="file" accept=".xlsb,.xlsx,.xls">
+<ul id="chk" style="margin-top:14px"></ul>
+</section>
+
+<section class="panel" id="s3" hidden>
+<h2>3. Publish</h2>
+<p class="mut">Publishing replaces data.json in GitHub. The site shows the new numbers in one to two minutes.</p>
+<button id="pub" type="button" disabled>Publish to GitHub</button>
+<button id="dl" type="button" class="ghost" disabled>Download data.json</button>
+<div id="msg"></div>
+</section>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const OWNER='ashekulmasom',REPO='Gazipur-Central-Dashboard',PATH='data.json';
+const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
+const $=s=>document.querySelector(s);
+let OUT=null;
+const tk=()=>$('#tk').value.trim();
+const hdr=()=>({Authorization:'Bearer '+tk(),Accept:'application/vnd.github+json'});
+if(localStorage.getItem('gt')){$('#tk').value=localStorage.getItem('gt');$('#rem').checked=true}
+fetch('data.json?'+Date.now()).then(r=>r.json()).then(j=>{$('#last').textContent=`Published data is dated ${j.updated} (${j.ra.length} RAs, ${j.teams.length} teams).`}).catch(()=>{$('#last').textContent='No published data yet.'});
+$('#con').onclick=async()=>{
+  $('#m1').textContent='';
+  try{
+    const r=await fetch(API,{headers:hdr()});const j=await r.json();
+    if(!r.ok)throw new Error(j.message||'Sign-in failed');
+    if(!(j.permissions&&j.permissions.push))throw new Error('This token cannot write to the repository. Give it Contents: Read and write.');
+    if($('#rem').checked)localStorage.setItem('gt',tk());else localStorage.removeItem('gt');
+    $('#s2').hidden=false;$('#m1').className='ok';$('#m1').textContent='Signed in.';
+  }catch(e){$('#m1').className='bad';$('#m1').textContent=e.message}
+};
+const num=v=>typeof v==='number'&&isFinite(v);
+function parse(wb){
+  const ws=wb.Sheets['AC'];if(!ws)throw new Error('Sheet "AC" not found in this file.');
+  ws['!ref']='A1:Y120';
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+  const ra=[],teams=[],dh=[];let terr=null;
+  rows.forEach(r=>{
+    const A=r[0];const fz=typeof A==='string'&&/^FIROZA/i.test(A);
+    if(fz&&typeof r[3]==='string'&&/^\d{11}$/.test(r[3].trim())&&num(r[5])&&num(r[23]))
+      ra.push({dh:A,dss:String(r[1]).trim(),name:String(r[2]).trim(),wallet:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],score:r[23],dhRank:r[24],teamRank:r[22]});
+    else if(fz&&r[1]===A&&typeof r[2]==='string'&&typeof r[3]==='string'&&num(r[5])&&num(r[21]))
+      teams.push({dh:A,dss:r[2].trim(),team:r[3].trim(),t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
+    else if(fz&&r[1]===A&&!r[2]&&num(r[5])&&num(r[21]))
+      dh.push({name:A,t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21],rank:r[22]});
+    else if(A==null&&num(r[5])&&num(r[21])&&r[22]==null)
+      terr={t:r[5],r:r[6],vo:r[7],c:r[8],u:r[9],a:r[10],score:r[21]};
+  });
+  let d=null;const w2=wb.Sheets['RA'];
+  if(w2&&w2['A7']){const v=w2['A7'].v;d=v instanceof Date?v:(num(v)?new Date(Math.round((v-25569)*864e5)):null)}
+  const iso=(d&&!isNaN(d)?d:new Date()).toISOString().slice(0,10);
+  return {updated:iso,ra,teams,dh,territory:terr,_dateFound:!!d};
+}
+$('#file').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  const ul=$('#chk');ul.innerHTML='<li>Reading the file… please wait.</li>';$('#s3').hidden=true;OUT=null;
+  try{
+    const buf=await f.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array',sheets:['AC','RA'],cellDates:true});
+    const o=parse(wb);
+    const li=(c,t)=>`<li><span class="${c}">${c==='ok'?'Passed':c==='warn'?'Warning':'Problem'}:</span> ${t}</li>`;
+    let h='';
+    h+=o.ra.length?li('ok',`${o.ra.length} RA rows read`):li('bad','No RA rows found');
+    h+=o.teams.length?li('ok',`${o.teams.length} DSS teams read`):li('bad','No DSS team rows found');
+    h+=o.dh.length?li('ok',`${o.dh.length} distributors read`):li('bad','No distributor rows found');
+    h+=o.territory?li('ok','Territory score read'):li('bad','Territory row not found');
+    h+=o._dateFound?li('ok',`Data date: ${o.updated}`):li('warn',`Date not found in file, using today (${o.updated})`);
+    ul.innerHTML=h;
+    if(!(o.ra.length&&o.teams.length&&o.dh.length&&o.territory))throw new Error('The file layout is not the Achievers’ Club tracker, so nothing can be published.');
+    delete o._dateFound;OUT=o;$('#s3').hidden=false;$('#pub').disabled=false;$('#dl').disabled=false;
+  }catch(err){ul.insertAdjacentHTML('beforeend',`<li class="bad">${err.message}</li>`)}
+};
+$('#dl').onclick=()=>{
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(OUT)],{type:'application/json'}));a.download='data.json';a.click();
+};
+$('#pub').onclick=async()=>{
+  const m=$('#msg');m.className='';m.textContent='Publishing…';$('#pub').disabled=true;
+  try{
+    let sha;const g=await fetch(`${API}/contents/${PATH}`,{headers:hdr()});
+    if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw new Error('Could not read the current data.json');
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(OUT))));
+    const p=await fetch(`${API}/contents/${PATH}`,{method:'PUT',headers:{...hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:'Update data '+OUT.updated,content,sha})});
+    const j=await p.json();if(!p.ok)throw new Error(j.message||'Publish failed');
+    m.className='ok';m.textContent='Published. The site updates in one to two minutes.';
+  }catch(e){m.className='bad';m.textContent=e.message+' You can use Download data.json and upload it in GitHub instead.'}
+  $('#pub').disabled=false;
+};
+</script>
+</body>
+</html>
