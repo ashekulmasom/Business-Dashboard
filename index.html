@@ -318,6 +318,34 @@ b.omt{font:800 17px var(--fh);color:var(--plum)}
   .grid td.l small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .mrow .mr-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 }
+/* ---- পেশাদার, ঘন টেবিল (ল্যাপটপ) ---- */
+table{font-size:14px}
+th{text-align:center;padding:7px 8px;font-size:12.5px;line-height:1.25}
+th small{display:block;font-size:10px;opacity:.8;margin-bottom:1px;font-weight:500}
+td{padding:6px 8px;text-align:center;line-height:1.3}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+td.l small{font-size:11.5px;line-height:1.25}
+td.l b{white-space:nowrap}
+td .tchip{font-size:10.5px;padding:0 6px}
+td .rk{font-size:17px}
+td b{font-size:14.5px}
+.bar{height:5px;margin-top:2px;min-width:60px}.bar i{height:5px}
+.bar.g i{background:linear-gradient(90deg,#15803D,#22C55E)}
+.bar.r i{background:linear-gradient(90deg,#B91C1C,#F87171)}
+.bar.g{background:#E3F4E8}.bar.r{background:#FBE4E4}
+.podium{margin:6px 0 12px}.p1 .step{height:72px}.p2 .step{height:52px}.p3 .step{height:40px}
+.pd .medal{font-size:30px}
+.mot.one{grid-template-columns:1fr}
+/* ---- পপআপ: মাস শেষ হতে বাকি ---- */
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,var(--plum),var(--deep));color:#fff;border-radius:16px;padding:12px 14px 12px 16px;box-shadow:0 16px 40px rgba(59,10,38,.35);max-width:calc(100vw - 24px);animation:tin .45s ease}
+.toast .ti{font-size:26px}
+.toast b{display:block;font:800 17px var(--fh);color:#FFD86B}
+.toast small{font-size:13px;opacity:.9}
+.toast button{min-height:34px;width:34px;padding:0;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);font-size:14px;margin-left:6px}
+.toast.out{opacity:0;transform:translate(-50%,16px);transition:all .4s}
+@keyframes tin{from{opacity:0;transform:translate(-50%,20px)}}
+
+.tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:0 6px;margin-right:4px}.tag.lo{background:#FBE4E4;color:#B91C1C}.tag.hi{background:#E3F4E8;color:#15803D}
 </style>
 </head>
 <body>
@@ -583,7 +611,8 @@ function ticker(IDX) {
 function tier(rank) {
   return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎', note: 'পুরস্কৃত হবেন' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : null;
 }
-const tierChip = rank => { const t = tier(rank); return t ? `<span class="tchip ${t.c}">${t.i} ${t.n}${t.note ? ' · ' + t.note : ''}</span>` : ''; };
+const tierChip = rank => { const t = rank === 1 ? tier(1) : null;   // টেবিলে শুধু ১ম-এর প্লাটিনাম
+   return t ? `<span class="tchip ${t.c}">${t.i} ${t.n}${t.note ? ' · ' + t.note : ''}</span>` : ''; };
 const omName = d => (d && d.om) || '';
 /* এই গতিতে চললে মাস শেষে স্কোর */
 function projected(D, rec, lv) {
@@ -745,18 +774,16 @@ function setup() {
   const F = focus();
   $('#mine').innerHTML = F ? mineHTML(F) : (who.missing ? '<div class="panel"><b>ℹ️ নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই।</b></div>' : '');
   const di = GC.dayInfo(D, 't', 'dso');
-  const houseDH = () => who.myDH ? [who.myDH.name] : scopeDH();
-  const top = D.ra.filter(x => houseDH().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
-  $('#mot').innerHTML = `<div class="mot">
-    <div class="stat"><span class="mut">মাস শেষ হতে বাকি</span><b>${di.left} দিন</b><span class="mut">প্রতিটি দিন গুরুত্বপূর্ণ</span></div>
-    <div class="stat"><span class="mut">${isDSO() || who.myDH ? 'হাউজের' : 'টেরিটরির'} সেরা ডিএসও</span><b style="font-size:22px">${top ? esc(tc(top.name)) : '—'}</b><span class="mut">${top ? top.score.toFixed(1) + ' পয়েন্ট ' + GC.tierChip(1) : ''}</span></div></div>`;
+  const top = D.ra.filter(x => house().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
+  $('#mot').innerHTML = `<div class="mot one">
+    <div class="stat"><span class="mut">${who.role === 'admin' ? 'টেরিটরির' : 'হাউজের'} সেরা ডিএসও</span><b style="font-size:22px">${top ? esc(tc(top.name)) : '—'}</b><span class="mut">${top ? top.score.toFixed(1) + ' পয়েন্ট ' + GC.tierChip(1) : ''}</span></div></div>`;
   /* ডিএইচ কার্ড — ডিএসও দেখবে না */
   const c = (ic, k, v, s, cls, href, om) => `<a href="${href}" class="card ${cls || ''}"><div class="ic">${ic}</div>${om ? `<div class="omn">${esc(om)}</div>` : ''}<div class="mut">${k}</div><b class="big">${v}</b><div class="mut">${s}</div><div class="more">বিস্তারিত দেখুন →</div></a>`;
-  $('#cards').innerHTML = isDSO() ? '' : c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*'))
+  $('#cards').innerHTML = isDSO() ? '' : (who.role === 'admin' ? c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*')) : '')
     + [...D.dh].sort((a, b) => a.rank - b.rank).map(d => c(d.rank === 1 ? '🏆🥇' : '🏢', esc(d.name) + (d === who.myDH ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank + (d.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''), d === who.myDH ? 'me' : '', hOM(d.name), d.om)).join('');
   $('#omP').hidden = $('#dssP').hidden = isDSO();
   $('#fdhW').hidden = isDSO();
-  champs(); battle();
+  champs(); battle(); daysToast(di.left);
   $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + scopeDH().map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
   $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw;
   $('#rs').onclick = () => { $('#fdh').value = ''; dssOpts(); $('#fdss').value = ''; draw(); };
@@ -774,20 +801,38 @@ function battle() {
       return `<div class="bt ${t === mine ? 'mine' : ''}"><div class="bt-r">${t.rank <= 3 ? RK_ICON[t.rank - 1] : '#' + t.rank}</div>
         <div class="bt-n">${esc(GC.tn(t))}${t === mine ? ' <span class="chip">আপনার টিম</span>' : ''}</div>
         <div class="bt-s">${t.score.toFixed(1)}<small> পয়েন্ট</small></div>
-        <div class="bar" style="margin:6px 0"><i style="width:${Math.min(100, t.score)}%"></i></div>
+        <div class="bar ${t.score >= 100 ? 'g' : 'r'}" style="margin:6px 0"><i style="width:${Math.min(100, t.score)}%"></i></div>
         <div class="bt-f"><span>ডিএসএস ${esc(tc(t.dss))}</span><span>ডিএইচ-এ #${i + 1}${t.rank <= 3 ? ' · 🎁 পুরস্কারের দৌড়ে' : ''}</span></div>
         ${star ? `<div class="bt-f"><span>⭐ টিম-স্টার: ${esc(tc(star.name))}</span><span>${mem.length} জন</span></div>` : ''}</div>`;
     }).join('')}</div>
     ${mine ? `<div class="mut" style="margin-top:10px">${mine.rank <= 3 ? '🎁 আপনার টিম এখন টেরিটরির শীর্ষ ৩-এ — পুরস্কারের দৌড়ে! জায়গা ধরে রাখুন।' : `🎯 আপনার টিম টেরিটরিতে #${mine.rank}। শীর্ষ ৩ টিম পুরস্কার পায় — ৩ নম্বর থেকে মাত্র ${GC.nd((([...D.teams].sort((a, b) => a.rank - b.rank)[2]) || mine).score - mine.score + 0.05)} পয়েন্ট দূরে!`}</div>` : ''}</div>`;
 }
+/* হাউজ: অ্যাডমিন ছাড়া সবাই নিজের ডিএইচ */
+function house() {
+  if (who.role === 'admin') return [...new Set(D.ra.map(r => r.dh))];
+  if (who.me) return [who.me.dh];
+  if (who.myTeam) return [who.myTeam.dh];
+  if (who.myDH) return [who.myDH.name];
+  return scopeDH();
+}
+/* মাস শেষ হতে বাকি — ছোট পপআপ (দিনে একবার) */
+function daysToast(left) {
+  const key = 'gcd_toast_' + D.month + '_' + GC.dt(D.tillDate).getDate();
+  if (GC.ss(key)) return; GC.ss(key, '1');
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status');
+  t.innerHTML = `<span class="ti">⏳</span><div><b>মাস শেষ হতে বাকি ${left} দিন</b><small>প্রতিটি দিন গুরুত্বপূর্ণ — আজই এগিয়ে যান!</small></div><button type="button" aria-label="বন্ধ করুন">✕</button>`;
+  document.body.appendChild(t);
+  const close = () => { t.classList.add('out'); setTimeout(() => t.remove(), 400); };
+  t.querySelector('button').onclick = close; setTimeout(close, 7000);
+}
 function champs() {
-  const house = who.myDH ? [who.myDH.name] : scopeDH();
-  const pool = D.ra.filter(x => house.includes(x.dh));
-  $('#champS').textContent = isDSO() || who.myDH ? 'হাউজের মধ্যে · ' + (house[0] || '') : 'পুরো টেরিটরির ডিএসও';
+  const hs = house();
+  const pool = D.ra.filter(x => hs.includes(x.dh));
+  $('#champS').textContent = who.role === 'admin' ? 'পুরো টেরিটরির ডিএসও' : 'হাউজের মধ্যে · ' + (hs[0] || '');
   $('#champs').innerHTML = LV.dso.ps.map(([k, name]) => {
     const best = pool.slice().sort((a, b) => (b[k] || 0) - (a[k] || 0))[0];
     return best ? `<div class="ch"><div class="k">${name}</div><b>${esc(tc(best.name))}${best === who.me ? ' (আপনি)' : ''}</b><span>${Math.round((best[k] || 0) * 100)}%</span> <small class="mut">${esc(best.team ? best.team : tc(best.dss))}</small></div>` : '';
-  }).join('') + (isDSO() ? '' : (() => { const t = [...D.teams].filter(x => house.includes(x.dh)).sort((a, b) => a.rank - b.rank)[0]; return t ? `<div class="ch"><div class="k">সেরা টিম</div><b>${esc(GC.tn(t))}</b><span>${t.score.toFixed(1)}</span> <small class="mut">${esc(tc(t.dss))}</small></div>` : ''; })());
+  }).join('') + (isDSO() ? '' : (() => { const t = [...D.teams].filter(x => hs.includes(x.dh)).sort((a, b) => a.rank - b.rank)[0]; return t ? `<div class="ch"><div class="k">সেরা টিম</div><b>${esc(GC.tn(t))}</b><span>${t.score.toFixed(1)}</span> <small class="mut">${esc(tc(t.dss))}</small></div>` : ''; })());
 }
 function dssOpts() {
   const d = $('#fdh').value;
@@ -797,14 +842,14 @@ function dssOpts() {
     return groups.length === 1 ? o : `<optgroup label="${esc(g)}">${o}</optgroup>`;
   }).join('');
 }
-const th = (n, b) => `${n}<small>${b}</small>`;
+const th = (n, b) => `<small>${b}</small>${n}`;
 const RK_ICON = ['🏆🥇', '🥈', '🥉'];
 const rk = n => n <= 3 ? `<span class="rk">${RK_ICON[n - 1]}</span>` : n;
 const DSO_MSG = 'শুভকামনা, এগিয়ে যাও। পারবে তুমিও।';
 const LEADER = '⭐ সেরাদের সেরা-লিডার';
 const label = (lv, rank) => {
-  if (lv === 'dso') { const t = GC.tier(rank); return t ? `${t.i} ${t.n}${t.note ? ' — ' + t.note : ''}` : '🚀 শীর্ষ ৩-এ ওঠার দৌড়ে'; }
-  return rank === 1 ? LEADER : '🚀 সেরাদের সেরা হওয়ার দৌড়ে';
+  if (lv === 'dso') { if (rank === 1) { const t = GC.tier(1); return `${t.i} ${t.n} — ${t.note}`; } return rank <= 3 ? `${RK_ICON[rank - 1]} ${rank === 2 ? '২য়' : '৩য়'} স্থান` : '🚀 শীর্ষ ৩-এ ওঠার দৌড়ে'; }
+  return rank === 1 ? LEADER : rank <= 3 ? '🚀 সেরাদের সেরা হওয়ার দৌড়ে' : '💪 থামিস না ভাই, যেতে হবে বহুদূর';
 };
 const labelCls = (lv, rank) => rank === 1 ? 'leader' : lv === 'dso' && rank <= 3 ? 'medal' : '';
 const recRank = (lv, rec) => lv === 'dso' ? rec.dhRank : rec === D.territory ? 0 : rec.rank;
@@ -818,29 +863,31 @@ function group(lv, rec) {
 }
 /* প্যারামিটার অনুযায়ী তুলনা: ক্যাপ পর্যন্ত কত বাড়ানো যায়, আর মিলিত পরিকল্পনায় কোনটিতে কত */
 function gapTable(lv, me, other, oname) {
-  const need = other.score - me.score + 0.05, pl = planFor(lv, me, need), x = pl.x;
-  let mob = '';
+  const need = other.score - me.score + 0.05, lead = need <= 0, pl = planFor(lv, me, Math.max(need, 0.05)), x = pl.x;
+  const pc = (f, g) => (g != null && Math.round(f * 100) === Math.round(g * 100) && Math.abs(f - g) > 1e-6 ? (Math.round(f * 1000) / 10) : Math.round(f * 100)) + '%';
+  const dpt = v => Math.abs(v) < 0.05 ? '≈0' : (v > 0 ? '+' : '') + GC.nd(v);
+  let mob = '', behindPts = 0;
   const rows = pl.P.map(p => {
     const of = other[p.k] || 0, mp = p.w * Math.min(p.mf, p.cap), op = p.w * Math.min(of, p.cap), d = mp - op;
-    let single, plan;
-    if (need <= 0) single = plan = '—';
-    else if (!p.base) single = plan = '<span class="mut">টার্গেট নেই</span>';
-    else {
-      const ef = need / p.w;
-      if (ef <= p.room + 1e-9) single = `আরও <b>${fmtU(p.k, ef * p.base)}</b> <small class="mut">(${Math.round(p.mf * 100)}% → ${Math.round((p.mf + ef) * 100)}%)</small>`;
-      else if (p.room <= 1e-9) single = `<span class="mut">ক্যাপে (${Math.round(p.cap * 100)}%) পৌঁছে গেছে — আর পয়েন্ট নেই</span>`;
-      else single = `<span class="lo">একা যথেষ্ট নয়</span><small class="mut">ক্যাপ ${Math.round(p.cap * 100)}% পর্যন্ত আরও ${fmtU(p.k, p.room * p.base)} করলে সর্বোচ্চ +${GC.nd(p.w * p.room)} পয়েন্ট</small>`;
-      plan = x == null ? '—' : p.add <= 1e-9 ? '<span class="mut">—</span>' : `আরও <b>${fmtU(p.k, p.units)}</b> <small class="mut">(${Math.round(p.mf * 100)}% → ${Math.round((p.mf + p.add) * 100)}%, +${GC.nd(p.pts)} পয়েন্ট)</small>`;
+    let how;
+    if (!p.base) how = '<span class="mut">টার্গেট নেই</span>';
+    else if (!lead && p.mf < of && p.mf < p.cap) {                      // পিছিয়ে: ১ নম্বরের সমান হতে কত
+      const add = Math.min(of, p.cap) - p.mf, pts = p.w * add; behindPts += pts;
+      how = `<span class="tag lo">পিছিয়ে</span> আরও <b>${fmtU(p.k, add * p.base)}</b> করলে সমান <small class="mut">(${pc(p.mf, of)} → ${pc(p.mf + add)} · +${GC.nd(Math.max(pts, 0.1))} পয়েন্ট)</small>`;
+    } else if (p.room <= 1e-9) {
+      how = `<span class="tag hi">এগিয়ে ✅</span> <span class="mut">এই প্যারামিটারের সর্বোচ্চ পয়েন্ট পেয়ে গেছেন</span>`;
+    } else {                                                            // এগিয়ে (বা ১ নম্বর): বাড়তি করলে কত পয়েন্ট (ক্যাপের মধ্যে)
+      const add = !lead && x != null && p.add > 0.005 ? p.add : Math.min(p.room, 0.1), pts = p.w * add;
+      how = `${p.mf >= of ? '<span class="tag hi">এগিয়ে ✅</span>' : '<span class="tag lo">পিছিয়ে</span>'} আরও <b>${fmtU(p.k, add * p.base)}</b> করলে বাড়তি <b>+${GC.nd(pts)}</b> পয়েন্ট <small class="mut">(${pc(p.mf)} → ${pc(p.mf + add)})</small>`;
     }
     mob += `<div class="mc"><div class="mc-h"><b>${p.name}</b><span class="mut">ওজন ${p.w} · ${GC.capTxt(p.cap)}</span></div>
-      <div class="mc-g"><div><span>অর্জন</span><b>${Math.round(p.mf * 100)}%</b></div><div><span>${esc(oname)}</span><b>${Math.round(of * 100)}%</b></div><div><span>পয়েন্ট পার্থক্য</span><b class="${d >= 0 ? 'hi' : 'lo'}">${d >= 0 ? '+' : ''}${GC.nd(d)}</b></div></div>
-      <div class="mc-l"><span>শুধু এটিতে:</span> ${single}</div><div class="mc-l"><span>মিলিত পরিকল্পনা:</span> ${plan}</div></div>`;
-    return `<tr><td class="l"><b>${p.name}</b><small>ওজন ${p.w} · ${GC.capTxt(p.cap)}</small></td><td>${Math.round(p.mf * 100)}%</td><td>${Math.round(of * 100)}%</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${d >= 0 ? '+' : ''}${GC.nd(d)}</td><td class="l">${single}</td><td class="l">${plan}</td></tr>`;
+      <div class="mc-g"><div><span>অর্জন</span><b>${pc(p.mf)}</b></div><div><span>${esc(oname)}</span><b>${pc(of)}</b></div><div><span>পয়েন্ট পার্থক্য</span><b class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</b></div></div>
+      <div class="mc-l"><span>${lead ? 'দূরত্ব বাড়াতে' : '১ নম্বরকে ছাড়িয়ে যেতে লাগবে'}:</span> ${how}</div></div>`;
+    return `<tr><td class="l"><b>${p.name}</b><small>ওজন ${p.w} · ${GC.capTxt(p.cap)}</small></td><td>${pc(p.mf, of)}</td><td>${pc(of, p.mf)}</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</td><td class="l">${how}</td></tr>`;
   }).join('');
-  let note = '';
-  if (need > 0 && x == null) note = `<div class="msg" style="color:var(--low)">⚠️ সব প্যারামিটার ক্যাপ পর্যন্ত নিলেও সর্বোচ্চ +${GC.nd(pl.maxGain)} পয়েন্ট বাড়ানো সম্ভব — এই মাসে ${esc(oname)}-কে ছাড়ানো কঠিন, তবে যতটা সম্ভব এগিয়ে যান!</div>`;
-  else if (need > 0) note = `<div class="mut" style="margin-top:8px">✅ <b>মিলিত পরিকল্পনা:</b> সব প্যারামিটারে একসাথে প্রায় ${Math.round(x * 100)}% করে (ক্যাপ মেনে) বাড়ালে ${GC.nd(need)} পয়েন্ট পূরণ হবে। "শুধু এটিতে" কলাম দেখায় একটি প্যারামিটার একাই যথেষ্ট কিনা।</div>`;
-  return `<div class="scroll desk"><table style="min-width:1000px">${GC.head(['প্যারামিটার', 'অর্জন %', esc(oname) + '-এর %', 'পয়েন্ট', esc(oname) + '-এর পয়েন্ট', 'পার্থক্য', 'শুধু এটিতে কত লাগবে', 'মিলিত পরিকল্পনা'])}${rows}</table></div><div class="mob">${mob}</div>${note}`;
+  const note = lead ? `<div class="mut" style="margin-top:8px">🏆 আপনি এগিয়ে — ওপরের যেকোনো প্যারামিটারে বাড়তি করলে ২য়-এর থেকে দূরত্ব আরও বাড়বে।</div>`
+    : `<div class="mut" style="margin-top:8px">💡 পিছিয়ে থাকা প্যারামিটারগুলোতে ${esc(oname)}-এর সমান হলেই +${GC.nd(behindPts)} পয়েন্ট পাবেন — দরকার ${GC.nd(need)} পয়েন্ট। এগিয়ে থাকা প্যারামিটারে বাড়তি করলে কাজটা আরও সহজ হবে।</div>`;
+  return `<div class="scroll desk"><table style="min-width:900px">${GC.head(['প্যারামিটার', 'অর্জন %', esc(oname) + '-এর %', 'পয়েন্ট', esc(oname) + '-এর পয়েন্ট', 'পার্থক্য', lead ? 'দূরত্ব বাড়াতে' : '১ নম্বরকে ছাড়িয়ে যেতে লাগবে'])}${rows}</table></div><div class="mob">${mob}</div>${note}`;
 }
 function compareHTML(lv, rec, title) {
   const G = group(lv, rec); if (!G || G.list.length < 2) return '';
@@ -851,11 +898,11 @@ function compareHTML(lv, rec, title) {
     h += `<div class="quote" style="margin-bottom:12px"><span>🏆</span><div>${esc(title)} এখন ১ নম্বরে! ২য় ${esc(G.nameOf(second))}-এর চেয়ে ${GC.nd(rec.score - second.score)} পয়েন্ট এগিয়ে — ব্যবধান ধরে রাখুন।</div></div>` + gapTable(lv, rec, second, G.nameOf(second));
   } else {
     h += `<div class="quote" style="margin-bottom:12px"><span>🥇</span><div>১ম ${esc(G.nameOf(first))}-কে ছাড়িয়ে যেতে আর <b>${GC.nd(first.score - rec.score + 0.05)}</b> পয়েন্ট দরকার।</div></div>
-      <div class="mut" style="margin-bottom:8px">প্রতিটি প্যারামিটারে পয়েন্ট তার ক্যাপ পর্যন্তই বাড়ে। নিচে দেখুন কোন প্যারামিটার একাই যথেষ্ট, আর না হলে কয়েকটিতে মিলিয়ে কত করলে হবে:</div>` + gapTable(lv, rec, first, G.nameOf(first));
+      <div class="mut" style="margin-bottom:8px">নিচে প্রতিটি প্যারামিটারে দেখুন — কোথায় পিছিয়ে আছেন আর ১ নম্বরের সমান হতে কত লাগবে, কোথায় এগিয়ে আছেন আর বাড়তি করলে কত পয়েন্ট বাড়বে:</div>` + gapTable(lv, rec, first, G.nameOf(first));
   }
   return h + '</div>';
 }
-const bar = s => `<div class="bar"><i style="width:${Math.min(100, s)}%"></i></div>`;
+const bar = s => `<div class="bar ${s >= 100 ? 'g' : 'r'}"><i style="width:${Math.min(100, s)}%"></i></div>`;   // ১০০+ = পারফর্মিং (সবুজ), কম = লাল
 const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3] + (isFinite(p[4]) ? ' · ক্যাপ ' + Math.round(p[4] * 100) + '%' : '')));
 const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine, kind) {
@@ -896,7 +943,7 @@ function draw() {
       mob += mrow(hDSO(x), rk(x.dhRank), `${esc(tc(x.name))}${x === me ? ' <span class="chip">আপনি</span>' : ''} ${GC.tierChip(x.dhRank)}`, (x.team ? esc(x.team) + ' · ' : '') + esc(tc(x.dss)) + ' · টিমে #' + x.teamRank, x, 'dso', (x.dhRank <= 3 ? 'top ' : '') + (x === me || myTeam ? 'mine' : ''), x.dhRank === 2 || x.dhRank === 3 ? `<div class="mr-s" style="color:var(--deep)">${DSO_MSG}</div>` : '');
     });
     if (!n) return;
-    r += `<div class="dhh">🏢 ${esc(g)} · ${list.length} জন ডিএসও</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div>`;
+    r += `<div class="dhh">🏢 ${esc(g)}</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div>`;
   });
   $('#tr').innerHTML = r;
 }
