@@ -577,6 +577,11 @@ i.bic{font-style:normal;color:transparent!important;text-shadow:0 0 0 #E2136E;-w
 .hero i.bic,.scorebox i.bic,.race i.bic,.stage i.bic,.toast i.bic,nav.tabs a.on i.bic,.vtabs button.on i.bic,.seg button.on i.bic,button:not(.ghost) i.bic,.btn i.bic{text-shadow:0 0 0 #fff}
 .hero nav.tabs a:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
 .vtabs button:not(.on) i.bic,.seg button:not(.on) i.bic,#tabs button:not(.on) i.bic,.tabs button:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
+/* ===== white stroke around team logos ===== */
+.tlogo{filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 2px 3px rgba(0,0,0,.18))!important}
+.tlogo.xl,.tlogo.stg,.tlogo.slg,.p1 .tlogo.stg{filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 6px 12px rgba(0,0,0,.28))!important}
+nav.tabs a i.bic{margin-right:4px}
+@media (max-width:600px){nav.tabs{gap:6px;overflow:visible}nav.tabs a{flex:1 1 0;justify-content:center;padding:6px 6px;font-size:12.5px;min-width:0;text-align:center}nav.tabs a i.bic{margin-right:2px}}
 </style>
 </head>
 <body>
@@ -782,7 +787,8 @@ function header(o) {
   const months = (o.IDX.months || []).slice().sort().reverse();
   const roleLab = { dso: 'ডিএসও', dss: 'ডিএসএস', om: 'অপারেশন ম্যানেজার', admin: 'Admin' }[o.who.role] || '';
   const name = o.who.me ? tc(o.who.me.name) : o.who.myTeam ? tc(o.who.myTeam.dss) + (o.who.myTeam.team ? ' · ' + o.who.myTeam.team : '') : o.who.myDH ? (o.who.myDH.om || o.who.myDH.name) : '';
-  const tabs = [['index.html', '🏆 Achievers’ Club', 'ac']];
+  const tabs = [['index.html?v=house', '🏆 Achievers’ Club', 'ac']];
+  if (canMS(o.who.role)) tabs.push(['index.html?v=show', '🌟 টেরিটরি শোকেস', 'sc']);
   if (canMS(o.who.role)) tabs.push(['service.html', '🛠️ Market Service', 'ms']);
   if (o.who.role === 'admin') tabs.push(['admin.html', '⚙️ Admin', 'ad']);
   $('#hdr').innerHTML = `
@@ -796,7 +802,7 @@ function header(o) {
       <button class="ghost" id="out" type="button">সাইন আউট</button>
     </div>
   </header>
-  ${tabs.length > 1 ? `<nav class="tabs" aria-label="পেজ">${tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</nav>` : ''}
+  ${tabs.length > 1 ? `<nav class="tabs" aria-label="পেজ">${tabs.map(([h, l, k]) => `<a href="${h}" data-k="${k}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</nav>` : ''}
   <div class="qbar" role="status" aria-live="polite"><span class="qi">💬</span><span class="qt" id="qt"></span><span class="qd" id="qd"></span></div>`;
   ticker(o.IDX);
   $('#out').onclick = signOut;
