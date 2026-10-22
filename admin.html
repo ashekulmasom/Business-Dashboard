@@ -663,6 +663,52 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
 .hero .sp{display:inline!important;animation:tw 2.6s ease-in-out infinite!important;color:#FFD86B;text-shadow:0 0 8px rgba(255,216,107,.8)}
 .hero .till{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3)}
 @media (max-width:700px){.hero,.stage{border-radius:20px}.hero .sp{display:inline!important}}
+/* ===== score card in main theme gradient, race box borderless ===== */
+.scorebox,.race{border:0!important}
+.scorebox{background:linear-gradient(150deg,#3A0620 0%,#7E0040 38%,#B0004F 68%,#E3147A 100%)!important;color:#fff!important;box-shadow:0 14px 32px rgba(122,12,67,.25)!important}
+.scorebox::after{content:"";display:block!important;position:absolute;inset:0;pointer-events:none;z-index:0;border-radius:inherit;background:radial-gradient(circle at 82% 10%,rgba(255,200,170,.35),transparent 32%),repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 16px)}
+.scorebox .kick,.scorebox .mut{color:rgba(255,255,255,.85)!important}
+.scorebox .sb-name,.scorebox .sb-name.om{color:#FFE27A!important;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+.ring{background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.22) 0)!important}
+.ring>div{background:#5E0331!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)!important}
+.ring b{color:#fff!important}.ring small{color:rgba(255,255,255,.8)!important}
+.scorebox .kpis div{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.18)!important}
+.scorebox .kpis b{color:#fff!important}.scorebox .kpis span{color:rgba(255,255,255,.82)!important}
+.scorebox .sb-link{color:#FFE27A!important;border-bottom-color:rgba(255,226,122,.6)!important}
+.scorebox i.bic{text-shadow:0 0 0 #fff!important}
+.scorebox .spk i{background:#FFE27A;filter:drop-shadow(0 0 4px rgba(255,226,122,.9))}
+/* motivational label: yellow & larger */
+.scorebox .tier,.scorebox .tier.leader,.scorebox .tier.medal{background:var(--gold)!important;color:#3A0620!important;border:0!important;font:800 17px/1.3 var(--fh)!important;padding:7px 18px!important;box-shadow:0 6px 16px rgba(0,0,0,.18)!important}
+.scorebox .tier i.bic{text-shadow:0 0 0 #3A0620!important}
+@media (max-width:700px){.scorebox .tier{font-size:15px!important;padding:6px 14px!important}}
+/* race page */
+.rhint{background:#FFF0F6;border-radius:14px;padding:10px 14px;margin:4px 0 14px;font-size:15px}.rhint b{color:var(--pink);font-size:20px}.rhint a{color:var(--pink);font-weight:700}
+/* race page — big track */
+.rbig-wrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;background:#FFF0F6;border-radius:18px;padding:0 35px}
+.rbig-t{position:relative;height:440px;margin:0 auto}
+.rb-lane{position:absolute;left:0;right:0;top:50%;height:12px;margin-top:-6px;border-radius:12px;background:#F6CFDF}
+.rb-lane i{display:block;height:100%;border-radius:12px;background:linear-gradient(90deg,#F6A9C9,#FFB566 55%,var(--gold))}
+.rm{position:absolute;top:50%;width:0;height:0}
+.rm-c{position:absolute;left:-25px;top:-25px;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:0 3px 10px rgba(122,12,67,.18);z-index:2}
+.rm-c .tlogo{width:44px;height:44px}
+.rm.me .rm-c{left:-34px;top:-34px;width:68px;height:68px;background:var(--pink);box-shadow:0 0 0 6px rgba(197,0,89,.2);z-index:4}
+.rm.me .rm-c .tlogo{width:58px;height:58px}
+.rm.f .rm-c{left:-32px;top:-32px;width:64px;height:64px;background:var(--gold);box-shadow:0 0 0 6px rgba(255,194,14,.3);z-index:3}
+.rm.f .rm-c .tlogo{width:54px;height:54px}
+.rm-c .rav{width:40px;height:40px;font-size:16px}
+.rm.me .rm-c .rav{background:#fff;color:var(--pink)}
+.rm-s{position:absolute;left:-1px;width:2px;background:#E7B3CB;z-index:0}
+.rm.up .rm-s{bottom:24px}.rm.dn .rm-s{top:24px}
+.rm-l{position:absolute;z-index:5;left:0;transform:translateX(-50%);width:max-content;max-width:124px;display:flex;flex-direction:column;align-items:center;white-space:nowrap;background:#fff;border:1px solid #F3D6E4;border-radius:12px;padding:3px 10px;line-height:1.2;box-shadow:0 2px 8px rgba(122,12,67,.08)}
+.rm-l b{font:800 17px var(--fh);color:var(--pink)}
+.rm-l span{font-size:11.5px;font-weight:700;color:var(--plum);max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.rm-l small{font-size:10.5px;color:var(--mut)}
+.rm-l em{font-style:normal;font-size:11px;font-weight:800;border-radius:999px;padding:0 8px;margin-bottom:2px;background:var(--gold);color:var(--plum)}
+.rm-l em.you{background:var(--pink);color:#fff}
+.rm.me .rm-l{border:2px solid var(--pink)}.rm.f .rm-l{border:2px solid var(--gold)}.rm.f .rm-l b{color:#B07800}
+@media (max-width:600px){.rbig-wrap{padding:0 30px}}
+.rav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#FCE3EE;color:var(--pink);font:800 16px var(--fh)}
+.rm.me .rm-c .rav{background:#fff;color:var(--pink)}.rm.f .rm-c .rav{background:#fff;color:#B07800}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -1908,4 +1954,5 @@ $('#csave').onclick = () => {
 })();
 </script>
 </body>
+</html>
 </html>
