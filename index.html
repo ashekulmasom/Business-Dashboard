@@ -817,9 +817,8 @@ body.tp-on{overflow:hidden}
     <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>আপনার স্কোর, র‍্যাঙ্ক আর আজকের লক্ষ্য — এক জায়গায়</p></div>
   </div>
   <form id="f" class="panel">
-    <label for="w" id="wl">ওয়ালেট নম্বর বা DSS ID</label>
+    <label for="w" id="wl">Login ID</label>
     <input id="w" autocomplete="off" placeholder="01XXXXXXXXX">
-    <div class="mut" style="margin-top:8px;line-height:1.7">ডিএসও: আরএ (DSO) ওয়ালেট<br>ডিএসএস: DSS ID (যেমন DSOSUP456-3245) বা অ্যাডমিনের দেওয়া ওয়ালেট<br>অপারেশন ম্যানেজার: ডিস্ট্রিবিউটরের MA ওয়ালেট</div>
     <div class="err" id="e" role="alert"></div>
     <button type="submit" style="width:100%">লিডারবোর্ড দেখুন 🚀</button>
   </form>
@@ -1146,7 +1145,7 @@ return { present, logLogin, logo, omPhoto, OMAV, omName, TEAMS, tn, capTxt, QUOT
 <script>
 const {$, esc, tc, MED, LV} = GC;
 let IDX = null, D = null, who = null;
-if (new URLSearchParams(location.search).get('as') === 'om') $('#wl').textContent = 'MA ওয়ালেট নম্বর (অপারেশন ম্যানেজার)';
+if (new URLSearchParams(location.search).get('as') === 'om') $('#wl').textContent = 'Login ID';
 GC.footer();
 
 (async function init() {
