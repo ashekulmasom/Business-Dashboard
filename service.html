@@ -727,6 +727,48 @@ body.present .rpage .rbig-wrap{background:#FFF0F6}
 .stepper button{min-height:40px;padding:6px 16px;border:2px solid var(--pink);background:#fff;color:var(--pink);font-size:14px}
 .stepper button:disabled{opacity:.35;cursor:default}
 @media (max-width:600px){.stepper button{padding:6px 10px;font-size:13px}.stepper span{font-size:13px}}
+/* ===== compact tabs / chips / stepper ===== */
+nav.tabs{margin-top:10px;gap:6px}
+nav.tabs a{min-height:34px!important;padding:4px 14px!important;font-size:14px!important}
+.qbar{min-height:40px!important;padding:6px 14px!important;margin-top:8px!important}.qbar .qt{font-size:15px!important}.qbar .qi{font-size:18px!important}
+.adnav{flex-direction:row!important;flex-wrap:wrap;align-items:center;gap:6px 10px!important;margin:10px 0 2px!important}
+.adnav .rchips{gap:6px;flex:1 1 auto}
+.adnav .rchips a{padding:3px 11px;font-size:12.5px;min-height:0;line-height:1.6}
+.stepper{padding:3px 4px!important;gap:6px!important;border-radius:999px!important;flex:0 0 auto;margin-left:auto}
+.stepper span{font-size:13px!important;flex:0 1 auto!important;max-width:260px}.stepper span b{font-size:16px!important}
+.stepper button{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!important;border-width:1.5px!important}
+@media (max-width:700px){.adnav .rchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;width:100%}.adnav .rchips a{white-space:nowrap}.stepper{width:100%;justify-content:space-between}.stepper span{max-width:none}}
+/* ===== TOP ACHIEVERS ===== */
+.ta-grid{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:14px;align-items:stretch}
+.ta-col{display:flex;flex-direction:column;gap:14px}
+.tac{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;
+  background:linear-gradient(150deg,#3A0620 0%,#7E0040 38%,#B0004F 68%,#E3147A 100%);box-shadow:0 12px 28px rgba(122,12,67,.22);transition:transform .2s}
+.tac::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 82% 10%,rgba(255,200,170,.35),transparent 32%),repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 16px)}
+.tac>*{position:relative;z-index:1}.tac:hover{transform:translateY(-3px)}
+.tac-k{font-size:12px;letter-spacing:.05em;font-weight:700;color:#FFE27A;text-transform:uppercase;margin-bottom:6px}
+.tac-n{font:800 22px/1.2 var(--fh);color:#FFE27A;margin-top:4px}
+.tac-s{font-size:12.5px;opacity:.85}
+.tac-ic{font-size:64px;line-height:1.1;margin:6px 0}
+.tac .ring{width:132px;height:132px;margin:10px auto 10px}.tac .ring>div{width:106px;height:106px}.tac .ring b{font-size:32px}
+.tac .tier{background:var(--gold)!important;color:#3A0620!important;font:800 14px/1.3 var(--fh);padding:5px 14px;border-radius:999px;border:0}
+.tac.sm{align-items:stretch;text-align:left;flex:1}
+.tac-row{display:flex;align-items:center;gap:12px}
+.tac-m{flex:1;min-width:0}.tac.sm .tac-n{font-size:19px;margin:0}.tac.sm .tac-s{margin:2px 0 6px}
+.tac.sm .tier{font-size:12px;padding:3px 10px;display:inline-block}
+.ring.sm{width:92px!important;height:92px!important;margin:0!important;flex:0 0 auto}.ring.sm>div{width:72px!important;height:72px!important}.ring.sm b{font-size:22px!important}.ring.sm small{font-size:10px}
+.tac .tlogo.md{width:64px;height:64px}
+@media (max-width:900px){.ta-grid{grid-template-columns:1fr}}
+.tac.sm{flex:1 0 auto}
+@media (max-width:600px){
+  nav.tabs{flex-wrap:nowrap!important;overflow-x:auto}
+  nav.tabs a{flex:0 0 auto!important;padding:4px 10px!important;font-size:12.5px!important}
+  .ring.sm{width:76px!important;height:76px!important}.ring.sm>div{width:60px!important;height:60px!important}.ring.sm b{font-size:18px!important}
+  .tac.sm .tac-n{font-size:17px}.tac .tlogo.md{width:50px;height:50px}.tac-row{gap:8px}
+}
+.tac-ph{position:relative;width:118px;height:118px;margin:4px auto 6px}
+.tac-ph img{width:118px;height:118px;border-radius:50%;object-fit:cover;background:#fff;border:4px solid var(--gold);box-shadow:0 0 0 5px rgba(255,194,14,.25),0 8px 20px rgba(0,0,0,.3)}
+.tac-ph span{position:absolute;right:-4px;bottom:2px;font-size:30px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+@media (max-width:600px){.tac-ph,.tac-ph img{width:96px;height:96px}}
 </style>
 </head>
 <body>
@@ -1024,8 +1066,10 @@ function badges(rec, lv, rank) {
 function footer() { }
 
 const tn = t => t.team ? t.team : tc(t.dss);
+const OMAV = "data:image/webp;base64,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";
 const logo = (team, cls) => { const s = LOGOS[up(team)]; return s ? `<img class="tlogo ${cls || ''}" src="${s}" alt="${esc(team)} লোগো" loading="lazy" decoding="async">` : ''; };    // টিমের নাম (না থাকলে ডিএসএস-এর নাম)
-return { logo, omName, TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+const omPhoto = (IDX, dh) => (IDX && IDX.omPhotos && IDX.omPhotos[dh]) || OMAV;
+return { logo, omPhoto, OMAV, omName, TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
 })();
 </script>
 <script>
