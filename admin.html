@@ -347,6 +347,31 @@ td b{font-size:14.5px}
 @keyframes tin{from{opacity:0;transform:translate(-50%,20px)}}
 
 .tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:0 6px;margin-right:4px}.tag.lo{background:#FBE4E4;color:#B91C1C}.tag.hi{background:#E3F4E8;color:#15803D}
+
+/* ---- টিমের লোগো ---- */
+.tlogo{object-fit:contain;vertical-align:middle;display:inline-block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))}
+.tlogo.xs{width:26px;height:26px;margin-right:6px}
+.tlogo.sm{width:38px;height:38px;flex:0 0 auto}
+.tlogo.md{width:58px;height:58px;display:block;margin:0 auto 4px}
+.tlogo.lg{width:96px;height:96px;display:block;margin:0 auto 6px}
+.tlogo.xl{width:118px;height:118px;display:block;margin:-4px auto 6px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4))}
+.tlogo.btl{width:54px;height:54px;flex:0 0 auto}
+.tlogo.pod{width:74px;height:74px;display:block}
+.tcell{display:flex;align-items:center;gap:8px}
+.bt-h{display:flex;align-items:center;gap:10px;padding-right:40px}
+.bt-h .bt-n{padding-right:0}
+.pdl{position:relative;display:inline-block}
+.pdl .pm{position:absolute;right:-8px;bottom:-4px;font-size:22px}
+.pd .medal:has(.pdl){animation:none}
+.dot.tl{background:transparent;border:0;width:28px;height:28px;top:10px;margin-left:-14px;box-shadow:none}
+.dot.tl img{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.dot.tl.big{width:38px;height:38px;top:5px;margin-left:-19px;animation:none}
+.dot.tl.big img{width:38px;height:38px}
+.dot.me.tl.big img{filter:drop-shadow(0 0 6px #FF4F9A) drop-shadow(0 0 2px #fff)}
+.dot.tl em{bottom:40px}.dot.me.tl em{top:40px;bottom:auto}
+.track{height:56px}
+.ch b .tlogo.xs{width:22px;height:22px}
+@media (max-width:700px){.tlogo.xl{width:96px;height:96px}.tlogo.pod{width:54px;height:54px}.tlogo.sm{width:30px;height:30px}.tlogo.btl{width:44px;height:44px}.dot.tl{width:22px;height:22px;margin-left:-11px}.dot.tl img{width:22px;height:22px}.dot.tl.big,.dot.tl.big img{width:32px;height:32px}}
 </style>
 <style>
 .wrap{max-width:980px}
