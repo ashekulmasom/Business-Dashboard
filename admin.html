@@ -783,6 +783,14 @@ nav.tabs a{min-height:34px!important;padding:4px 14px!important;font-size:14px!i
 .kdrop i.bic{text-shadow:0 0 0 #C50059!important}
 .kdrop{top:calc(100% + 6px)}
 @media (max-width:700px){.outw{flex-direction:row}}
+/* present button beside ⋮ */
+.kro{display:flex;gap:8px;align-items:center}
+.pbtn{font-size:19px!important}
+@media (max-width:700px){.pbtn{display:none!important}}
+.pexit{display:none}
+body.present .pexit{display:block;position:fixed;top:12px;right:14px;z-index:999;min-height:36px;padding:4px 14px;border-radius:999px;border:2px solid var(--pink);background:#fff;color:var(--pink);font:700 13px var(--fb);opacity:.55;cursor:pointer}
+body.present .pexit:hover{opacity:1}
+body.present #hdr .hero,body.present .qbar{display:none!important}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -893,6 +901,30 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <textarea id="qtext" rows="10" style="min-height:220px;line-height:1.7"></textarea>
     <div class="btns"><button type="button" id="qsave">Save & publish quotes</button><button type="button" class="ghost" id="qdef">Load built-in quotes</button></div>
     <div id="qmsg" class="mut" style="margin-top:8px"></div>
+  </details>
+</section>
+
+<section class="panel">
+  <details id="logBox">
+    <summary>📊 Login Tracking (who logs in, how many times)</summary>
+    <p class="mut">Every DSO, DSS and OM login is recorded with the login ID, employee type, name, DH, date and time (Bangladesh time). The records are kept in a Google Sheet that belongs to you. Download them here as an Excel file with a Summary sheet and a Details sheet.</p>
+    <div class="row">
+      <div style="flex:2 1 380px"><label for="logUrl">Google Apps Script Web App URL</label><input id="logUrl" placeholder="https://script.google.com/macros/s/…/exec"></div>
+      <div style="flex:1 1 200px"><label for="logKey">Download key (your secret)</label><input id="logKey" placeholder="same KEY as in the script"></div>
+    </div>
+    <div class="btns"><button type="button" id="logSave">Save URL & start tracking</button><button type="button" class="ghost" id="logDl">⬇️ Download login report (Excel)</button></div>
+    <div class="row" style="margin-top:6px"><div><label for="logFrom">From date (optional)</label><input id="logFrom" type="date"></div><div><label for="logTo">To date (optional)</label><input id="logTo" type="date"></div></div>
+    <div id="logMsg" class="mut" style="margin-top:8px"></div>
+    <details style="margin-top:12px"><summary style="font-size:15px">One-time setup (5 minutes) — click to see the steps</summary>
+      <ol class="mut" style="line-height:1.8">
+        <li>Open <b>sheets.new</b> in your browser (creates a new Google Sheet). Name it e.g. <i>Achievers Club Logins</i>.</li>
+        <li>Menu <b>Extensions → Apps Script</b>. Delete everything there and paste the code below. Change <code>CHANGE-ME</code> to a secret word of your choice. Click 💾 Save.</li>
+        <li>Click <b>Deploy → New deployment</b> → type <b>Web app</b> → Execute as: <b>Me</b> → Who has access: <b>Anyone</b> → <b>Deploy</b> → allow the permissions.</li>
+        <li>Copy the <b>Web app URL</b> (ends with <code>/exec</code>) into the box above, type the same secret word in “Download key”, and click <b>Save URL & start tracking</b>.</li>
+      </ol>
+      <textarea id="logCode" rows="14" readonly style="font:12px/1.5 Consolas,monospace;white-space:pre"></textarea>
+      <div class="btns"><button type="button" class="ghost" id="logCopy">Copy code</button></div>
+    </details>
   </details>
 </section>
 
@@ -1692,7 +1724,7 @@ $('#con').onclick = async () => {
     IDX = (await ghRead('index.json')) || { months: [], latest: '' };
     IDX.months = IDX.months || [];
     $('#main').hidden = false; $('#nav').hidden = false; $('#s1').hidden = true;
-    monthOptions(); renderQuotes();
+    monthOptions(); renderQuotes(); renderLog();
     await loadMonth($('#mon').value);
   } catch (e) { $('#m1').className = 'bad'; $('#m1').textContent = e.message; }
 };
@@ -1937,6 +1969,100 @@ $('#phSave').onclick = async () => {
     m.className = 'ok'; m.textContent = 'Photos published. The site updates in 1–2 minutes.';
   } catch (e) { m.className = 'bad'; m.textContent = e.message; }
 };
+/* =====================================================================
+   লগইন ট্র্যাকিং
+   ===================================================================== */
+const LOG_CODE = `const KEY = 'CHANGE-ME';            // ← your secret download key
+const SHEET = 'Logins';
+function sheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(SHEET);
+  if (!sh) { sh = ss.insertSheet(SHEET); sh.appendRow(['Saved At', 'Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Log In Date', 'Login Time', 'Page', 'Data Month']); sh.setFrozenRows(1); }
+  return sh;
+}
+function doPost(e) {
+  const d = JSON.parse(e.postData.contents || '{}');
+  const lock = LockService.getScriptLock(); lock.waitLock(10000);
+  try { sheet_().appendRow([new Date(), "'" + (d.id || ''), d.type || '', d.name || '', d.dh || '', "'" + (d.date || ''), "'" + (d.time || ''), d.page || '', d.month || '']); }
+  finally { lock.releaseLock(); }
+  return ContentService.createTextOutput('ok');
+}
+function doGet(e) {
+  const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+  if (!e.parameter.key || e.parameter.key !== KEY) return out({ error: 'Wrong key' });
+  const v = sheet_().getDataRange().getDisplayValues();
+  return out({ rows: v.slice(1) });
+}`;
+$('#logCode').value = LOG_CODE;
+$('#logCopy').onclick = () => { $('#logCode').select(); try { navigator.clipboard.writeText(LOG_CODE); } catch (e) { document.execCommand('copy'); } $('#logMsg').textContent = 'Code copied.'; };
+function renderLog() { $('#logUrl').value = IDX.logUrl || ''; $('#logKey').value = store('gcd_logkey') || ''; }
+$('#logSave').onclick = async () => {
+  const u = $('#logUrl').value.trim(), m = $('#logMsg');
+  if (u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(u)) { m.className = 'bad'; m.textContent = 'The URL should look like https://script.google.com/macros/s/…/exec'; return; }
+  store('gcd_logkey', $('#logKey').value.trim() || null);
+  m.className = 'mut'; m.textContent = 'Saving…';
+  try {
+    const cur = (await ghRead('index.json')) || { v: 1, months: [], latest: '' };
+    cur.logUrl = u; IDX.logUrl = u;
+    await ghPut('index.json', cur, 'Update login tracking URL');
+    m.className = 'ok'; m.textContent = u ? 'Saved. Logins are recorded from now on (site updates in 1–2 minutes).' : 'Tracking turned off.';
+  } catch (e) { m.className = 'bad'; m.textContent = e.message; }
+};
+$('#logDl').onclick = async () => {
+  const u = ($('#logUrl').value || IDX.logUrl || '').trim(), k = $('#logKey').value.trim(), m = $('#logMsg');
+  if (!u || !k) { m.className = 'bad'; m.textContent = 'Enter the Web App URL and the download key first.'; return; }
+  store('gcd_logkey', k);
+  m.className = 'mut'; m.textContent = 'Downloading login records…';
+  try {
+    const r = await fetch(u + (u.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(k));
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    const fr = $('#logFrom').value, to = $('#logTo').value;
+    const rows = (j.rows || []).map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: x[2], name: x[3], dh: x[4], date: x[5], time: x[6] }))
+      .filter(x => x.date && (!fr || x.date >= fr) && (!to || x.date <= to))
+      .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+    makeLogXlsx(rows, fr, to);
+    m.className = 'ok'; m.textContent = `Downloaded ${rows.length} login records.`;
+  } catch (e) { m.className = 'bad'; m.textContent = 'Could not download: ' + e.message + ' — check the URL, the key and that the script is deployed with access “Anyone”.'; }
+};
+function makeLogXlsx(rows, fr, to) {
+  const key = x => x.type + '|' + (x.type === 'DSO' ? x.id : x.name + '|' + x.dh);
+  const P = new Map();
+  rows.forEach(x => { const k = key(x); let p = P.get(k); if (!p) { p = { id: x.id, type: x.type, name: x.name, dh: x.dh, n: 0, days: new Set(), first: x.date + ' ' + x.time, last: x.date + ' ' + x.time }; P.set(k, p); }
+    p.n++; p.days.add(x.date); const t = x.date + ' ' + x.time; if (t < p.first) p.first = t; if (t > p.last) p.last = t; });
+  const people = [...P.values()].sort((a, b) => b.n - a.n || a.type.localeCompare(b.type));
+  /* রোস্টার — কে একবারও ঢোকেননি */
+  const roster = [];
+  if (S && S.W) {
+    (S.W.ra || []).forEach(x => roster.push({ type: 'DSO', id: x.wallet, name: x.name, dh: x.dh }));
+    (S.W.teams || []).forEach(t => roster.push({ type: 'DSS', id: t.id || t.wallet || '', name: t.dss, dh: t.dh }));
+    (S.W.dh || []).forEach(d => roster.push({ type: 'OM', id: d.ma || '', name: (S.W.cfg.om || {})[d.name] || '', dh: d.name }));
+  }
+  const seen = new Set(rows.map(x => x.type === 'DSO' ? 'DSO|' + String(x.id).replace(/\D/g, '').slice(-10) : x.type + '|' + String(x.name).toUpperCase() + '|' + x.dh));
+  const never = roster.filter(p => !seen.has(p.type === 'DSO' ? 'DSO|' + String(p.id).replace(/\D/g, '').slice(-10) : p.type + '|' + String(p.name).toUpperCase() + '|' + p.dh));
+  const T = ['DSO', 'DSS', 'OM'];
+  const A = [];
+  A.push(['Achievers’ Club — Login Report']);
+  A.push(['Period', (fr || 'Start') + ' to ' + (to || 'Today'), '', 'Generated', new Date().toLocaleString('en-GB', { timeZone: 'Asia/Dhaka' })]);
+  A.push([]);
+  A.push(['EMP Type', 'Total Logins', 'People Logged In', 'Total People (roster)', 'Never Logged In', 'Avg Logins / Person']);
+  T.forEach(t => { const pl = people.filter(p => p.type === t), tot = pl.reduce((s, p) => s + p.n, 0), rs = roster.filter(p => p.type === t).length;
+    A.push([t, tot, pl.length, rs || '', rs ? never.filter(p => p.type === t).length : '', pl.length ? +(tot / pl.length).toFixed(1) : 0]); });
+  A.push(['Total', rows.length, people.length, roster.length || '', roster.length ? never.length : '', people.length ? +(rows.length / people.length).toFixed(1) : 0]);
+  A.push([]);
+  A.push(['Logins per person (most active first)']);
+  A.push(['Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Total Logins', 'Days Active', 'First Login', 'Last Login']);
+  people.forEach(p => A.push([p.id, p.type, p.name, p.dh, p.n, p.days.size, p.first, p.last]));
+  if (roster.length) { A.push([]); A.push(['Never logged in (' + never.length + ')']); A.push(['Login ID', 'EMP Type', 'EMP Name', 'DH Name']); never.forEach(p => A.push([p.id, p.type, p.name, p.dh])); }
+  const byDay = {}; rows.forEach(x => { byDay[x.date] = byDay[x.date] || { DSO: 0, DSS: 0, OM: 0 }; byDay[x.date][x.type] = (byDay[x.date][x.type] || 0) + 1; });
+  const Dd = [['Log In Date', 'DSO', 'DSS', 'OM', 'Total']].concat(Object.keys(byDay).sort().reverse().map(d => [d, byDay[d].DSO, byDay[d].DSS, byDay[d].OM, byDay[d].DSO + byDay[d].DSS + byDay[d].OM]));
+  const Det = [['Login ID', 'EMP Type', 'EMP Name', 'Login Time', 'Log In Date', 'DH Name']].concat(rows.map(x => [x.id, x.type, x.name, x.time, x.date, x.dh]));
+  const wb = XLSX.utils.book_new();
+  const s1 = XLSX.utils.aoa_to_sheet(A); s1['!cols'] = [{ wch: 18 }, { wch: 12 }, { wch: 26 }, { wch: 36 }, { wch: 14 }, { wch: 12 }, { wch: 20 }, { wch: 20 }];
+  const s2 = XLSX.utils.aoa_to_sheet(Det); s2['!cols'] = [{ wch: 18 }, { wch: 10 }, { wch: 28 }, { wch: 12 }, { wch: 13 }, { wch: 38 }]; s2['!autofilter'] = { ref: 'A1:F' + Det.length };
+  const s3 = XLSX.utils.aoa_to_sheet(Dd); s3['!cols'] = [{ wch: 13 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }];
+  XLSX.utils.book_append_sheet(wb, s1, 'Summary'); XLSX.utils.book_append_sheet(wb, s2, 'Details'); XLSX.utils.book_append_sheet(wb, s3, 'Daily');
+  XLSX.writeFile(wb, 'Login_Report_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+}
 function renderQuotes() { const q = (IDX.quotes && IDX.quotes.length) ? IDX.quotes : QUOTES; $('#qtext').value = q.join('\n'); }
 $('#qdef').onclick = () => { $('#qtext').value = QUOTES.join('\n'); };
 $('#qsave').onclick = async () => {
