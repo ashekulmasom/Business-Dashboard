@@ -928,7 +928,7 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
       <div style="flex:2 1 380px"><label for="logUrl">Google Apps Script Web App URL</label><input id="logUrl" placeholder="https://script.google.com/macros/s/…/exec"></div>
       <div style="flex:1 1 200px"><label for="logKey">Download key (your secret)</label><input id="logKey" placeholder="same KEY as in the script"></div>
     </div>
-    <div class="btns"><button type="button" id="logSave">Save URL & start tracking</button><button type="button" class="ghost" id="logDl">⬇️ Download login report (Excel)</button></div>
+    <div class="btns"><button type="button" id="logSave">Save URL & start tracking</button><button type="button" class="ghost" id="logDl">⬇️ Download login report (Excel)</button><button type="button" class="ghost" id="logTest">Send test entry</button></div>
     <div class="row" style="margin-top:6px"><div><label for="logFrom">From date (optional)</label><input id="logFrom" type="date"></div><div><label for="logTo">To date (optional)</label><input id="logTo" type="date"></div></div>
     <div id="logMsg" class="mut" style="margin-top:8px"></div>
     <details style="margin-top:12px"><summary style="font-size:15px">One-time setup (5 minutes) — click to see the steps</summary>
@@ -2024,6 +2024,15 @@ $('#logSave').onclick = async () => {
     m.className = 'ok'; m.textContent = u ? 'Saved. Logins are recorded from now on (site updates in 1–2 minutes).' : 'Tracking turned off.';
   } catch (e) { m.className = 'bad'; m.textContent = e.message; }
 };
+$('#logTest').onclick = async () => {
+  const u = ($('#logUrl').value || IDX.logUrl || '').trim(), m = $('#logMsg');
+  if (!u) { m.className = 'bad'; m.textContent = 'Enter the Web App URL first.'; return; }
+  const now = new Date(), p2 = n => String(n).padStart(2, '0');
+  try {
+    await fetch(u, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ id: 'TEST', type: 'TEST', name: 'Admin test', dh: '-', date: `${now.getFullYear()}-${p2(now.getMonth() + 1)}-${p2(now.getDate())}`, time: `${p2(now.getHours())}:${p2(now.getMinutes())}:${p2(now.getSeconds())}`, page: 'admin', month: '' }) });
+    m.className = 'ok'; m.textContent = 'Test entry sent. Open your Google Sheet → “Logins” tab: a row “TEST / Admin test” should appear within a few seconds.';
+  } catch (e) { m.className = 'bad'; m.textContent = 'Could not send: ' + e.message; }
+};
 $('#logDl').onclick = async () => {
   const u = ($('#logUrl').value || IDX.logUrl || '').trim(), k = $('#logKey').value.trim(), m = $('#logMsg');
   if (!u || !k) { m.className = 'bad'; m.textContent = 'Enter the Web App URL and the download key first.'; return; }
@@ -2033,11 +2042,16 @@ $('#logDl').onclick = async () => {
     const r = await fetch(u + (u.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(k));
     const j = await r.json(); if (j.error) throw new Error(j.error);
     const fr = $('#logFrom').value, to = $('#logTo').value;
-    const rows = (j.rows || []).map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: x[2], name: x[3], dh: x[4], date: x[5], time: x[6] }))
-      .filter(x => x.date && (!fr || x.date >= fr) && (!to || x.date <= to))
+    const nd = v => { v = String(v || '').replace(/^'/, '').trim(); let m;
+      if ((m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0');
+      if ((m = v.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/))) { let a = +m[1], b = +m[2]; if (a > 12) [a, b] = [b, a]; return m[3] + '-' + String(a).padStart(2, '0') + '-' + String(b).padStart(2, '0'); }
+      const d = new Date(v); return isNaN(d) ? '' : d.toISOString().slice(0, 10); };
+    const all = (j.rows || []).map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: String(x[2] || ''), name: x[3], dh: x[4], date: nd(x[5]) || nd(x[0]), time: String(x[6] || '').replace(/^'/, '') }));
+    const rows = all.filter(x => x.date && (!fr || x.date >= fr) && (!to || x.date <= to))
       .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
     makeLogXlsx(rows, fr, to);
-    m.className = 'ok'; m.textContent = `Downloaded ${rows.length} login records.`;
+    m.className = rows.length ? 'ok' : 'bad';
+    m.textContent = rows.length ? `Downloaded ${rows.length} login records (${all.length} in the sheet in total).` : `The Google Sheet has ${all.length} login record(s)${all.length ? ', but none in the selected dates — clear the From/To dates and try again' : ' so far. Logins are recorded only after the new site files are uploaded and someone logs in fresh (Sign out, then log in again). Use “Send test entry” to check the connection'}.`;
   } catch (e) { m.className = 'bad'; m.textContent = 'Could not download: ' + e.message + ' — check the URL, the key and that the script is deployed with access “Anyone”.'; }
 };
 function makeLogXlsx(rows, fr, to) {
