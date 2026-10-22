@@ -718,6 +718,14 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
 body.present .rtop a.btn{display:none}
 body.present .rpage .rbig-wrap{background:#FFF0F6}
 @media (max-width:600px){.rchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.rchips a{white-space:nowrap;font-size:13px}.rtop button{display:none}}
+/* admin: rank-by-rank viewer */
+.adnav{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
+.adnav .rchips{margin:0}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #F3D6E4;border-radius:16px;padding:8px 10px}
+.stepper span{font-size:15px;color:var(--plum);text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stepper span b{color:var(--pink);font-size:20px}
+.stepper button{min-height:40px;padding:6px 16px;border:2px solid var(--pink);background:#fff;color:var(--pink);font-size:14px}
+.stepper button:disabled{opacity:.35;cursor:default}
+@media (max-width:600px){.stepper button{padding:6px 10px;font-size:13px}.stepper span{font-size:13px}}
 </style>
 </head>
 <body>
@@ -1073,8 +1081,43 @@ function focus() {
   if (who.me) { const list = D.ra.filter(x => x.dh === who.me.dh).sort((a, b) => a.dhRank - b.dhRank); return { rec: who.me, lv: 'dso', rank: who.me.dhRank, list, nameOf: x => tc(x.name), title: tc(who.me.name), sub: `${who.me.team ? '🛡️ ' + who.me.team + ' · ' : ''}${tc(who.me.dss)}`, rankLab: 'ডিএইচ-এ র‍্যাঙ্ক', extra: ['টিমে র‍্যাঙ্ক', who.me.teamRank], href: hDSO(who.me) }; }
   if (who.myTeam) { const t = who.myTeam, list = [...D.teams].sort((a, b) => a.rank - b.rank); return { rec: t, lv: 'dss', rank: t.rank, list, nameOf: x => GC.tn(x), title: GC.tn(t), sub: `ডিএসএস ${tc(t.dss)} · ${t.dh}`, rankLab: 'টেরিটরিতে র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === t.dh && x.dss === t.dss).length], href: hDSS(t) }; }
   if (who.myDH) { const d = who.myDH, list = [...D.dh].sort((a, b) => a.rank - b.rank); return { rec: d, lv: 'om', rank: d.rank, list, nameOf: x => dhTitle(x), title: dhTitle(d), sub: d.om ? 'অপারেশন ম্যানেজার · ' + d.name : 'অপারেশন ম্যানেজার', om: true, rankLab: 'ডিস্ট্রিবিউটর র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === d.name).length], href: hOM(d.name) }; }
-  if (who.role === 'admin') return { rec: D.territory, lv: 'om', rank: 0, list: [], nameOf: x => x.name, title: 'গাজীপুর সেন্ট্রাল টেরিটরি', sub: 'পুরো টেরিটরি', rankLab: 'ডিএইচ', extra: ['ডিএসও', D.ra.length], href: hOM('*') };
+  if (who.role === 'admin') return adminFocus();
   return null;
+}
+/* অ্যাডমিন: র‍্যাঙ্ক অনুযায়ী একে একে দেখা (টপ টিম → ২য় → ৩য় ...) */
+function admOpts() {
+  const o = [['dss', '🏆 টপ টিম (ডিএসএস)']];
+  [...D.dh].sort((a, b) => a.rank - b.rank).forEach(d => o.push(['dso:' + d.name, '🥇 টপ ডিএসও · ' + d.name]));
+  o.push(['om', '👔 টপ ওএম'], ['terr', '🌐 টেরিটরি']);
+  return o;
+}
+function admState() {
+  let st = null; try { st = JSON.parse(GC.ss('gcd_adm') || 'null'); } catch (e) { }
+  const ks = admOpts().map(x => x[0]);
+  if (!st || !ks.includes(st.k)) st = { k: 'dss', i: 0 };
+  return st;
+}
+function adminFocus() {
+  const st = admState();
+  const T = { rec: D.territory, lv: 'om', rank: 0, list: [], nameOf: x => x.name, title: 'গাজীপুর সেন্ট্রাল টেরিটরি', sub: 'পুরো টেরিটরি', rankLab: 'ডিএইচ', extra: ['ডিএসও', D.ra.length], href: hOM('*'), third: true };
+  let F = null;
+  if (st.k === 'dss') { const list = [...D.teams].sort((a, b) => a.rank - b.rank), t = list[Math.min(st.i, list.length - 1)]; if (t) F = { rec: t, lv: 'dss', rank: t.rank, list, nameOf: x => GC.tn(x), title: GC.tn(t), sub: `ডিএসএস ${tc(t.dss)} · ${t.dh}`, rankLab: 'টেরিটরিতে র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === t.dh && x.dss === t.dss).length], href: hDSS(t) }; }
+  else if (st.k.startsWith('dso:')) { const dh = st.k.slice(4), list = D.ra.filter(x => x.dh === dh).sort((a, b) => a.dhRank - b.dhRank), m = list[Math.min(st.i, list.length - 1)]; if (m) F = { rec: m, lv: 'dso', rank: m.dhRank, list, nameOf: x => tc(x.name), title: tc(m.name), sub: `${m.team ? '🛡️ ' + m.team + ' · ' : ''}${tc(m.dss)} · ${dh}`, rankLab: 'ডিএইচ-এ র‍্যাঙ্ক', extra: ['টিমে র‍্যাঙ্ক', m.teamRank], href: hDSO(m) }; }
+  else if (st.k === 'om') { const list = [...D.dh].sort((a, b) => a.rank - b.rank), d = list[Math.min(st.i, list.length - 1)]; if (d) F = { rec: d, lv: 'om', rank: d.rank, list, nameOf: x => dhTitle(x), title: dhTitle(d), sub: d.om ? 'অপারেশন ম্যানেজার · ' + d.name : 'অপারেশন ম্যানেজার', om: true, rankLab: 'ডিস্ট্রিবিউটর র‍্যাঙ্ক', extra: ['ডিএসও', D.ra.filter(x => x.dh === d.name).length], href: hOM(d.name) }; }
+  F = F || T; F.third = true; return F;
+}
+function admNav(F) {
+  const st = admState(), n = F.list.length, i = F.rank ? F.list.indexOf(F.rec) : -1;
+  return `<div class="adnav"><nav class="rchips">${admOpts().map(([k, l]) => `<a href="javascript:void 0" data-k="${esc(k)}" class="${st.k === k ? 'on' : ''}">${esc(l)}</a>`).join('')}</nav>
+    ${n > 1 && i >= 0 ? `<div class="stepper"><button type="button" class="ghost" data-s="-1" ${i <= 0 ? 'disabled' : ''}>◀ আগের</button><span><b>${i + 1}</b> / ${n} · ${esc(F.nameOf(F.rec))}</span><button type="button" class="ghost" data-s="1" ${i >= n - 1 ? 'disabled' : ''}>পরের ▶</button></div>` : ''}</div>`;
+}
+function drawMine() {
+  const F = focus();
+  $('#mine').innerHTML = F ? (who.role === 'admin' ? admNav(F) : '') + mineHTML(F) : (who.missing ? '<div class="panel"><b>ℹ️ নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই।</b></div>' : '');
+  if (who.role !== 'admin' || !F) return;
+  const save = st => { GC.ss('gcd_adm', JSON.stringify(st)); drawMine(); };
+  document.querySelectorAll('#mine .adnav .rchips a').forEach(a => a.onclick = () => save({ k: a.dataset.k, i: 0 }));
+  document.querySelectorAll('#mine .stepper button').forEach(b => b.onclick = () => { const st = admState(); st.i = Math.max(0, Math.min(F.list.length - 1, F.list.indexOf(F.rec) + +b.dataset.s)); save(st); });
 }
 const fmtU = (k, u) => k === 't' || k === 'vo' || k === 'a' ? GC.nf(u) : GC.nd(Math.ceil(u * 10) / 10);
 /* মিলিত পরিকল্পনা: সব প্যারামিটারে সমান হারে (%) বাড়িয়ে, ক্যাপ মেনে, প্রয়োজনীয় পয়েন্ট */
@@ -1132,7 +1175,7 @@ function kpiTiles(F) {
 function mineHTML(F) {
   const r = F.rec, proj = GC.projected(D, r, F.lv);
   let msg = '';
-  if (F.rank === 1) msg = '🏆🥇 অভিনন্দন! আপনি এখন এক নম্বরে!';
+  if (F.rank === 1) msg = F.third ? '🏆🥇 এখন এক নম্বরে!' : '🏆🥇 অভিনন্দন! আপনি এখন এক নম্বরে!';
   else if (F.rank > 1 && F.lv === 'dso' && F.rank <= 3) msg = `${RK_ICON[F.rank - 1]} ${DSO_MSG}`;
   else if (!F.rank) msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
   const bds = GC.badges(r, F.lv, F.rank || 99);
@@ -1144,7 +1187,7 @@ function mineHTML(F) {
       ${msg ? `<div class="msg" style="color:#FFE9A8">${msg}</div>` : ''}
       <a class="sb-link" href="${F.href}">${F.rank > 1 ? 'শীর্ষে যাওয়ার হিসাব দেখুন →' : 'পুরো হিসাব দেখুন →'}</a>
     </div>
-    <div>${raceHTML(F)}
+    <div>${F.third ? raceHTML(F).replace('আপনি এগিয়ে', esc(F.title) + ' এগিয়ে আছে').replace(/আপনি/g, 'এখানে') : raceHTML(F)}
       <div class="ph" style="margin-top:14px"><h2 style="font-size:18px">🎯 আজকের লক্ষ্য</h2><span class="mut">মাসিক টার্গেট পূর্ণ করতে প্রতিদিন কত</span></div>${kpiTiles(F)}
       <div class="ph" style="margin-top:14px"><h2 style="font-size:18px">🏵️ ব্যাজ</h2><span class="mut">${bds.filter(b => b.on).length}/${bds.length} অর্জিত — বাকিগুলো আনলক করুন!</span></div>
       <div class="badges">${bds.map(b => `<span class="bd ${b.on ? 'on' : 'off'}"><i>${b.i}</i>${b.n}</span>`).join('')}</div>
@@ -1152,8 +1195,7 @@ function mineHTML(F) {
   </div></div>`;
 }
 function setup() {
-  const F = focus();
-  $('#mine').innerHTML = F ? mineHTML(F) : (who.missing ? '<div class="panel"><b>ℹ️ নির্বাচিত মাসে আপনার নামে কোনো ডেটা নেই।</b></div>' : '');
+  drawMine();
   const di = GC.dayInfo(D, 't', 'dso');
   const top = D.ra.filter(x => house().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
   $('#mot').innerHTML = '';
@@ -1593,4 +1635,5 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
+</html>
 </html>
