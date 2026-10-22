@@ -380,7 +380,7 @@ td b{font-size:14.5px}
       <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
     </div>
     <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll desk"><table id="tdh"></table></div><div class="mob" id="tdhm"></div></div>
-    <div class="panel" id="dssP"><div class="ph"><h2>⚡ ডিএসএস পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
+    <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
     <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
   </div>
   <div id="detail" hidden></div>
@@ -801,7 +801,7 @@ function battle() {
       return `<div class="bt ${t === mine ? 'mine' : ''}"><div class="bt-r">${t.rank <= 3 ? RK_ICON[t.rank - 1] : '#' + t.rank}</div>
         <div class="bt-n">${esc(GC.tn(t))}${t === mine ? ' <span class="chip">আপনার টিম</span>' : ''}</div>
         <div class="bt-s">${t.score.toFixed(1)}<small> পয়েন্ট</small></div>
-        <div class="bar ${t.score >= 100 ? 'g' : 'r'}" style="margin:6px 0"><i style="width:${Math.min(100, t.score)}%"></i></div>
+        <div style="margin:6px 0">${rbar(t.score, t.rank, D.teams.length)}</div>
         <div class="bt-f"><span>ডিএসএস ${esc(tc(t.dss))}</span><span>ডিএইচ-এ #${i + 1}${t.rank <= 3 ? ' · 🎁 পুরস্কারের দৌড়ে' : ''}</span></div>
         ${star ? `<div class="bt-f"><span>⭐ টিম-স্টার: ${esc(tc(star.name))}</span><span>${mem.length} জন</span></div>` : ''}</div>`;
     }).join('')}</div>
@@ -871,15 +871,10 @@ function gapTable(lv, me, other, oname) {
     const of = other[p.k] || 0, mp = p.w * Math.min(p.mf, p.cap), op = p.w * Math.min(of, p.cap), d = mp - op;
     let how;
     if (!p.base) how = '<span class="mut">টার্গেট নেই</span>';
-    else if (!lead && p.mf < of && p.mf < p.cap) {                      // পিছিয়ে: ১ নম্বরের সমান হতে কত
+    else if (p.mf < of && p.mf < p.cap && Math.min(of, p.cap) - p.mf > 1e-6) {      // পিছিয়ে: সমান হতে কত লাগবে
       const add = Math.min(of, p.cap) - p.mf, pts = p.w * add; behindPts += pts;
       how = `<span class="tag lo">পিছিয়ে</span> আরও <b>${fmtU(p.k, add * p.base)}</b> করলে সমান <small class="mut">(${pc(p.mf, of)} → ${pc(p.mf + add)} · +${GC.nd(Math.max(pts, 0.1))} পয়েন্ট)</small>`;
-    } else if (p.room <= 1e-9) {
-      how = `<span class="tag hi">এগিয়ে ✅</span> <span class="mut">এই প্যারামিটারের সর্বোচ্চ পয়েন্ট পেয়ে গেছেন</span>`;
-    } else {                                                            // এগিয়ে (বা ১ নম্বর): বাড়তি করলে কত পয়েন্ট (ক্যাপের মধ্যে)
-      const add = !lead && x != null && p.add > 0.005 ? p.add : Math.min(p.room, 0.1), pts = p.w * add;
-      how = `${p.mf >= of ? '<span class="tag hi">এগিয়ে ✅</span>' : '<span class="tag lo">পিছিয়ে</span>'} আরও <b>${fmtU(p.k, add * p.base)}</b> করলে বাড়তি <b>+${GC.nd(pts)}</b> পয়েন্ট <small class="mut">(${pc(p.mf)} → ${pc(p.mf + add)})</small>`;
-    }
+    } else how = '<span class="tag hi">এগিয়ে ✅</span> বাড়তি এচিভ করে স্পিড বাড়াও';
     mob += `<div class="mc"><div class="mc-h"><b>${p.name}</b><span class="mut">ওজন ${p.w} · ${GC.capTxt(p.cap)}</span></div>
       <div class="mc-g"><div><span>অর্জন</span><b>${pc(p.mf)}</b></div><div><span>${esc(oname)}</span><b>${pc(of)}</b></div><div><span>পয়েন্ট পার্থক্য</span><b class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</b></div></div>
       <div class="mc-l"><span>${lead ? 'দূরত্ব বাড়াতে' : '১ নম্বরকে ছাড়িয়ে যেতে লাগবে'}:</span> ${how}</div></div>`;
@@ -898,10 +893,12 @@ function compareHTML(lv, rec, title) {
     h += `<div class="quote" style="margin-bottom:12px"><span>🏆</span><div>${esc(title)} এখন ১ নম্বরে! ২য় ${esc(G.nameOf(second))}-এর চেয়ে ${GC.nd(rec.score - second.score)} পয়েন্ট এগিয়ে — ব্যবধান ধরে রাখুন।</div></div>` + gapTable(lv, rec, second, G.nameOf(second));
   } else {
     h += `<div class="quote" style="margin-bottom:12px"><span>🥇</span><div>১ম ${esc(G.nameOf(first))}-কে ছাড়িয়ে যেতে আর <b>${GC.nd(first.score - rec.score + 0.05)}</b> পয়েন্ট দরকার।</div></div>
-      <div class="mut" style="margin-bottom:8px">নিচে প্রতিটি প্যারামিটারে দেখুন — কোথায় পিছিয়ে আছেন আর ১ নম্বরের সমান হতে কত লাগবে, কোথায় এগিয়ে আছেন আর বাড়তি করলে কত পয়েন্ট বাড়বে:</div>` + gapTable(lv, rec, first, G.nameOf(first));
+      <div class="mut" style="margin-bottom:8px">নিচে প্রতিটি প্যারামিটারে দেখুন — কোথায় পিছিয়ে আছেন আর ১ নম্বরের সমান হতে কত লাগবে, আর কোথায় আপনি এগিয়ে:</div>` + gapTable(lv, rec, first, G.nameOf(first));
   }
   return h + '</div>';
 }
+/* টিমের লাইন: শীর্ষ ৩ সবুজ; বাকিরা নিচের দিকে যত, তত গাঢ় লাল (শেষজন পুরো লাল) */
+const rbar = (s, r, n) => { if (r <= 3) return `<div class="bar g"><i style="width:${Math.min(100, s)}%"></i></div>`; const t = n > 3 ? (r - 3) / (n - 3) : 1, L = Math.round(74 - 32 * t), S = Math.round(60 + 25 * t); return `<div class="bar" style="background:hsl(0,${S}%,94%)"><i style="width:${Math.min(100, s)}%;background:hsl(0,${S}%,${L}%)"></i></div>`; };
 const bar = s => `<div class="bar ${s >= 100 ? 'g' : 'r'}"><i style="width:${Math.min(100, s)}%"></i></div>`;   // ১০০+ = পারফর্মিং (সবুজ), কম = লাল
 const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3] + (isFinite(p[4]) ? ' · ক্যাপ ' + Math.round(p[4] * 100) + '%' : '')));
 const keys = lv => LV[lv].ps.map(p => p[0]);
@@ -912,7 +909,7 @@ function podium(list, nameOf, mine, kind) {
 }
 /* মোবাইল: টেবিলের বদলে ছোট কার্ড-সারি */
 const pills = (x, lv) => LV[lv].ps.map(p => { const v = Math.round((x[p[0]] || 0) * 100); return `<span class="pl ${v >= 100 ? 'hi' : v < 50 ? 'lo' : ''}">${p[1].replace(' (A2M+D2C)', '').replace('SAV-', '')} ${v}%</span>`; }).join('');
-const mrow = (href, rankHTML, name, sub, x, lv, cls, extra) => `<a class="mrow ${cls || ''}" href="${href}"><div class="mr-r">${rankHTML}</div><div class="mr-m"><div class="mr-n">${name}</div>${sub ? `<div class="mr-s">${sub}</div>` : ''}${extra || ''}<div class="mr-k">${pills(x, lv)}</div></div><div class="mr-sc"><b>${x.score.toFixed(1)}</b>${bar(x.score)}</div></a>`;
+const mrow = (href, rankHTML, name, sub, x, lv, cls, extra, barHTML) => `<a class="mrow ${cls || ''}" href="${href}"><div class="mr-r">${rankHTML}</div><div class="mr-m"><div class="mr-n">${name}</div>${sub ? `<div class="mr-s">${sub}</div>` : ''}${extra || ''}<div class="mr-k">${pills(x, lv)}</div></div><div class="mr-sc"><b>${x.score.toFixed(1)}</b>${barHTML || bar(x.score)}</div></a>`;
 function draw() {
   const me = who.me, my = who.myDH, mt = who.myTeam;
   const d = $('#fdh').value;
@@ -928,8 +925,8 @@ function draw() {
     const all = [...D.teams].sort((a, b) => a.rank - b.rank);
     const l = all.filter(x => (!ed || x.dh === ed) && (!ss || x.dss === ss));
     let tb = GC.head(['র‍্যাঙ্ক', 'টিম · ডিএসএস', 'ডিএইচ', ...cols('dss'), 'স্কোর'], 3);
-    l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}"><b>${esc(GC.tn(x))}</b></a>${x.rank <= 3 ? ' <span class="chip">🎁 পুরস্কার</span>' : ''}<small>${esc(tc(x.dss))}</small></td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td></tr>`);
-    $('#tt').innerHTML = '<div class="reward">🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার! 🏆🥇 ১ম · 🥈 ২য় · 🥉 ৩য়</div>' + (!ed && !ss ? podium(all, x => GC.tn(x), mt, 'dss') : '') + `<div class="scroll desk"><table>${tb}</table></div><div class="mob">${l.map(x => mrow(hDSS(x), rk(x.rank), `<b>${esc(GC.tn(x))}</b>${x.rank <= 3 ? ' <span class="chip">🎁</span>' : ''}`, esc(tc(x.dss)) + ' · ' + esc(x.dh), x, 'dss', (x.rank <= 3 ? 'top ' : '') + (x === mt ? 'mine' : ''))).join('')}</div>`;
+    l.forEach(x => tb += `<tr class="go ${x.rank <= 3 ? 'top' : ''} ${x === mt ? 'mine' : ''}" data-h="${hDSS(x)}"><td class="l">${rk(x.rank)}</td><td class="l"><a href="${hDSS(x)}"><b>${esc(GC.tn(x))}</b></a>${x.rank <= 3 ? ' <span class="chip">🎁 পুরস্কার</span>' : ''}<small>${esc(tc(x.dss))}</small></td><td class="l"><small>${esc(x.dh)}</small></td>${keys('dss').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${rbar(x.score, x.rank, D.teams.length)}</td></tr>`);
+    $('#tt').innerHTML = '<div class="reward">🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার!</div>' + (!ed && !ss ? podium(all, x => GC.tn(x), mt, 'dss') : '') + `<div class="scroll desk"><table>${tb}</table></div><div class="mob">${l.map(x => mrow(hDSS(x), rk(x.rank), `<b>${esc(GC.tn(x))}</b>${x.rank <= 3 ? ' <span class="chip">🎁</span>' : ''}`, esc(tc(x.dss)) + ' · ' + esc(x.dh), x, 'dss', (x.rank <= 3 ? 'top ' : '') + (x === mt ? 'mine' : ''), '', rbar(x.score, x.rank, D.teams.length))).join('')}</div>`;
   }
   let r = '';
   scopeDH().filter(g => !ed || g === ed).forEach(g => {
