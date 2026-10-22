@@ -490,6 +490,92 @@ body.present .panel{background:#fff}
 }
 .qbar .qt.out{opacity:.15}
 @media (max-width:700px){.sl-b{flex-wrap:wrap}.sl-b>div:nth-child(2){flex:1 1 140px}.sl-big{margin-left:auto}}
+
+/* =====================================================================
+   থিম A · bKash Classic — সাদা বেস, bKash গোলাপি প্রধান, হলুদ হাইলাইট
+   ===================================================================== */
+:root{--pink:#E2136E;--pink2:#F0559A;--deep:#B80D5C;--plum:#2B1020;--gold:#FFC20E;--gold2:#FFE27A;--bg:#FFFFFF;--card:#FFFFFF;--line:#F3D6E4;--ink:#2B1020;--mut:#6E5662;--sh:0 1px 2px rgba(43,16,32,.04),0 6px 18px rgba(226,19,110,.07)}
+body{background:#FFFFFF;background-image:none}
+h2{color:var(--plum)}
+/* হেডার: সলিড গোলাপি */
+.hero{background:#E2136E;box-shadow:0 10px 26px rgba(226,19,110,.25);border-bottom:0;border-radius:20px}
+.hero::after{display:none}
+.hero .sp{display:none}
+.badge{transform:none;animation:none;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.till{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
+.hero .whoh .chip{background:var(--gold);color:var(--plum)}
+.hero button.ghost{border-color:#fff;background:transparent}
+nav.tabs a{border-color:var(--line);box-shadow:none}
+nav.tabs a.on{background:var(--pink);border-color:var(--pink);box-shadow:none}
+.vtabs{box-shadow:none}.vtabs button.on{background:var(--pink);box-shadow:none}
+/* উক্তি বার */
+.qbar{background:#FDF0F6;border:1px solid var(--line)}
+.qbar .qt{color:var(--deep)}
+.qbar .qd i.on{background:var(--pink)}
+/* প্যানেল ও কার্ড */
+.panel,.card,.stat,.kt,.ch,.bt,.mc{box-shadow:var(--sh);border-color:var(--line)}
+.card.me,.bt.mine{background:#FDF0F6;border:2px solid var(--pink)}
+th{background:#FDF0F6}
+tr.top td{background:#FFF9E5}
+tr.mine td{background:#FDE4EF}
+.mrow.top{background:#FFF9E5}.mrow.mine{background:#FDE4EF}
+/* স্কোর কার্ড: সলিড গোলাপি + হলুদ রিং */
+.scorebox{background:#E2136E}
+.scorebox::after{display:none}
+.ring{background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.28) 0)}
+.ring>div{background:#B80D5C}
+.tier{background:rgba(255,255,255,.18)}
+.tier.leader,.tier.medal{background:var(--gold);color:var(--plum);box-shadow:none}
+.kpis div{background:rgba(255,255,255,.16)}
+.sb-name.om{color:var(--gold2)}
+.sb-link{color:#fff;border-bottom-color:rgba(255,255,255,.6)}
+/* ১ নম্বরের দৌড় */
+.race{background:#B80D5C}
+.race::after{display:none}
+.rk2,.lv-h{color:var(--gold2)}.rbig b{color:var(--gold)}
+.lever{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25)}
+.lane{background:rgba(255,255,255,.22)}.lane i{background:var(--gold)}
+.dot.me{background:#fff;border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,194,14,.35)}
+/* বার ও টাইল */
+.kt-b{background:#F7D9E7}.kt-b i{background:var(--pink)}
+.kt.done{background:#F2FBF6;border-color:#BFE6CF}
+.bar{background:#F7D9E7}.bar i{background:var(--pink)}
+/* চিপ, ব্যাজ, পুরস্কার */
+.chip{background:#FDE4EF;color:var(--deep)}
+.tchip.pt{background:var(--gold);color:var(--plum)}
+.reward{background:#FFF6D6;border:1px solid var(--gold);color:var(--plum)}
+.bd.on{background:#FFF6D6;border-color:var(--gold);box-shadow:none}
+.quote{background:#FDF0F6;border:1px solid var(--line)}
+.toast{background:#E2136E;border:0}
+.toast b{color:var(--gold2)}
+/* পোডিয়াম */
+.p1 .step{background:var(--gold)}.p2 .step{background:#E5E7EB}.p3 .step{background:#E9B98A}
+.pd .ps{color:var(--pink)}
+/* শোকেস (ওএম / অ্যাডমিন) — সরল */
+.stage{background:#E2136E;box-shadow:0 10px 26px rgba(226,19,110,.25)}
+.stage::before{display:none}
+.st-s{color:var(--gold2)}
+.st-btn{background:transparent!important;border-color:#fff!important}
+.sp-l{animation:none}
+.p1 .tlogo.stg{filter:drop-shadow(0 6px 14px rgba(0,0,0,.3))}
+.p1 .sp-n{color:var(--gold2)}.p1 .sp-s b{color:var(--gold)}
+.sp-b{background:var(--gold);color:var(--plum)}
+.p1 .sp-step{background:var(--gold);box-shadow:none}.p2 .sp-step{background:#F1F2F5}.p3 .sp-step{background:#F0C9A2}
+.spot{animation:none;background:#fff;border:2px solid var(--pink);box-shadow:var(--sh)}
+.sl-big b{background:none;color:var(--pink);-webkit-background-clip:initial;background-clip:initial}
+.spot-p i{background:var(--pink)}
+.pr-r{background:conic-gradient(var(--pink) calc(var(--p)*1%),#F7D9E7 0)}
+.fm.top{background:#FFF9E5}
+.zone{border-top-color:var(--gold)}
+body.present{background:#FFFFFF}
+/* মার্কেট সার্ভিস গ্রিড ও অ্যাডমিন */
+.grid thead th,.grid thead tr.frow th,.grid thead th:first-child,.grid tfoot td,.grid tfoot td:first-child{background:#FDF0F6}
+.seg{border-color:var(--pink)}.seg button.on{background:var(--pink)}
+/* ===== bKash-colour icons ===== */
+i.bic{font-style:normal;color:transparent!important;text-shadow:0 0 0 #E2136E;-webkit-text-fill-color:transparent}
+.hero i.bic,.scorebox i.bic,.race i.bic,.stage i.bic,.toast i.bic,nav.tabs a.on i.bic,.vtabs button.on i.bic,.seg button.on i.bic,button:not(.ghost) i.bic,.btn i.bic{text-shadow:0 0 0 #fff}
+.hero nav.tabs a:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
+.vtabs button:not(.on) i.bic,.seg button:not(.on) i.bic,#tabs button:not(.on) i.bic,.tabs button:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
 </style>
 </head>
 <body>
@@ -1268,6 +1354,32 @@ function route() {
 }
 addEventListener('hashchange', route);
 
+</script>
+<script>
+/* bKash-colour UI icons: wrap UI emojis in <i class="ic"> so CSS can tint them */
+(function () {
+  const RE = /(🏢|⬇️?|👥|📊|🏠|🌟|🛠️?|⚙️?|🔎|📋|📑|📤|📂|🎯|💬|🧩|📝|📈|🐷|⛶|🎤|💓|⚔️?|🏁|💡|⚡|🛡️?|🏵️?|🚀|💪|🔥|⚠️?)/g;
+  const SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, OPTION: 1, SELECT: 1, INPUT: 1, TITLE: 1 };
+  function walk(root) {
+    if (root.nodeType === 3) return fix(root);
+    if (root.nodeType !== 1 || SKIP[root.nodeName] || (root.classList && root.classList.contains('bic'))) return;
+    const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => {
+      for (let p = n.parentNode; p && p !== root.parentNode; p = p.parentNode) if (SKIP[p.nodeName] || (p.classList && p.classList.contains('bic'))) return 2;
+      RE.lastIndex = 0; return RE.test(n.nodeValue) ? 1 : 2; } });
+    const L = []; while (tw.nextNode()) L.push(tw.currentNode); L.forEach(fix);
+  }
+  function fix(n) {
+    const p = n.parentNode; if (!p || SKIP[p.nodeName] || (p.classList && p.classList.contains('bic'))) return;
+    RE.lastIndex = 0; if (!RE.test(n.nodeValue)) return;
+    const f = document.createDocumentFragment();
+    n.nodeValue.split(RE).forEach((s, i) => { if (!s) return; if (i % 2) { const e = document.createElement('i'); e.className = 'bic'; e.textContent = s; f.appendChild(e); } else f.appendChild(document.createTextNode(s)); });
+    p.replaceChild(f, n);
+  }
+  let busy = false;
+  const mo = new MutationObserver(ms => { if (busy) return; busy = true; ms.forEach(m => { if (m.type === 'characterData') fix(m.target); else m.addedNodes.forEach(walk); }); mo.takeRecords(); busy = false; });
+  function go() { walk(document.body); mo.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+  if (document.body) go(); else document.addEventListener('DOMContentLoaded', go);
+})();
 </script>
 </body>
 </html>
