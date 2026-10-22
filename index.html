@@ -790,6 +790,22 @@ nav.tabs a{min-height:34px!important;padding:4px 14px!important;font-size:14px!i
 body.present .pexit{display:block;position:fixed;top:12px;right:14px;z-index:999;min-height:36px;padding:4px 14px;border-radius:999px;border:2px solid var(--pink);background:#fff;color:var(--pink);font:700 13px var(--fb);opacity:.55;cursor:pointer}
 body.present .pexit:hover{opacity:1}
 body.present #hdr .hero,body.present .qbar{display:none!important}
+/* ===== DSO leaderboard present (frozen header) ===== */
+.dhh{display:flex;align-items:center;gap:10px}
+.tpres{margin-left:auto;min-height:34px!important;width:38px;height:34px;padding:0!important;border-radius:10px!important;border:0!important;font-size:18px!important;color:#fff!important;
+  background:linear-gradient(135deg,#7E0040,#C50059 60%,#E3147A)!important;box-shadow:0 4px 12px rgba(197,0,89,.3);display:grid;place-items:center;cursor:pointer}
+@media (max-width:700px){.tpres{display:none!important}}
+.tpov{position:fixed;inset:0;z-index:2000;background:#FFF7FA;display:flex;flex-direction:column;padding:14px 22px 10px}
+.tp-top{flex:0 0 auto;background:#fff;border-radius:18px 18px 0 0;padding:6px 18px 0;box-shadow:0 2px 0 #F3D6E4}
+.tp-bar{display:flex;align-items:center;gap:14px}.tp-bar .dhh{margin:6px 0;font-size:22px}
+.tp-sub{color:var(--mut);font-size:13px;margin-left:auto}
+.tp-x{min-height:36px!important;padding:4px 14px!important;border-radius:999px!important;border:2px solid var(--pink)!important;background:#fff!important;color:var(--pink)!important;font:700 13px var(--fb)!important;cursor:pointer}
+.tpov .podium{margin:0 auto;transform:scale(.82);transform-origin:top center;margin-bottom:-36px}
+.tp-scroll{flex:1 1 auto;overflow:auto;background:#fff;border-radius:0 0 18px 18px;padding:0 18px 12px}
+.tp-scroll table{width:100%;border-collapse:separate;border-spacing:0}
+.tp-scroll tr:first-child th{position:sticky;top:0;z-index:5;background:#FDE4EF!important;box-shadow:0 2px 0 #F0C2D6}
+.tp-scroll td{font-size:15px}
+body.tp-on{overflow:hidden}
 </style>
 </head>
 <body>
@@ -1565,11 +1581,32 @@ function draw() {
       mob += mrow(hDSO(x), rk(x.dhRank), `${esc(tc(x.name))}${x === me ? ' <span class="chip">আপনি</span>' : ''} ${GC.tierChip(x.dhRank)}`, (x.team ? esc(x.team) + ' · ' : '') + esc(tc(x.dss)) + ' · টিমে #' + x.teamRank, x, 'dso', (x.dhRank <= 3 ? 'top ' : '') + (x === me || myTeam ? 'mine' : ''), x.dhRank === 2 || x.dhRank === 3 ? `<div class="mr-s" style="color:var(--deep)">${DSO_MSG}</div>` : '');
     });
     if (!n) return;
-    r += `<div class="dhh">🏢 ${esc(g)}</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div>`;
+    const canP = who.role === 'om' || who.role === 'admin';
+    r += `<div class="dhgrp"><div class="dhh">🏢 ${esc(g)}${canP ? `<button type="button" class="tpres" title="প্রেজেন্ট মোড — হেডার ফ্রিজ করে দেখান" aria-label="প্রেজেন্ট মোড">⛶</button>` : ''}</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div></div>`;
   });
   $('#tr').innerHTML = r;
 }
+/* ডিএসও লিডারবোর্ড প্রেজেন্ট — শিরোনাম, পোডিয়াম ও কলামের নাম ফ্রিজ, নিচে সারি স্ক্রল */
+function tablePresent(grp) {
+  closeTP();
+  const ov = document.createElement('div'); ov.id = 'tpov'; ov.className = 'tpov';
+  const h = grp.querySelector('.dhh').cloneNode(true); h.querySelectorAll('.tpres').forEach(b => b.remove());
+  const pod = grp.querySelector('.podium'), tb = grp.querySelector('.scroll.desk table');
+  ov.innerHTML = `<div class="tp-top"><div class="tp-bar">${h.outerHTML}<span class="tp-sub">${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span><button type="button" class="tp-x" id="tpx">✕ বন্ধ</button></div>${pod ? pod.outerHTML : ''}</div><div class="tp-scroll"><table>${tb ? tb.innerHTML : ''}</table></div>`;
+  document.body.appendChild(ov); document.body.classList.add('tp-on');
+  ov.querySelector('#tpx').onclick = closeTP;
+  try { if (ov.requestFullscreen) ov.requestFullscreen(); } catch (e) { }
+}
+function closeTP() {
+  const ov = document.getElementById('tpov'); if (!ov) return;
+  if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) { } }
+  ov.remove(); document.body.classList.remove('tp-on');
+}
+addEventListener('hashchange', closeTP);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTP(); });
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) closeTP(); });
 document.addEventListener('click', e => {
+  const tp = e.target.closest && e.target.closest('.tpres'); if (tp) { tablePresent(tp.closest('.dhgrp')); return; }
   const tr = e.target.closest && e.target.closest('tr[data-h]');
   if (tr && !e.target.closest('a')) location.hash = tr.dataset.h;
 });
@@ -1741,5 +1778,4 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
-</html>
 </html>
