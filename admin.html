@@ -577,6 +577,11 @@ i.bic{font-style:normal;color:transparent!important;text-shadow:0 0 0 #E2136E;-w
 .hero i.bic,.scorebox i.bic,.race i.bic,.stage i.bic,.toast i.bic,nav.tabs a.on i.bic,.vtabs button.on i.bic,.seg button.on i.bic,button:not(.ghost) i.bic,.btn i.bic{text-shadow:0 0 0 #fff}
 .hero nav.tabs a:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
 .vtabs button:not(.on) i.bic,.seg button:not(.on) i.bic,#tabs button:not(.on) i.bic,.tabs button:not(.on) i.bic{text-shadow:0 0 0 #E2136E}
+/* ===== white stroke around team logos ===== */
+.tlogo{filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 2px 3px rgba(0,0,0,.18))!important}
+.tlogo.xl,.tlogo.stg,.tlogo.slg,.p1 .tlogo.stg{filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 6px 12px rgba(0,0,0,.28))!important}
+nav.tabs a i.bic{margin-right:4px}
+@media (max-width:600px){nav.tabs{gap:6px;overflow:visible}nav.tabs a{flex:1 1 0;justify-content:center;padding:6px 6px;font-size:12.5px;min-width:0;text-align:center}nav.tabs a i.bic{margin-right:2px}}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -605,7 +610,7 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
 <img class="logo" src="logo.jpg" alt="Achievers’ Club">
 <div class="mut" style="color:var(--pink);font-weight:600">⚙️ Admin · Private page</div>
 <h1>📤 Upload & Publish Reports</h1>
-<nav class="tabs" id="nav" hidden><a href="index.html?as=admin">🏆 View Achievers’ Club</a><a href="service.html?as=admin">🛠️ View Market Service</a><a href="admin.html" class="on">⚙️ Admin</a></nav>
+<nav class="tabs" id="nav" hidden><a href="index.html?as=admin">🏆 View Achievers’ Club</a><a href="index.html?as=admin&v=show">🌟 View Territory Showcase</a><a href="service.html?as=admin">🛠️ View Market Service</a><a href="admin.html" class="on">⚙️ Admin</a></nav>
 
 <section class="panel" id="s1">
   <h2>1. Admin Sign-in</h2>
