@@ -708,6 +708,16 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
 @media (max-width:600px){.rbig-wrap{padding:0 30px}}
 .rav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#FCE3EE;color:var(--pink);font:800 16px var(--fh)}
 .rm.me .rm-c .rav{background:#fff;color:var(--pink)}.rm.f .rm-c .rav{background:#fff;color:#B07800}
+.rtop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap}
+.rtop button{min-height:42px;padding:6px 16px;border:2px solid var(--pink);color:var(--pink);background:#fff}
+.rchips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+.rchips a{padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #F3D6E4;color:var(--deep);font-weight:700;font-size:14px;text-decoration:none}
+.rchips a:hover{border-color:var(--pink)}
+.rchips a.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.rlaunch .rchips{margin-top:4px}
+body.present .rtop a.btn{display:none}
+body.present .rpage .rbig-wrap{background:#FFF0F6}
+@media (max-width:600px){.rchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.rchips a{white-space:nowrap;font-size:13px}.rtop button{display:none}}
 </style>
 </head>
 <body>
@@ -736,6 +746,7 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
     <div id="mine"></div>
     <div id="mot"></div>
     <div class="cards" id="cards"></div>
+    <div id="rlh"></div>
     <div id="battle"></div>
     <div class="panel" id="champP"><div class="ph"><h2>🌟 প্যারামিটার চ্যাম্পিয়ন</h2><span class="mut" id="champS"></span></div><div class="champs" id="champs"></div></div>
     <div class="panel filters" id="filt">
@@ -1151,6 +1162,7 @@ function setup() {
   const best = top ? `<div class="card cc best"><div class="ic">⭐</div><div class="cm"><div class="mut ck">${who.role === 'admin' ? 'টেরিটরির' : 'হাউজের'} সেরা ডিএসও</div><div class="omn">${esc(tc(top.name))}</div><div class="cs2">${GC.tierChip(1)}</div></div><div class="cr"><b class="big">${top.score.toFixed(1)}</b><span class="mut">পয়েন্ট</span></div></div>` : '';
   $('#cards').innerHTML = best + (isDSO() ? '' : (who.role === 'admin' ? c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*')) : '')
     + [...D.dh].sort((a, b) => a.rank - b.rank).map(d => c(d.rank === 1 ? '🏆🥇' : '🏢', esc(d.name) + (d === who.myDH ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank + (d.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''), d === who.myDH ? 'me' : '', hOM(d.name), d.om)).join(''));
+  $('#rlh').innerHTML = canRace() ? `<div class="panel rlaunch" style="margin-top:12px"><div class="ph"><h2>🏁 রেস লাইন — মিটিং-এ দেখান</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>` : '';
   $('#omP').hidden = $('#dssP').hidden = isDSO();
   $('#fdhW').hidden = isDSO();
   champs(); battle(); daysToast(di.left);
@@ -1245,7 +1257,8 @@ function showcase() {
   /* ৫. টেরিটরি পালস — KPI রিং */
   const pulse = `<div class="panel"><div class="ph"><h2>💓 টেরিটরি পালস</h2><span class="mut">টেরিটরির সামগ্রিক অর্জন · স্কোর ${D.territory.score.toFixed(1)}</span></div><div class="pulse">
     ${LV.om.ps.map(([k, name]) => { const v = Math.round((D.territory[k] || 0) * 100); return `<div class="pr"><div class="pr-r ${v >= 100 ? 'ok' : v < 70 ? 'lo' : ''}" style="--p:${Math.min(100, v)}"><div><b data-count="${v}" data-dec="0">0</b><small>%</small></div></div><span>${name.replace(' (A2M+D2C)', '')}</span></div>`; }).join('')}</div></div>`;
-  $('#showcase').innerHTML = stage + spot + `<div class="sc-grid"><div>${race}</div><div>${fame}${pulse}</div></div>`;
+  const rl = `<div class="panel rlaunch"><div class="ph"><h2>🏁 রেস লাইন — মিটিং-এ দেখান</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>`;
+  $('#showcase').innerHTML = stage + rl + spot + `<div class="sc-grid"><div>${race}</div><div>${fame}${pulse}</div></div>`;
   countUp($('#showcase'));
   /* স্পটলাইট ঘোরানো */
   clearInterval(_spotTimer);
@@ -1494,20 +1507,38 @@ function raceDetail(F) {
       <div class="rm-l" style="${side === 'up' ? 'bottom' : 'top'}:${stem + 26}px">${f ? '<em>🏆 ১ম</em>' : ''}${me ? '<em class="you">আপনি</em>' : ''}<b>${x.score.toFixed(1)}</b><span>${esc(F.nameOf(x))}</span><small>#${i + 1}</small></div>
       <div class="rm-c">${av}</div></div>`;
   }).join('') }; };
-  const rk = F.list.indexOf(r) + 1;
-  $('#detail').innerHTML = `<div style="margin:18px 0 0"><a class="btn ghost" href="#">← ফিরে যান</a></div>
-  <div class="panel rpage"><div class="ph"><h2>🏁 ১ নম্বরের দৌড় — সবার অবস্থান</h2><span class="mut">${esc(F.rankLab)} ${rk}/${n} · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span></div>
-  ${rk > 1 ? `<div class="rhint">১ম হতে আর মাত্র <b>${GC.nd(first.score - r.score + 0.05)}</b> পয়েন্ট — <a href="${F.href}">কোন প্যারামিটারে কত লাগবে দেখুন →</a></div>` : `<div class="rhint">👑 আপনি ১ নম্বরে — শিরোপা ধরে রাখুন!</div>`}
+  const rk = r ? F.list.indexOf(r) + 1 : 0, s2 = F.list[1];
+  const chips = raceChips();
+  $('#detail').innerHTML = `<div class="rtop"><a class="btn ghost" href="#">← ফিরে যান</a>${chips ? `<button type="button" class="ghost" id="rpres">⛶ প্রেজেন্ট মোড</button>` : ''}</div>
+  ${chips}
+  <div class="panel rpage"><div class="ph"><h2>🏁 ${F.ttl ? esc(F.ttl) : '১ নম্বরের দৌড় — সবার অবস্থান'}</h2><span class="mut">${rk ? esc(F.rankLab) + ' ' + rk + '/' + n + ' · ' : n + ' জন · '}${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span></div>
+  ${!r ? `<div class="rhint">🏆 শীর্ষে <b style="font-size:17px">${esc(F.nameOf(first))}</b> · ${first.score.toFixed(1)} পয়েন্ট${s2 ? ` — ২য় ${esc(F.nameOf(s2))} পিছিয়ে <b>${GC.nd(first.score - s2.score)}</b> পয়েন্ট` : ''}</div>` : rk > 1 ? `<div class="rhint">১ম হতে আর মাত্র <b>${GC.nd(first.score - r.score + 0.05)}</b> পয়েন্ট — <a href="${F.href}">কোন প্যারামিটারে কত লাগবে দেখুন →</a></div>` : `<div class="rhint">👑 আপনি ১ নম্বরে — শিরোপা ধরে রাখুন!</div>`}
   <div class="rbig-wrap" id="rbw"><div class="rbig-t" id="rbt"></div></div>
   <div class="mut" style="text-align:center;font-size:12.5px;margin-top:6px">← কম পয়েন্ট &nbsp;·&nbsp; বেশি পয়েন্ট → &nbsp; (ডানে ১ নম্বর)</div></div>`;
   const w = $('#rbw'), t = $('#rbt');
   const W = Math.max(w.clientWidth - 70, n * 72), L = lay(W);
   t.style.width = W + 'px'; t.style.height = (2 * (22 + L.mt * 66 + 26 + 92) + 10) + 'px';
-  t.innerHTML = `<div class="rb-lane"><i style="width:${pos(r.score).toFixed(2)}%"></i></div>${L.html}`;
+  t.innerHTML = `<div class="rb-lane"><i style="width:${pos((r || first).score).toFixed(2)}%"></i></div>${L.html}`;
   requestAnimationFrame(() => { w.scrollLeft = w.scrollWidth; });
+  const pb = $('#rpres'); if (pb) pb.onclick = () => { const on = !document.body.classList.contains('present'); document.body.classList.toggle('present', on); pb.textContent = on ? '✕ প্রেজেন্ট বন্ধ' : '⛶ প্রেজেন্ট মোড'; try { if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); else if (!on && document.fullscreenElement) document.exitFullscreen(); } catch (_) {} setTimeout(() => raceDetail(F), 350); };
+}
+/* ওএম / অ্যাডমিন: মিটিং-এর জন্য ডিএসএস ও ডিএসও রেস লাইন */
+const canRace = () => who && (who.role === 'om' || who.role === 'admin');
+function raceF(kind, dh) {
+  if (kind === 'dss') { const list = [...D.teams].sort((a, b) => a.rank - b.rank); return { rec: null, lv: 'dss', list, nameOf: x => GC.tn(x), ttl: 'টিম রেস — সব ডিএসএস (টেরিটরি)', rankLab: '' }; }
+  if (kind === 'dso' && house().includes(dh)) { const list = D.ra.filter(x => x.dh === dh).sort((a, b) => a.dhRank - b.dhRank); return { rec: null, lv: 'dso', list, nameOf: x => tc(x.name), ttl: 'ডিএসও রেস — ' + dh, rankLab: '' }; }
+  return null;
+}
+function raceChips() {
+  if (!canRace()) return '';
+  const h = location.hash, c = [['#/race/dss', '👥 সব টিম (ডিএসএস)']].concat(house().map(d => ['#/race/dso/' + encodeURIComponent(d), '🧑‍💼 ডিএসও · ' + d]));
+  if (who.myDH) c.push(['#/race', '🏢 হাউজ বনাম হাউজ']);
+  return `<nav class="rchips">${c.map(([u, l]) => `<a href="${u}" class="${h === u ? 'on' : ''}">${esc(l)}</a>`).join('')}</nav>`;
 }
 function route() {
   if (!D || !who) return;
+  const rm = location.hash.match(/^#\/race\/(dss|dso)(?:\/(.+))?$/);
+  if (rm && canRace()) { const F = raceF(rm[1], rm[2] && decodeURIComponent(rm[2])); if (F && F.list.length > 1) { $('#main').hidden = true; $('#detail').hidden = false; raceDetail(F); scrollTo(0, 0); return; } }
   if (location.hash === '#/race') { const F = focus(); if (F && F.list.length > 1) { $('#main').hidden = true; $('#detail').hidden = false; raceDetail(F); scrollTo(0, 0); return; } }
   const m = location.hash.match(/^#\/d\/(dso|dss|om)\/(.+)$/);
   if (!m) { $('#detail').hidden = true; $('#main').hidden = false; return; }
@@ -1562,5 +1593,4 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
-</html>
 </html>
