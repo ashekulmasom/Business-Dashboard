@@ -783,6 +783,14 @@ nav.tabs a{min-height:34px!important;padding:4px 14px!important;font-size:14px!i
 .kdrop i.bic{text-shadow:0 0 0 #C50059!important}
 .kdrop{top:calc(100% + 6px)}
 @media (max-width:700px){.outw{flex-direction:row}}
+/* present button beside ⋮ */
+.kro{display:flex;gap:8px;align-items:center}
+.pbtn{font-size:19px!important}
+@media (max-width:700px){.pbtn{display:none!important}}
+.pexit{display:none}
+body.present .pexit{display:block;position:fixed;top:12px;right:14px;z-index:999;min-height:36px;padding:4px 14px;border-radius:999px;border:2px solid var(--pink);background:#fff;color:var(--pink);font:700 13px var(--fb);opacity:.55;cursor:pointer}
+body.present .pexit:hover{opacity:1}
+body.present #hdr .hero,body.present .qbar{display:none!important}
 </style>
 </head>
 <body>
@@ -1000,7 +1008,8 @@ function header(o) {
       <div class="whoh"><span class="chip">${esc(roleLab)}</span>${name ? `<span>${esc(name)}</span>` : ''}</div>
       ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
       <div class="outw"><button class="ghost" id="out" type="button">সাইন আউট</button>
-      ${tabs.length > 1 ? `<div class="kmenu"><button type="button" class="kbtn" id="kbtn" aria-label="মেনু" aria-haspopup="true" aria-expanded="false">⋮</button><div class="kdrop" id="kdrop" hidden>${tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</div></div>` : ''}</div>
+      <div class="kro">${o.who.role === 'om' || o.who.role === 'admin' ? `<button type="button" class="kbtn pbtn" id="pbtn" title="প্রেজেন্ট মোড (মিটিং)" aria-label="প্রেজেন্ট মোড">⛶</button>` : ''}
+      ${tabs.length > 1 ? `<div class="kmenu"><button type="button" class="kbtn" id="kbtn" aria-label="মেনু" aria-haspopup="true" aria-expanded="false">⋮</button><div class="kdrop" id="kdrop" hidden>${tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</div></div>` : ''}</div></div>
     </div>
   </header>
 
@@ -1010,6 +1019,31 @@ function header(o) {
   const kb = $('#kbtn'), kd = $('#kdrop');
   if (kb) { kb.onclick = e => { e.stopPropagation(); kd.hidden = !kd.hidden; kb.setAttribute('aria-expanded', String(!kd.hidden)); }; document.addEventListener('click', e => { if (!e.target.closest('.kmenu')) { kd.hidden = true; kb.setAttribute('aria-expanded', 'false'); } }); }
   const ms = $('#msel'); if (ms) ms.onchange = () => { ss('gcd_m', ms.value); o.onMonth(ms.value); };
+  const pb = $('#pbtn'); if (pb) pb.onclick = () => present(true);
+}
+/* প্রেজেন্ট মোড — মিটিং/প্রজেক্টরের জন্য (ল্যাপটপে) */
+function present(on) {
+  document.body.classList.toggle('present', on);
+  let x = document.getElementById('pexit');
+  if (on && !x) { x = document.createElement('button'); x.id = 'pexit'; x.type = 'button'; x.className = 'pexit'; x.textContent = '✕ প্রেজেন্ট বন্ধ'; x.onclick = () => present(false); document.body.appendChild(x); }
+  try { if (on && document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen(); else if (!on && document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
+  scrollTo(0, 0);
+}
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) document.body.classList.remove('present'); });
+/* লগইন ট্র্যাকিং — অ্যাডমিনে দেওয়া Google Apps Script লিংকে পাঠানো হয় */
+function logLogin(IDX, D, who, raw) {
+  try {
+    const url = IDX && IDX.logUrl; if (!url || !who) return;
+    let type = '', name = '', dh = '';
+    if (who.role === 'dso' && who.me) { type = 'DSO'; name = who.me.name; dh = who.me.dh; }
+    else if (who.role === 'dss' && who.myTeam) { type = 'DSS'; name = who.myTeam.dss; dh = who.myTeam.dh; }
+    else if (who.role === 'om' && who.myDH) { type = 'OM'; name = who.myDH.om || ''; dh = who.myDH.name; }
+    else return;
+    const now = new Date(), f = o => new Intl.DateTimeFormat('en-GB', Object.assign({ timeZone: 'Asia/Dhaka' }, o)).formatToParts(now).reduce((a, p) => (a[p.type] = p.value, a), {});
+    const d = f({ year: 'numeric', month: '2-digit', day: '2-digit' }), t = f({ hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+    const body = JSON.stringify({ id: String(raw || '').trim(), type, name, dh, date: `${d.year}-${d.month}-${d.day}`, time: `${t.hour}:${t.minute}:${t.second}`, page: location.pathname.split('/').pop() || 'index.html', month: D && D.month || '' });
+    fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: true }).catch(() => { });
+  } catch (e) { }
 }
 function head(a, n = 1) { return '<tr>' + a.map((h, i) => `<th class="${i < n ? 'l' : ''}">${h}</th>`).join('') + '</tr>'; }
 function confetti(n) {
@@ -1085,7 +1119,7 @@ const tn = t => t.team ? t.team : tc(t.dss);
 const OMAV = "data:image/webp;base64,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";
 const logo = (team, cls) => { const s = LOGOS[up(team)]; return s ? `<img class="tlogo ${cls || ''}" src="${s}" alt="${esc(team)} লোগো" loading="lazy" decoding="async">` : ''; };    // টিমের নাম (না থাকলে ডিএসএস-এর নাম)
 const omPhoto = (IDX, dh) => (IDX && IDX.omPhotos && IDX.omPhotos[dh]) || OMAV;
-return { logo, omPhoto, OMAV, omName, TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
+return { present, logLogin, logo, omPhoto, OMAV, omName, TEAMS, tn, capTxt, QUOTES, quote, tier, tierChip, projected, badges, footer, canMS, OWNER, REPO, API, MON, MED, LV, REPOF, $, esc, tc, up, norm, nf, nd, pcCell, dt, fmtTill, monLabel, getJSON, loadIndex, pickMonth, loadMonth, prep, compute, vv, frac, dayInfo, tillOf, ss, ls, session, setSession, adminCheck, identify, resolve, signOut, header, head, confetti };
 })();
 </script>
 <script>
@@ -1112,7 +1146,7 @@ $('#f').addEventListener('submit', e => {
   const s = GC.identify(D, $('#w').value);
   if (!s) { $('#e').textContent = 'ওয়ালেট নম্বরটি পাওয়া যায়নি।'; return; }
   if (s.role !== 'om') { $('#e').textContent = 'Market Service শুধু অপারেশন ম্যানেজার (MA ওয়ালেট) ও অ্যাডমিনের জন্য।'; return; }
-  GC.ss('gcd_admin', null); GC.setSession(s); who = GC.resolve(D, s, false); start();
+  GC.ss('gcd_admin', null); GC.setSession(s); who = GC.resolve(D, s, false); GC.logLogin(IDX, D, who, $('#w').value); start();
 });
 async function onMonth(m) { await load(m); who = GC.resolve(D, GC.session(), GC.ss('gcd_admin') === '1'); start(); }
 
