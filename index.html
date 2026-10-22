@@ -371,6 +371,125 @@ td b{font-size:14.5px}
 .track{height:56px}
 .ch b .tlogo.xs{width:22px;height:22px}
 @media (max-width:700px){.tlogo.xl{width:96px;height:96px}.tlogo.pod{width:54px;height:54px}.tlogo.sm{width:30px;height:30px}.tlogo.btl{width:44px;height:44px}.dot.tl{width:22px;height:22px;margin-left:-11px}.dot.tl img{width:22px;height:22px}.dot.tl.big,.dot.tl.big img{width:32px;height:32px}}
+
+/* =====================================================================
+   bKash প্যালেট — গোলাপি + হলুদ
+   ===================================================================== */
+:root{--pink:#E2136E;--pink2:#FF4FA0;--deep:#A30B52;--plum:#5C0730;--gold:#FFC20E;--gold2:#FFE27A;--bg:#FFF6FA;--line:#F6D3E3}
+body{background:var(--bg);background-image:radial-gradient(900px 420px at 0% -10%,#FFD9EA 0,transparent 60%),radial-gradient(760px 380px at 100% 0%,#FFF1B8 0,transparent 55%)}
+.hero{background:linear-gradient(115deg,#B30C5A 0%,#E2136E 55%,#F2479A 100%);box-shadow:0 18px 40px rgba(226,19,110,.32);border-bottom:4px solid var(--gold)}
+.hero::after{background:radial-gradient(circle at 88% 15%,rgba(255,194,14,.45),transparent 38%),repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 14px)}
+.scorebox{background:linear-gradient(150deg,#7E0942,#C10F5E 58%,#E2136E)}
+.scorebox::after{background:radial-gradient(circle at 80% 8%,rgba(255,194,14,.4),transparent 42%)}
+.ring{background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.2) 0)}
+.ring>div{background:#6E0839}
+.race{background:linear-gradient(135deg,#6E0839,#B30C5A 60%,#E2136E)}
+.race::after{background:radial-gradient(circle,rgba(255,194,14,.45),transparent 70%)}
+.rk2,.lv-h{color:var(--gold2)}.rbig b{color:var(--gold)}
+.qbar{background:linear-gradient(90deg,#FFF3C2,#FFE1EE);border-color:#FFD65C}
+.toast{background:linear-gradient(120deg,#A30B52,#E2136E);border:2px solid var(--gold)}
+.toast b{color:var(--gold2)}
+.bar i,.kt-b i,.lane i{background:linear-gradient(90deg,var(--pink),var(--gold))}
+.reward{background:linear-gradient(90deg,#FFF0B3,#FFDCEB);border-color:var(--gold)}
+nav.tabs a.on{box-shadow:0 6px 16px rgba(226,19,110,.3)}
+
+/* =====================================================================
+   ভিউ ট্যাব (ওএম / অ্যাডমিন)
+   ===================================================================== */
+.vtabs{display:flex;gap:6px;margin:14px 0 0;padding:5px;border-radius:999px;background:#fff;border:1px solid var(--line);width:max-content;max-width:100%;box-shadow:var(--sh)}
+.vtabs button{border:0;background:transparent;color:var(--deep);min-height:42px;padding:6px 20px;border-radius:999px}
+.vtabs button.on{background:linear-gradient(90deg,var(--pink),#F2479A);color:#fff;box-shadow:0 6px 16px rgba(226,19,110,.35)}
+
+/* =====================================================================
+   🌟 টেরিটরি শোকেস
+   ===================================================================== */
+.stage{position:relative;overflow:hidden;margin:16px 0;border-radius:26px;padding:22px 24px 0;color:#fff;
+  background:radial-gradient(700px 300px at 50% 115%,rgba(255,194,14,.55),transparent 60%),linear-gradient(160deg,#6E0839 0%,#B30C5A 45%,#E2136E 100%);box-shadow:0 22px 50px rgba(163,11,82,.35)}
+.stage::before{content:"";position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 120%,rgba(255,255,255,.07) 0 6deg,transparent 6deg 14deg);animation:rays 40s linear infinite;pointer-events:none}
+@keyframes rays{to{transform:rotate(360deg)}}
+.stage>*{position:relative}
+.st-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.st-t{color:#fff;font-size:30px;margin:2px 0}.st-s{color:var(--gold2);font-weight:600}
+.st-btn{background:rgba(255,255,255,.14)!important;color:#fff!important;border-color:var(--gold)!important;min-height:42px}
+.st-pod{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-top:16px}
+.sp-c{flex:1 1 0;max-width:270px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.sp-l{position:relative;display:inline-block;animation:float 4s ease-in-out infinite}
+.p1 .sp-l{animation-delay:.3s}.p3 .sp-l{animation-delay:.6s}
+@keyframes float{50%{transform:translateY(-8px)}}
+.tlogo.stg{width:118px;height:118px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.45))}
+.p1 .tlogo.stg{width:156px;height:156px;filter:drop-shadow(0 0 22px rgba(255,194,14,.75)) drop-shadow(0 10px 20px rgba(0,0,0,.4))}
+.sp-m{position:absolute;right:-6px;bottom:0;font-size:30px}
+.sp-n{font:800 19px/1.2 var(--fh);margin-top:6px}.p1 .sp-n{font-size:23px;color:var(--gold2)}
+.sp-d{font-size:12.5px;opacity:.85}
+.sp-s b{font:800 34px var(--fh);color:#fff}.p1 .sp-s b{font-size:44px;color:var(--gold)}.sp-s small{margin-left:4px;font-size:12px;opacity:.8}
+.sp-b{display:inline-block;font-size:12px;font-weight:700;color:var(--plum);background:var(--gold2);border-radius:999px;padding:1px 10px;margin:4px 0 8px}
+.sp-step{width:100%;border-radius:16px 16px 0 0;font:800 30px var(--fh);color:var(--plum);padding-top:8px}
+.p1 .sp-step{height:110px;background:linear-gradient(#FFE27A,#FFC20E);box-shadow:0 0 40px rgba(255,194,14,.6)}
+.p2 .sp-step{height:80px;background:linear-gradient(#F4F5F8,#C9CED6)}
+.p3 .sp-step{height:62px;background:linear-gradient(#F6D2AE,#D99A62)}
+/* স্পটলাইট */
+.spot{position:relative;margin:16px 0;border-radius:24px;padding:16px 20px 12px;background:#fff;border:2px solid transparent;
+  background-image:linear-gradient(#fff,#fff),conic-gradient(from var(--a,0deg),#E2136E,#FFC20E,#FF4FA0,#FFC20E,#E2136E);background-origin:border-box;background-clip:padding-box,border-box;animation:spin 6s linear infinite;box-shadow:0 0 0 0 rgba(255,194,14,.5),0 14px 34px rgba(226,19,110,.18)}
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes spin{to{--a:360deg}}
+.spot-h{font:800 13px var(--fh);letter-spacing:.12em;text-transform:uppercase;color:var(--pink)}
+.spot-w{position:relative;min-height:128px}
+.sl{position:absolute;inset:0;opacity:0;transform:translateY(10px);transition:opacity .6s,transform .6s;pointer-events:none}
+.sl.on{opacity:1;transform:none;pointer-events:auto;position:relative}
+.sl-k{font:800 15px var(--fh);color:var(--deep);margin:4px 0 6px}
+.sl-b{display:flex;align-items:center;gap:18px}
+.tlogo.slg{width:96px;height:96px}
+.sl-vs{display:flex;align-items:center;gap:8px}.sl-vs span{font:900 22px var(--fh);color:var(--pink)}.sl-vs .tlogo.slg{width:72px;height:72px}
+.sl-ic{font-size:64px}
+.sl-n{font:800 26px/1.2 var(--fh);color:var(--plum)}.sl-s{color:var(--mut);font-size:14px;margin:2px 0 4px}
+.sl-big{margin-left:auto;text-align:right}.sl-big b{display:block;font:900 52px/1 var(--fh);background:linear-gradient(90deg,var(--pink),#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent}.sl-big small{color:var(--mut);font-weight:600}
+.spot-d{display:flex;gap:6px;justify-content:center;margin-top:10px}.spot-d i{width:8px;height:8px;border-radius:50%;background:#F3D2E2;cursor:pointer}.spot-d i.on{background:var(--pink);width:22px;border-radius:6px}
+.spot-p{height:3px;background:#FBE3EE;border-radius:3px;margin-top:8px;overflow:hidden}.spot-p i{display:block;height:3px;width:0;background:linear-gradient(90deg,var(--pink),var(--gold))}
+/* রেস টু দ্য টপ */
+.sc-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}.sc-grid>*{min-width:0}.sc-grid .panel{margin:0 0 16px}
+.br{display:grid;grid-template-columns:34px 40px minmax(180px,1.3fr) 2fr 56px;align-items:center;gap:10px;padding:7px 4px;color:inherit;text-decoration:none;border-radius:12px}
+.br:hover{background:#FFF4F9}
+.br-r{font:800 16px var(--fh);color:var(--deep);text-align:center}
+.tlogo.brl{width:40px;height:40px}
+.br-t b{display:block;font:800 14.5px/1.2 var(--fh);color:var(--plum)}.br-t small{font-size:11.5px;color:var(--mut)}
+.br-bar{height:14px;background:#F8E6EF;border-radius:999px;overflow:hidden}.br-bar i{display:block;height:14px;border-radius:999px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.br-s{font:800 18px var(--fh);color:var(--pink);text-align:right}
+.zone{text-align:center;font-size:12px;font-weight:700;color:var(--deep);border-top:2px dashed var(--gold);margin:6px 0 4px;padding-top:4px}
+/* হল অফ ফেম */
+.fame{display:grid;gap:4px}
+.fm{display:grid;grid-template-columns:30px 30px 1fr auto;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;color:inherit;text-decoration:none}
+.fm:hover{background:#FFF4F9}.fm.top{background:linear-gradient(90deg,#FFF6D6,#FFF)}
+.fm-r{font:800 15px var(--fh);color:var(--deep);text-align:center}.fm-n b{display:block;font:700 14px var(--fh);color:var(--plum)}.fm-n small{font-size:11.5px;color:var(--mut)}
+.fm-s{font:800 17px var(--fh);color:var(--pink)}
+/* টেরিটরি পালস */
+.pulse{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pr{text-align:center;font-weight:700;font-size:13px;color:var(--plum)}
+.pr-r{--p:0;width:88px;height:88px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;background:conic-gradient(var(--gold) calc(var(--p)*1%),#F6E3EC 0)}
+.pr-r.ok{background:conic-gradient(#16A34A calc(var(--p)*1%),#E3F4E8 0)}.pr-r.lo{background:conic-gradient(#E11D48 calc(var(--p)*1%),#FBE4E4 0)}
+.pr-r>div{width:68px;height:68px;border-radius:50%;background:#fff;display:grid;place-items:center;align-content:center}.pr-r b{font:800 20px var(--fh);color:var(--plum)}.pr-r small{font-size:10px;color:var(--mut)}
+/* প্রেজেন্ট মোড (প্রজেক্টর) */
+body.present{background:#5C0730}
+body.present .hero,body.present nav.tabs,body.present .qbar,body.present .vtabs,body.present footer,body.present .toast{display:none!important}
+body.present .wrap{max-width:none;padding:18px 26px}
+body.present .stage{margin-top:0}
+body.present .st-t{font-size:42px}
+body.present .p1 .tlogo.stg{width:200px;height:200px}body.present .tlogo.stg{width:150px;height:150px}
+body.present .sp-n{font-size:26px}body.present .p1 .sp-n{font-size:32px}
+body.present .sl-n{font-size:34px}body.present .sl-big b{font-size:70px}
+body.present .panel{background:#fff}
+@media (max-width:900px){.sc-grid{grid-template-columns:1fr}}
+@media (max-width:700px){
+  .stage{padding:16px 12px 0;border-radius:20px}.st-t{font-size:22px}.st-s{font-size:13px}.st-btn{display:none}
+  .st-pod{gap:6px}.tlogo.stg{width:66px;height:66px}.p1 .tlogo.stg{width:88px;height:88px}.sp-m{font-size:20px}
+  .sp-n{font-size:12.5px}.p1 .sp-n{font-size:14px}.sp-d{display:none}.sp-s b{font-size:20px}.p1 .sp-s b{font-size:26px}.sp-b{font-size:10px;padding:0 6px}
+  .p1 .sp-step{height:70px}.p2 .sp-step{height:50px}.p3 .sp-step{height:40px}.sp-step{font-size:20px}
+  .sl-b{gap:10px}.tlogo.slg{width:64px;height:64px}.sl-n{font-size:18px}.sl-big b{font-size:34px}.spot-w{min-height:150px}
+  .br{grid-template-columns:26px 30px 1fr 52px;gap:6px}.br-bar{grid-column:2/5;grid-row:2;height:8px}.br-bar i{height:8px}.tlogo.brl{width:30px;height:30px}
+  .pulse{grid-template-columns:repeat(3,1fr)}.pr-r{width:72px;height:72px}.pr-r>div{width:56px;height:56px}
+  .vtabs{width:100%}.vtabs button{flex:1;padding:6px 8px;font-size:13px}
+}
+.qbar .qt.out{opacity:.15}
+@media (max-width:700px){.sl-b{flex-wrap:wrap}.sl-b>div:nth-child(2){flex:1 1 140px}.sl-big{margin-left:auto}}
 </style>
 </head>
 <body>
@@ -393,6 +512,9 @@ td b{font-size:14.5px}
 <section id="app" hidden>
   <div id="hdr"></div>
   <div id="main">
+    <div class="vtabs" id="vtabs" hidden></div>
+    <section id="showcase" hidden></section>
+    <div id="house">
     <div id="mine"></div>
     <div id="mot"></div>
     <div class="cards" id="cards"></div>
@@ -406,6 +528,7 @@ td b{font-size:14.5px}
     <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll desk"><table id="tdh"></table></div><div class="mob" id="tdhm"></div></div>
     <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
     <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
+  </div>
   </div>
   <div id="detail" hidden></div>
 </section>
@@ -815,7 +938,7 @@ function setup() {
   $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + scopeDH().map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
   $('#fdh').onchange = () => { dssOpts(); draw(); }; $('#fdss').onchange = draw;
   $('#rs').onclick = () => { $('#fdh').value = ''; dssOpts(); $('#fdss').value = ''; draw(); };
-  dssOpts(); draw();
+  dssOpts(); draw(); viewTabs();
 }
 /* ⚔️ টিম ব্যাটল — ডিএসও নিজের ডিএইচ-এর টিমগুলোর লড়াই দেখবে */
 function battle() {
@@ -835,6 +958,85 @@ function battle() {
     }).join('')}</div>
     ${mine ? `<div class="mut" style="margin-top:10px">${mine.rank <= 3 ? '🎁 আপনার টিম এখন টেরিটরির শীর্ষ ৩-এ — পুরস্কারের দৌড়ে! জায়গা ধরে রাখুন।' : `🎯 আপনার টিম টেরিটরিতে #${mine.rank}। শীর্ষ ৩ টিম পুরস্কার পায় — ৩ নম্বর থেকে মাত্র ${GC.nd((([...D.teams].sort((a, b) => a.rank - b.rank)[2]) || mine).score - mine.score + 0.05)} পয়েন্ট দূরে!`}</div>` : ''}</div>`;
 }
+/* =====================================================================
+   🌟 টেরিটরি শোকেস — ওএম/অ্যাডমিনের মিটিং ও প্রজেক্টর মোড
+   ===================================================================== */
+let _spotTimer = null;
+function viewTabs() {
+  const show = who.role === 'om' || who.role === 'admin';
+  $('#vtabs').hidden = !show;
+  if (!show) { $('#showcase').hidden = true; $('#house').hidden = false; return; }
+  let v = GC.ss('gcd_view') || 'show';
+  $('#vtabs').innerHTML = `<button type="button" data-v="show" class="${v === 'show' ? 'on' : ''}">🌟 টেরিটরি শোকেস</button><button type="button" data-v="house" class="${v === 'house' ? 'on' : ''}">🏠 ${who.role === 'admin' ? 'বিস্তারিত পারফরম্যান্স' : 'হাউজ পারফরম্যান্স'}</button>`;
+  const apply = () => { $('#showcase').hidden = v !== 'show'; $('#house').hidden = v !== 'house'; document.querySelectorAll('#vtabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); if (v === 'show') showcase(); else clearInterval(_spotTimer); };
+  document.querySelectorAll('#vtabs button').forEach(b => b.onclick = () => { v = b.dataset.v; GC.ss('gcd_view', v); apply(); });
+  apply();
+}
+const countUp = root => {
+  const still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  root.querySelectorAll('[data-count]').forEach(el => {
+    const to = +el.dataset.count, dec = +(el.dataset.dec || 1);
+    if (still) { el.textContent = to.toFixed(dec); return; }
+    const t0 = performance.now(), dur = 1400;
+    const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = (to * e).toFixed(dec); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+  requestAnimationFrame(() => root.querySelectorAll('[data-w]').forEach(el => el.style.width = el.dataset.w + '%'));
+};
+function showcase() {
+  const T = [...D.teams].sort((a, b) => a.rank - b.rank), n = T.length;
+  const A = [...D.ra].sort((a, b) => b.score - a.score);
+  const DH = [...D.dh].sort((a, b) => a.rank - b.rank);
+  const pod = T.slice(0, 3);
+  const mx = Math.max(...T.map(t => t.score), 100);
+  const lbl = { 0: '১ম', 1: '২য়', 2: '৩য়' };
+  /* ১. চ্যাম্পিয়ন মঞ্চ */
+  const stage = `<div class="stage">
+    <div class="st-top"><div><div class="kick">গাজীপুর সেন্ট্রাল · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</div><h2 class="st-t">🏆 টেরিটরি চ্যাম্পিয়নস</h2><div class="st-s">সেরা ৩ টিম পাবে পুরস্কার — কে হবে এই মাসের সেরাদের সেরা?</div></div>
+      <button type="button" class="ghost st-btn" id="present">⛶ প্রেজেন্ট মোড</button></div>
+    <div class="st-pod">${[1, 0, 2].map(i => { const t = pod[i]; if (!t) return ''; return `<div class="sp-c p${i + 1}">
+      <div class="sp-l">${GC.logo(t.team, 'stg')}<span class="sp-m">${RK_ICON[i]}</span></div>
+      <div class="sp-n">${esc(GC.tn(t))}</div><div class="sp-d">ডিএসএস ${esc(tc(t.dss))}</div>
+      <div class="sp-s"><b data-count="${t.score.toFixed(1)}">0.0</b><small>পয়েন্ট</small></div>
+      <div class="sp-b">${lbl[i]} · 🎁 পুরস্কার</div><div class="sp-step">${i + 1}</div></div>`; }).join('')}</div></div>`;
+  /* ২. স্পটলাইট (প্রতি ৬ সেকেন্ডে বদলায়) */
+  const slides = [];
+  DH.forEach(d => { const top = A.find(x => x.dh === d.name); if (top) slides.push({ k: `⭐ ${d.name}-এর সেরা ডিএসও`, logo: top.team, n: tc(top.name), s: `${top.team || ''} · ${tc(top.dss)}`, big: top.score.toFixed(1), u: 'পয়েন্ট', tag: '💎 প্লাটিনাম · পুরস্কৃত হবেন' }); });
+  [['t', 'TRX কিং'], ['r', 'REG হিরো'], ['vo', 'সেভিংস চ্যাম্পিয়ন'], ['u', 'বিল পে মাস্টার']].forEach(([k, nm]) => { const b = [...D.ra].sort((a, c) => (c[k] || 0) - (a[k] || 0))[0]; if (b) slides.push({ k: `👑 টেরিটরির ${nm}`, logo: b.team, n: tc(b.name), s: `${b.team || ''} · ${b.dh}`, big: Math.round((b[k] || 0) * 100), u: '% অর্জন' }); });
+  let gap = null; for (let i = 0; i < n - 1; i++) { const g = T[i].score - T[i + 1].score; if (!gap || g < gap.g) gap = { g, a: T[i], b: T[i + 1] }; }
+  if (gap) slides.push({ k: '🔥 সবচেয়ে হাড্ডাহাড্ডি লড়াই', vs: [gap.a, gap.b], n: `${GC.tn(gap.b)} মাত্র ${GC.nd(gap.g)} পয়েন্ট পেছনে`, s: `#${gap.a.rank} ${GC.tn(gap.a)} বনাম #${gap.b.rank} ${GC.tn(gap.b)}`, big: GC.nd(gap.g), u: 'পয়েন্ট ব্যবধান' });
+  if (DH.length > 1) slides.push({ k: '🏢 হাউজ বনাম হাউজ', n: DH.map(d => `${d.om || d.name}`).join(' বনাম '), s: DH.map(d => `${d.name}: ${d.score.toFixed(1)}`).join(' · '), big: DH[0].score.toFixed(1), u: `${DH[0].om || DH[0].name} এগিয়ে` });
+  const spot = `<div class="spot"><div class="spot-h">🎤 স্পটলাইট</div><div class="spot-w">${slides.map((s, i) => `<div class="sl ${i ? '' : 'on'}">
+      <div class="sl-k">${s.k}</div>
+      <div class="sl-b">${s.vs ? `<div class="sl-vs">${GC.logo(s.vs[0].team, 'slg')}<span>VS</span>${GC.logo(s.vs[1].team, 'slg')}</div>` : s.logo ? GC.logo(s.logo, 'slg') : '<div class="sl-ic">🏢</div>'}
+        <div><div class="sl-n">${esc(s.n)}</div><div class="sl-s">${esc(s.s)}</div>${s.tag ? `<span class="tchip pt">${s.tag}</span>` : ''}</div>
+        <div class="sl-big"><b>${s.big}</b><small>${s.u}</small></div></div></div>`).join('')}</div>
+      <div class="spot-d">${slides.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div><div class="spot-p"><i></i></div></div>`;
+  /* ৩. টিম রেস (বার) */
+  const race = `<div class="panel race2"><div class="ph"><h2>🏁 রেস টু দ্য টপ — সব টিম</h2><span class="mut">শীর্ষ ৩ = 🎁 পুরস্কার জোন</span></div>
+    ${T.map((t, i) => { const col = t.rank <= 3 ? 'linear-gradient(90deg,#15803D,#22C55E)' : (() => { const k = n > 3 ? (t.rank - 3) / (n - 3) : 1; return `hsl(0,${Math.round(60 + 25 * k)}%,${Math.round(66 - 26 * k)}%)`; })();
+      return `${i === 3 ? '<div class="zone">— 🎁 পুরস্কার জোনের সীমা —</div>' : ''}<a class="br" href="${hDSS(t)}"><span class="br-r">${t.rank <= 3 ? RK_ICON[t.rank - 1] : '#' + t.rank}</span>${GC.logo(t.team, 'brl')}
+        <span class="br-t"><b>${esc(GC.tn(t))}</b><small>${esc(tc(t.dss))} · ${esc(t.dh.replace('FIROZA GLOBAL TRADING LTD', 'FGTL'))}</small></span>
+        <span class="br-bar"><i data-w="${(t.score / mx * 100).toFixed(1)}" style="width:0;background:${col}"></i></span><b class="br-s" data-count="${t.score.toFixed(1)}">0.0</b></a>`; }).join('')}</div>`;
+  /* ৪. হল অফ ফেম — টেরিটরির সেরা ১০ ডিএসও */
+  const fame = `<div class="panel"><div class="ph"><h2>🌟 হল অফ ফেম — টেরিটরির সেরা ১০ ডিএসও</h2><span class="mut">দুই হাউজ মিলিয়ে</span></div><div class="fame">
+    ${A.slice(0, 10).map((x, i) => `<a class="fm ${i < 3 ? 'top' : ''}" href="${hDSO(x)}"><span class="fm-r">${i < 3 ? RK_ICON[i] : i + 1}</span>${GC.logo(x.team, 'xs')}<span class="fm-n"><b>${esc(tc(x.name))}</b><small>${esc(x.team || tc(x.dss))} · ${esc(x.dh.replace('FIROZA GLOBAL TRADING LTD', 'FGTL'))}</small></span><b class="fm-s">${x.score.toFixed(1)}</b></a>`).join('')}</div></div>`;
+  /* ৫. টেরিটরি পালস — KPI রিং */
+  const pulse = `<div class="panel"><div class="ph"><h2>💓 টেরিটরি পালস</h2><span class="mut">টেরিটরির সামগ্রিক অর্জন · স্কোর ${D.territory.score.toFixed(1)}</span></div><div class="pulse">
+    ${LV.om.ps.map(([k, name]) => { const v = Math.round((D.territory[k] || 0) * 100); return `<div class="pr"><div class="pr-r ${v >= 100 ? 'ok' : v < 70 ? 'lo' : ''}" style="--p:${Math.min(100, v)}"><div><b data-count="${v}" data-dec="0">0</b><small>%</small></div></div><span>${name.replace(' (A2M+D2C)', '')}</span></div>`; }).join('')}</div></div>`;
+  $('#showcase').innerHTML = stage + spot + `<div class="sc-grid"><div>${race}</div><div>${fame}${pulse}</div></div>`;
+  countUp($('#showcase'));
+  /* স্পটলাইট ঘোরানো */
+  clearInterval(_spotTimer);
+  const sl = [...document.querySelectorAll('#showcase .sl')], dots = [...document.querySelectorAll('#showcase .spot-d i')], bar = $('#showcase .spot-p i');
+  let k = 0; const go = () => { sl.forEach((e, i) => e.classList.toggle('on', i === k)); dots.forEach((e, i) => e.classList.toggle('on', i === k)); if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; requestAnimationFrame(() => { bar.style.transition = 'width 6s linear'; bar.style.width = '100%'; }); } };
+  go(); if (sl.length > 1) _spotTimer = setInterval(() => { k = (k + 1) % sl.length; go(); }, 6000);
+  dots.forEach((d, i) => d.onclick = () => { k = i; go(); });
+  /* প্রেজেন্ট মোড (ফুলস্ক্রিন) */
+  $('#present').onclick = () => { const on = !document.body.classList.contains('present'); document.body.classList.toggle('present', on); try { if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); else if (!on && document.fullscreenElement) document.exitFullscreen(); } catch (e) { } $('#present').textContent = on ? '✕ প্রেজেন্ট মোড বন্ধ' : '⛶ প্রেজেন্ট মোড'; };
+}
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) { document.body.classList.remove('present'); const b = $('#present'); if (b) b.textContent = '⛶ প্রেজেন্ট মোড'; } });
+
 /* হাউজ: অ্যাডমিন ছাড়া সবাই নিজের ডিএইচ */
 function house() {
   if (who.role === 'admin') return [...new Set(D.ra.map(r => r.dh))];
