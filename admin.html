@@ -709,6 +709,16 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
 @media (max-width:600px){.rbig-wrap{padding:0 30px}}
 .rav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#FCE3EE;color:var(--pink);font:800 16px var(--fh)}
 .rm.me .rm-c .rav{background:#fff;color:var(--pink)}.rm.f .rm-c .rav{background:#fff;color:#B07800}
+.rtop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap}
+.rtop button{min-height:42px;padding:6px 16px;border:2px solid var(--pink);color:var(--pink);background:#fff}
+.rchips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+.rchips a{padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #F3D6E4;color:var(--deep);font-weight:700;font-size:14px;text-decoration:none}
+.rchips a:hover{border-color:var(--pink)}
+.rchips a.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.rlaunch .rchips{margin-top:4px}
+body.present .rtop a.btn{display:none}
+body.present .rpage .rbig-wrap{background:#FFF0F6}
+@media (max-width:600px){.rchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.rchips a{white-space:nowrap;font-size:13px}.rtop button{display:none}}
 </style>
 <style>
 .wrap{max-width:980px}
