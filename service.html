@@ -719,6 +719,14 @@ body{background:#FFF7FA;background-image:radial-gradient(900px 420px at 0% -10%,
 body.present .rtop a.btn{display:none}
 body.present .rpage .rbig-wrap{background:#FFF0F6}
 @media (max-width:600px){.rchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.rchips a{white-space:nowrap;font-size:13px}.rtop button{display:none}}
+/* admin: rank-by-rank viewer */
+.adnav{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
+.adnav .rchips{margin:0}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #F3D6E4;border-radius:16px;padding:8px 10px}
+.stepper span{font-size:15px;color:var(--plum);text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stepper span b{color:var(--pink);font-size:20px}
+.stepper button{min-height:40px;padding:6px 16px;border:2px solid var(--pink);background:#fff;color:var(--pink);font-size:14px}
+.stepper button:disabled{opacity:.35;cursor:default}
+@media (max-width:600px){.stepper button{padding:6px 10px;font-size:13px}.stepper span{font-size:13px}}
 </style>
 </head>
 <body>
