@@ -2123,7 +2123,7 @@ async function makeFormal(src, white) {
 }
 const formTs = s => { const m = String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/); return m ? new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5], +(m[6] || 0)).getTime() : Date.parse(s) || 0; };
 const driveId = u => { const m = String(u).match(/[?&]id=([\w-]{20,})/) || String(u).match(/\/d\/([\w-]{20,})/); return m ? m[1] : ''; };
-let phUnmatched = [];
+let phUnmatched = [], phFailed = [];
 async function phSync(auto) {
   const u = (IDX.logUrl || $('#logUrl').value || '').trim(), k = (store('gcd_logkey') || $('#logKey').value || '').trim();
   if (!u || !k) { if (!auto) phMsg('First set up 📊 Login Tracking (Web App URL + download key). The photos are read through the same Google Apps Script.', 'bad'); return 0; }
@@ -2134,7 +2134,7 @@ async function phSync(auto) {
   if (j.error) throw new Error(j.error);
   if (!j.photos) { phMsg('Your Google Apps Script is the old version. Open 📊 Login Tracking → One-time setup, copy the new code into Apps Script, then Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy (allow the new permissions).', 'bad'); return 0; }
   const last = new Map(); j.photos.forEach(r => { const id = String(r[1]).trim(); if (id) last.set(d10(id) || upc(id), { ts: formTs(r[0]), raw: id, f: driveId(r[2]) }); });
-  phUnmatched = []; const todo = [];
+  phUnmatched = []; phFailed = []; const todo = [];
   last.forEach((r, n) => { if (!r.f) return; const key = phMatch(r.raw); if (!key) { phUnmatched.push(r); return; }
     const s0 = PH.src[key] || {}; if (s0.f === r.f) return; if (s0.manual && s0.manual > r.ts) return; todo.push([key, r]); });
   let done = 0, fail = 0;
@@ -2145,7 +2145,7 @@ async function phSync(auto) {
       if (p.error || !p.b64) throw new Error(p.error || 'no image');
       const out = await makeFormal('data:' + (p.mime || 'image/jpeg') + ';base64,' + p.b64, $('#phWhite').checked);
       PH.map[key] = out.d; PH.src[key] = { f: r.f, ts: r.ts, how: out.how }; done++;
-    } catch (e) { console.warn(e); fail++; }
+    } catch (e) { console.warn(e); fail++; const pp = phPeople().find(x => x.key === key) || {}; phFailed.push({ key, name: pp.name || key, type: pp.type || '', dh: pp.dh || '', id: r.raw, f: r.f, why: /read the image/i.test(e.message) ? 'The file is not a normal photo (e.g. HEIC / PDF) or is damaged' : e.message }); }
   }
   if (done) { phMsg('Publishing photos…'); await ghPut('photos.json', PH, 'Update photos from Google Form'); }
   renderPhotoBox();
@@ -2157,8 +2157,10 @@ function renderPhotoBox() {
   if (!PH) { phLoad().then(renderPhotoBox); return; }
   const L = phPeople(), q = upc($('#phQ').value), has = L.filter(p => PH.map[p.key]).length;
   const typeOpts = L.map(p => `<option value="${esc(p.key)}">${p.type} · ${esc(p.name)} · ${esc(p.dh)}</option>`).join('');
-  $('#phUn').innerHTML = phUnmatched.length ? `<div class="tiny" style="margin-top:10px;padding:10px;border:1px dashed #E2A6C1;border-radius:12px"><b>Form entries not matched to anyone</b> — choose the person (remembered for the future):
-    ${phUnmatched.map((r, i) => `<div class="row" style="align-items:center;margin-top:6px"><div style="flex:0 0 180px"><b>${esc(r.raw)}</b></div><div style="flex:1 1 300px"><select class="phAl" data-i="${i}"><option value="">— choose —</option>${typeOpts}</select></div></div>`).join('')}</div>` : '';
+  const failHTML = phFailed.length ? `<div class="tiny" style="margin-top:10px;padding:10px;border:1px dashed #E2A6C1;border-radius:12px;background:#FFF5F8"><b>Photos that could not be read (${phFailed.length})</b> — ask them to submit the form again with a JPG/PNG photo, or open the file, save it as JPG and use <b>Upload</b> below:
+    ${phFailed.map(x => `<div style="margin-top:6px">• <b>${esc(x.name)}</b> (${esc(x.type)} · ${esc(x.dh)}) — Login ID ${esc(x.id)} — ${esc(x.why)} · <a href="https://drive.google.com/open?id=${encodeURIComponent(x.f)}" target="_blank" rel="noopener">open file ↗</a></div>`).join('')}</div>` : '';
+  $('#phUn').innerHTML = failHTML + (phUnmatched.length ? `<div class="tiny" style="margin-top:10px;padding:10px;border:1px dashed #E2A6C1;border-radius:12px"><b>Form entries not matched to anyone</b> — choose the person (remembered for the future):
+    ${phUnmatched.map((r, i) => `<div class="row" style="align-items:center;margin-top:6px"><div style="flex:0 0 180px"><b>${esc(r.raw)}</b></div><div style="flex:1 1 300px"><select class="phAl" data-i="${i}"><option value="">— choose —</option>${typeOpts}</select></div></div>`).join('')}</div>` : '');
   const vis = L.filter(p => (!phType || (phType === 'none' ? !PH.map[p.key] : p.type === phType)) && (!q || upc(p.name + ' ' + p.dh + ' ' + (p.sub || '') + ' ' + p.ids.join(' ')).includes(q)));
   $('#phList').innerHTML = `<div class="tiny" style="grid-column:1/-1">${has} of ${L.length} have a photo</div>` + vis.map(p => `<div class="phc"><img src="${PH.map[p.key] || OMAV_D}" alt="">
     <div style="min-width:0;flex:1"><b>${esc(p.name)}</b><div class="tiny">${p.type}${p.sub ? ' · ' + esc(p.sub) : ''} · ${esc(p.dh)}</div>
@@ -2440,4 +2442,5 @@ $('#csave').onclick = () => {
 })();
 </script>
 </body>
+</html>
 </html>
