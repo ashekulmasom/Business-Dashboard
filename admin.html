@@ -807,6 +807,31 @@ body.present #hdr .hero,body.present .qbar{display:none!important}
 .tp-scroll tr:first-child th{position:sticky;top:0;z-index:5;background:#FDE4EF!important;box-shadow:0 2px 0 #F0C2D6}
 .tp-scroll td{font-size:15px}
 body.tp-on{overflow:hidden}
+/* ===== days-left popup: centre of the screen + blinking ===== */
+.toast{top:50%!important;bottom:auto!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:1500!important;padding:18px 20px 18px 22px!important;border-radius:22px!important;
+  border:3px solid var(--gold)!important;box-shadow:0 0 0 9999px rgba(43,16,32,.28),0 20px 50px rgba(122,12,67,.45)!important;animation:tblink 1.1s ease-in-out 0s 6!important}
+.toast .ti{font-size:38px!important}
+.toast b{font-size:22px!important}.toast small{font-size:15px!important}
+.toast.out{opacity:0!important;transform:translate(-50%,-50%) scale(.92)!important;transition:all .35s!important}
+@keyframes tblink{0%,100%{opacity:1;filter:none}50%{opacity:.55;filter:brightness(1.25) drop-shadow(0 0 18px rgba(255,194,14,.9))}}
+@media (max-width:600px){.toast{width:calc(100% - 40px);box-sizing:border-box}.toast b{font-size:18px!important}}
+/* admin: photo manager */
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+.phc{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff}
+.phc img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #FFC20E;background:#fff;flex:0 0 auto}
+.phc b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!important}
+#phT button{min-height:34px;padding:4px 12px;font-size:13px}#phT button.on{background:var(--pink);color:#fff}
+/* TOP ACHIEVERS: photo + team logo badge */
+.tph{position:relative;flex:0 0 auto;margin:0 auto}
+.tph-p{display:block;border-radius:50%;object-fit:cover;background:#fff;border:4px solid var(--gold);box-shadow:0 0 0 5px rgba(255,194,14,.22),0 8px 20px rgba(0,0,0,.3)}
+.tph.big .tph-p{width:128px;height:128px}
+.tph.sm .tph-p{width:84px;height:84px;border-width:3px;box-shadow:0 0 0 3px rgba(255,194,14,.22),0 6px 14px rgba(0,0,0,.28)}
+.tph-l{position:absolute;right:-12px;bottom:-6px;display:grid;place-items:center}
+.tph.big .tph-l .tlogo{width:60px;height:60px}
+.tph.sm .tph-l{right:-10px;bottom:-8px}.tph.sm .tph-l .tlogo{width:38px;height:38px}
+.tac.big .tph{margin:6px auto 10px}
+@media (max-width:600px){.tph.big .tph-p{width:104px;height:104px}.tph.sm .tph-p{width:64px;height:64px}.tph.sm .tph-l .tlogo{width:30px;height:30px}}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -892,11 +917,6 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <h3 style="margin-top:16px">Operation Manager (OM) Names</h3>
     <div class="tiny">The OM’s name is shown in big bold text on the OM score card, DH cards and the OM table.</div>
     <div class="row" id="omIn"></div>
-    <h3 style="margin-top:16px">OM Photos</h3>
-    <div class="tiny">Upload a photo for each OM (JPG/PNG, a face photo works best). It is shown on the TOP ACHIEVERS page when that OM is ranked #1, and on the OM’s score card. Photos are cropped to a square automatically. Without a photo, a default avatar is shown.</div>
-    <div class="row" id="omPh"></div>
-    <div class="btns"><button type="button" id="phSave">Save & publish photos</button></div>
-    <div id="phMsg" class="mut" style="margin-top:6px"></div>
     <h3 style="margin-top:16px">DSS Team Names & Login</h3>
     <div class="tiny">Team name is shown on the leaderboards (e.g. CHOWRASTA TIGERS). DSS can log in with their DSS ID (from the target file); optionally enter a wallet number so they can log in with it too. If DSS IDs are not shown, upload this month’s target file once more.</div>
     <div class="row" id="dssIn"></div>
@@ -917,6 +937,20 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <textarea id="qtext" rows="10" style="min-height:220px;line-height:1.7"></textarea>
     <div class="btns"><button type="button" id="qsave">Save & publish quotes</button><button type="button" class="ghost" id="qdef">Load built-in quotes</button></div>
     <div id="qmsg" class="mut" style="margin-top:8px"></div>
+  </details>
+</section>
+
+<section class="panel">
+  <details id="phBox">
+    <summary>🖼️ Photos — DSO · DSS · OM (click to view)</summary>
+    <p class="mut">Photos are shown on the ⭐ TOP ACHIEVERS page (OM &amp; Admin) for whoever is ranked #1 — they change automatically when the ranking changes. Photos come from your Google Form (“Upload Formal Photo”) and are matched by the Login ID written in the form (DSO: RA wallet, DSS: WhatsApp / login number or DSS ID, OM: MA wallet). The background is removed and made white automatically.</p>
+    <div class="btns"><button type="button" id="phSync">🔄 Sync photos from Google Form</button><button type="button" class="ghost" id="phPub">Publish photos</button>
+      <label class="tiny" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="phWhite" checked style="width:auto;min-height:0"> Remove background (white)</label></div>
+    <div id="phMsg" class="mut" style="margin-top:8px"></div>
+    <div id="phUn"></div>
+    <div class="row" style="margin-top:10px;align-items:center"><div style="flex:1 1 260px"><input id="phQ" placeholder="Search name / wallet / DH"></div>
+      <div class="btns" style="margin:0" id="phT"><button type="button" class="ghost on" data-t="">All</button><button type="button" class="ghost" data-t="OM">OM</button><button type="button" class="ghost" data-t="DSS">DSS</button><button type="button" class="ghost" data-t="DSO">DSO</button><button type="button" class="ghost" data-t="none">No photo</button></div></div>
+    <div id="phList" class="phgrid"></div>
   </details>
 </section>
 
@@ -1742,6 +1776,7 @@ $('#con').onclick = async () => {
     $('#main').hidden = false; $('#nav').hidden = false; $('#s1').hidden = true;
     monthOptions(); renderQuotes(); renderLog();
     await loadMonth($('#mon').value);
+    phSync(true).catch(e => console.warn(e));
   } catch (e) { $('#m1').className = 'bad'; $('#m1').textContent = e.message; }
 };
 
@@ -1859,7 +1894,7 @@ function renderCfg() {
   S.W.cfg.om = S.W.cfg.om || {};
   $('#omIn').innerHTML = S.W.dh.map(d => `<div><label>${esc(d.name)}${d.ma ? ' <span class="tiny">· MA ' + esc(d.ma) + '</span>' : ''}</label><input class="omname" data-n="${esc(d.name)}" value="${esc(S.W.cfg.om[d.name] || '')}" placeholder="OM name"></div>`).join('') || '<div class="mut">DH list appears after the target file is uploaded.</div>';
   document.querySelectorAll('.omname').forEach(i => i.onchange = () => { S.W.cfg.om[i.dataset.n] = i.value.trim(); S.dirty.data = true; });
-  renderPhotos();
+  renderPhotoBox();
   $('#dssIn').innerHTML = S.W.teams.map((t, i) => `<div style="flex:1 1 300px;border:1px solid var(--line);border-radius:12px;padding:10px"><label>${esc(t.dss)} <span class="tiny">· ${esc(t.dh)}${t.id ? ' · ID ' + esc(t.id) : ''}</span></label><input class="dsst" data-i="${i}" value="${esc(t.team || '')}" placeholder="Team name" style="margin-bottom:6px"><input inputmode="numeric" class="dssw" data-i="${i}" value="${esc(t.w || '')}" placeholder="Login wallet 01XXXXXXXXX (optional)"></div>`).join('') || '<div class="mut">DSS list appears after the target file is uploaded.</div>';
   document.querySelectorAll('.dsst').forEach(i => i.onchange = () => { S.W.teams[+i.dataset.i].team = i.value.trim().toUpperCase(); i.value = S.W.teams[+i.dataset.i].team; S.dirty.data = true; });
   document.querySelectorAll('.dssw').forEach(i => i.onchange = () => { const w = E.w11(i.value); S.W.teams[+i.dataset.i].w = w; i.value = w; S.dirty.data = true; });
@@ -1884,6 +1919,7 @@ $('#pub').onclick = async () => {
     S.dirty = { data: false, am: false, svc: false }; idxDirty = false;
     monthOptions(); $('#mon').value = S.month; $('#mon').dataset.v = S.month;
     m.className = 'ok'; m.textContent = `Published (${monLabel(S.month)})! The site will update in 1–2 minutes.`;
+    phSync(true).catch(e => console.warn(e));
   } catch (e) {
     m.className = 'bad';
     m.textContent = (/not accessible|Forbidden|Bad credentials|Not Found|Resource/i.test(e.message) ? 'The token cannot write to ' + OWNER + '/' + REPO + '. In the token settings, add ' + REPO + ' under Repository access and set Contents = Read and write. (GitHub: ' + e.message + ') ' : e.message + ' ') + 'Alternative: download the files and upload them to the repository root folder.';
@@ -1956,35 +1992,184 @@ const QUOTES = [
 ];
 /* ওএম-এর ছবি — index.json-এ (সব মাসে একই) */
 const OMAV_D = "data:image/webp;base64,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";
-function renderPhotos() {
-  const P = IDX.omPhotos || {}, dhs = (S && S.W && S.W.dh || []).map(d => d.name);
-  $('#omPh').innerHTML = dhs.map(n => `<div style="flex:1 1 260px;display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px">
-    <img src="${P[n] || OMAV_D}" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #FFC20E;background:#fff">
-    <div style="flex:1;min-width:0"><label style="margin:0">${esc((S.W.cfg.om || {})[n] || 'OM')} <span class="tiny">· ${esc(n)}</span></label>
-    <div class="btns" style="margin-top:6px"><button type="button" class="ghost phPick" data-n="${esc(n)}">Choose photo</button>${P[n] ? `<button type="button" class="ghost phDel" data-n="${esc(n)}">Remove</button>` : ''}</div></div></div>`).join('') || '<div class="mut">DH list appears after the target file is uploaded.</div>';
+/* =====================================================================
+   ছবি — Google Form থেকে স্বয়ংক্রিয়ভাবে / হাতে আপলোড; ব্যাকগ্রাউন্ড সাদা
+   photos.json = { map: {key: dataURI}, src: {key: {f, ts, manual}}, alias: {loginId: key} }
+   ===================================================================== */
+let PH = null, phType = '';
+const d10 = v => String(v || '').replace(/\D/g, '').slice(-10);
+const upc = v => String(v || '').trim().toUpperCase();
+function phPeople() {
+  if (!S || !S.W) return [];
+  const L = [];
+  (S.W.dh || []).forEach(d => L.push({ key: 'om:' + d.name, type: 'OM', name: (S.W.cfg.om || {})[d.name] || 'OM', dh: d.name, ids: [d.ma] }));
+  (S.W.teams || []).forEach(t => L.push({ key: 'dss:' + upc(t.dh + '|' + t.dss), type: 'DSS', name: t.dss, sub: t.team || '', dh: t.dh, ids: [t.id, t.w] }));
+  (S.W.ra || []).forEach(x => L.push({ key: 'dso:' + d10(x.wallet), type: 'DSO', name: x.name, sub: x.wallet, dh: x.dh, ids: [x.wallet] }));
+  return L;
+}
+function phMatch(id) {
+  const n = d10(id), u = upc(id), a = PH.alias || {};
+  if (a[n] || a[u]) return a[n] || a[u];
+  const hit = phPeople().find(p => p.ids.some(v => v && ((n.length === 10 && d10(v) === n) || upc(v) === u)));
+  return hit ? hit.key : null;
+}
+async function phLoad() {
+  if (!PH) { try { PH = await ghRead('photos.json'); } catch (e) { PH = null; } }
+  PH = PH || { v: 1 }; PH.map = PH.map || {}; PH.src = PH.src || {}; PH.alias = PH.alias || {};
+  Object.entries(IDX.omPhotos || {}).forEach(([dh, u]) => { if (!PH.map['om:' + dh]) PH.map['om:' + dh] = u; });
+  return PH;
+}
+const phMsg = (t, c) => { const m = $('#phMsg'); m.className = c || 'mut'; m.textContent = t; };
+const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Could not read the image')); i.src = src; });
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+let _seg = null;
+async function segmenter() {
+  if (_seg !== null) return _seg;
+  try {
+    const base = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+    const V = await withTimeout(import(base + '/vision_bundle.mjs'), 20000);
+    const fs = await V.FilesetResolver.forVisionTasks(base + '/wasm');
+    _seg = await withTimeout(V.ImageSegmenter.createFromOptions(fs, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite' }, runningMode: 'IMAGE', outputConfidenceMasks: true, outputCategoryMask: false }), 25000);
+  } catch (e) { console.warn('AI background removal not available:', e); _seg = false; }
+  return _seg;
+}
+/* AI মাস্ক (ব্যক্তি = 1) */
+async function aiMask(cv) {
+  const sg = await segmenter(); if (!sg) return null;
+  try {
+    const r = sg.segment(cv), ms = r.confidenceMasks || []; if (!ms.length) return null;
+    const m = ms[ms.length > 1 ? 1 : 0], f = Float32Array.from(m.getAsFloat32Array()); ms.forEach(x => x.close && x.close());
+    const W = cv.width, H = cv.height, at = (x, y) => f[Math.min(H - 1, Math.floor(y)) * W + Math.min(W - 1, Math.floor(x))];
+    const centre = at(W / 2, H * 0.55), corners = (at(2, 2) + at(W - 3, 2)) / 2;
+    if (centre < corners) for (let i = 0; i < f.length; i++) f[i] = 1 - f[i];     // উল্টো হলে ঠিক করা
+    return f;
+  } catch (e) { console.warn(e); return null; }
+}
+/* সাধারণ (এক রঙের) ব্যাকগ্রাউন্ড — কিনারা থেকে ফ্লাড-ফিল */
+function plainMask(px, W, H) {
+  const at = (x, y) => (y * W + x) * 4, B = [];
+  for (let x = 0; x < W; x += 2) B.push([x, 0]);
+  for (let y = 0; y < H * 0.7; y += 2) { B.push([0, y]); B.push([W - 1, y]); }
+  let r = 0, g = 0, b = 0; B.forEach(([x, y]) => { const i = at(x, y); r += px[i]; g += px[i + 1]; b += px[i + 2]; }); r /= B.length; g /= B.length; b /= B.length;
+  const dref = i => Math.hypot(px[i] - r, px[i + 1] - g, px[i + 2] - b);
+  let sd = 0; B.forEach(([x, y]) => { sd += dref(at(x, y)) ** 2; }); sd = Math.sqrt(sd / B.length);
+  if (sd > 42) return null;                                    // ব্যাকগ্রাউন্ড এক রঙের নয়
+  const lim = Math.max(45, sd * 3), bg = new Float32Array(W * H), q = [];
+  B.forEach(([x, y]) => { const k = y * W + x; if (!bg[k] && dref(k * 4) < lim) { bg[k] = 1; q.push(k); } });
+  while (q.length) {
+    const k = q.pop(), x = k % W, y = (k / W) | 0, i = k * 4;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+      const nk = ny * W + nx; if (bg[nk]) continue; const j = nk * 4;
+      const dn = Math.hypot(px[j] - px[i], px[j + 1] - px[i + 1], px[j + 2] - px[i + 2]);
+      if (dref(j) < lim * 1.25 && dn < 22) { bg[nk] = 1; q.push(nk); }
+    }
+  }
+  for (let i = 0; i < bg.length; i++) bg[i] = 1 - bg[i];       // ব্যক্তি = 1
+  return bg;
+}
+function blurMask(m, W, H, rad) {
+  const t = new Float32Array(m.length), o = new Float32Array(m.length);
+  for (let y = 0; y < H; y++) { let s = 0, c = 0; for (let x = -rad; x < W; x++) { if (x + rad < W) { s += m[y * W + x + rad]; c++; } if (x - rad - 1 >= 0) { s -= m[y * W + x - rad - 1]; c--; } if (x >= 0) t[y * W + x] = s / c; } }
+  for (let x = 0; x < W; x++) { let s = 0, c = 0; for (let y = -rad; y < H; y++) { if (y + rad < H) { s += t[(y + rad) * W + x]; c++; } if (y - rad - 1 >= 0) { s -= t[(y - rad - 1) * W + x]; c--; } if (y >= 0) o[y * W + x] = s / c; } }
+  return o;
+}
+/* ছবি → ২৫৬px বর্গ, মুখ মাঝখানে, সাদা ব্যাকগ্রাউন্ড */
+async function makeFormal(src, white) {
+  const img = await loadImg(src), sc = Math.min(1, 560 / Math.max(img.width, img.height));
+  const W = Math.max(1, Math.round(img.width * sc)), H = Math.max(1, Math.round(img.height * sc));
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H); g.drawImage(img, 0, 0, W, H);
+  let how = 'original';
+  let fg = null;
+  if (white) {
+    const id = g.getImageData(0, 0, W, H), px = id.data;
+    fg = await aiMask(cv); if (fg) how = 'ai';
+    if (!fg) { fg = plainMask(px, W, H); if (fg) how = 'plain'; }
+    if (fg) {
+      const a = blurMask(fg, W, H, how === 'ai' ? 1 : 2);
+      for (let k = 0; k < a.length; k++) { const al = Math.min(1, Math.max(0, (a[k] - 0.15) / 0.7)), i = k * 4; px[i] = px[i] * al + 255 * (1 - al); px[i + 1] = px[i + 1] * al + 255 * (1 - al); px[i + 2] = px[i + 2] * al + 255 * (1 - al); }
+      g.putImageData(id, 0, 0);
+    }
+  }
+  /* মুখের চারপাশে বর্গ কাটা */
+  let side = Math.min(W, H), x0 = (W - side) / 2, y0 = 0;
+  if (fg) {
+    let top = -1; for (let y = 0; y < H && top < 0; y++) { let c = 0; for (let x = 0; x < W; x++) if (fg[y * W + x] > 0.5) c++; if (c > W * 0.03) top = y; }
+    if (top >= 0) {
+      let sx = 0, n = 0; const y2 = Math.min(H, top + Math.round(H * 0.35)); for (let y = top; y < y2; y++) for (let x = 0; x < W; x++) if (fg[y * W + x] > 0.5) { sx += x; n++; }
+      const cx = n ? sx / n : W / 2;
+      side = Math.min(W, H, Math.round(Math.max(W, H) * (H > W ? 0.78 : 0.95)));
+      x0 = Math.min(W - side, Math.max(0, cx - side / 2)); y0 = Math.min(H - side, Math.max(0, top - side * 0.1));
+    }
+  } else if (H > W) y0 = Math.min(H - side, H * 0.04);
+  const o = document.createElement('canvas'); o.width = o.height = 256; const og = o.getContext('2d');
+  og.fillStyle = '#fff'; og.fillRect(0, 0, 256, 256); og.imageSmoothingQuality = 'high'; og.drawImage(cv, x0, y0, side, side, 0, 0, 256, 256);
+  let d = o.toDataURL('image/webp', 0.82); if (!d.startsWith('data:image/webp')) d = o.toDataURL('image/jpeg', 0.85);
+  return { d, how };
+}
+const formTs = s => { const m = String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/); return m ? new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5], +(m[6] || 0)).getTime() : Date.parse(s) || 0; };
+const driveId = u => { const m = String(u).match(/[?&]id=([\w-]{20,})/) || String(u).match(/\/d\/([\w-]{20,})/); return m ? m[1] : ''; };
+let phUnmatched = [];
+async function phSync(auto) {
+  const u = (IDX.logUrl || $('#logUrl').value || '').trim(), k = (store('gcd_logkey') || $('#logKey').value || '').trim();
+  if (!u || !k) { if (!auto) phMsg('First set up 📊 Login Tracking (Web App URL + download key). The photos are read through the same Google Apps Script.', 'bad'); return 0; }
+  if (!S || !S.W) { if (!auto) phMsg('Load a month first.', 'bad'); return 0; }
+  await phLoad();
+  phMsg('Checking the Google Form for photos…');
+  const j = await (await fetch(u + '?action=photolist&key=' + encodeURIComponent(k))).json();
+  if (j.error) throw new Error(j.error);
+  if (!j.photos) { phMsg('Your Google Apps Script is the old version. Open 📊 Login Tracking → One-time setup, copy the new code into Apps Script, then Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy (allow the new permissions).', 'bad'); return 0; }
+  const last = new Map(); j.photos.forEach(r => { const id = String(r[1]).trim(); if (id) last.set(d10(id) || upc(id), { ts: formTs(r[0]), raw: id, f: driveId(r[2]) }); });
+  phUnmatched = []; const todo = [];
+  last.forEach((r, n) => { if (!r.f) return; const key = phMatch(r.raw); if (!key) { phUnmatched.push(r); return; }
+    const s0 = PH.src[key] || {}; if (s0.f === r.f) return; if (s0.manual && s0.manual > r.ts) return; todo.push([key, r]); });
+  let done = 0, fail = 0;
+  for (const [key, r] of todo) {
+    phMsg(`Processing photo ${done + fail + 1} of ${todo.length}…`);
+    try {
+      const p = await (await fetch(u + '?action=photo&key=' + encodeURIComponent(k) + '&id=' + encodeURIComponent(r.f))).json();
+      if (p.error || !p.b64) throw new Error(p.error || 'no image');
+      const out = await makeFormal('data:' + (p.mime || 'image/jpeg') + ';base64,' + p.b64, $('#phWhite').checked);
+      PH.map[key] = out.d; PH.src[key] = { f: r.f, ts: r.ts, how: out.how }; done++;
+    } catch (e) { console.warn(e); fail++; }
+  }
+  if (done) { phMsg('Publishing photos…'); await ghPut('photos.json', PH, 'Update photos from Google Form'); }
+  renderPhotoBox();
+  phMsg(`${done} new photo(s) added${fail ? ', ' + fail + ' could not be read' : ''}${phUnmatched.length ? ', ' + phUnmatched.length + ' form entr' + (phUnmatched.length > 1 ? 'ies' : 'y') + ' not matched (see below)' : ''}. ${done ? 'Published — the site updates in 1–2 minutes.' : todo.length ? '' : 'Everything is up to date.'}`, fail ? 'bad' : 'ok');
+  return done;
+}
+function renderPhotoBox() {
+  if (!$('#phList')) return;
+  if (!PH) { phLoad().then(renderPhotoBox); return; }
+  const L = phPeople(), q = upc($('#phQ').value), has = L.filter(p => PH.map[p.key]).length;
+  const typeOpts = L.map(p => `<option value="${esc(p.key)}">${p.type} · ${esc(p.name)} · ${esc(p.dh)}</option>`).join('');
+  $('#phUn').innerHTML = phUnmatched.length ? `<div class="tiny" style="margin-top:10px;padding:10px;border:1px dashed #E2A6C1;border-radius:12px"><b>Form entries not matched to anyone</b> — choose the person (remembered for the future):
+    ${phUnmatched.map((r, i) => `<div class="row" style="align-items:center;margin-top:6px"><div style="flex:0 0 180px"><b>${esc(r.raw)}</b></div><div style="flex:1 1 300px"><select class="phAl" data-i="${i}"><option value="">— choose —</option>${typeOpts}</select></div></div>`).join('')}</div>` : '';
+  const vis = L.filter(p => (!phType || (phType === 'none' ? !PH.map[p.key] : p.type === phType)) && (!q || upc(p.name + ' ' + p.dh + ' ' + (p.sub || '') + ' ' + p.ids.join(' ')).includes(q)));
+  $('#phList').innerHTML = `<div class="tiny" style="grid-column:1/-1">${has} of ${L.length} have a photo</div>` + vis.map(p => `<div class="phc"><img src="${PH.map[p.key] || OMAV_D}" alt="">
+    <div style="min-width:0;flex:1"><b>${esc(p.name)}</b><div class="tiny">${p.type}${p.sub ? ' · ' + esc(p.sub) : ''} · ${esc(p.dh)}</div>
+    <div class="btns" style="margin-top:4px"><button type="button" class="ghost sm phPick" data-k="${esc(p.key)}">Upload</button>${PH.map[p.key] ? `<button type="button" class="ghost sm phDel" data-k="${esc(p.key)}">Remove</button>` : ''}</div></div></div>`).join('');
+  document.querySelectorAll('.phAl').forEach(sel => sel.onchange = async () => {
+    const r = phUnmatched[+sel.dataset.i]; if (!sel.value || !r) return;
+    PH.alias[d10(r.raw) || upc(r.raw)] = sel.value;
+    try { await phSync(); } catch (e) { phMsg(e.message, 'bad'); }
+  });
   document.querySelectorAll('.phPick').forEach(b => b.onclick = () => {
     const f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*';
-    f.onchange = () => { const file = f.files[0]; if (!file) return; const img = new Image(); img.onload = () => {
-      const c = document.createElement('canvas'), z = 320, m = Math.min(img.width, img.height); c.width = c.height = z;
-      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, z, z);
-      g.drawImage(img, (img.width - m) / 2, Math.max(0, (img.height - m) / 2 - m * 0.08), m, m, 0, 0, z, z);
-      let d = c.toDataURL('image/webp', 0.82); if (!d.startsWith('data:image/webp')) d = c.toDataURL('image/jpeg', 0.82);
-      IDX.omPhotos = Object.assign({}, IDX.omPhotos, { [b.dataset.n]: d }); URL.revokeObjectURL(img.src); renderPhotos();
-      $('#phMsg').className = 'mut'; $('#phMsg').textContent = 'Photo ready — click “Save & publish photos”.'; };
-      img.src = URL.createObjectURL(file); };
+    f.onchange = async () => { const file = f.files[0]; if (!file) return; phMsg('Processing photo…');
+      try { const url = URL.createObjectURL(file); const out = await makeFormal(url, $('#phWhite').checked); URL.revokeObjectURL(url);
+        PH.map[b.dataset.k] = out.d; PH.src[b.dataset.k] = { manual: Date.now(), how: out.how }; renderPhotoBox();
+        phMsg((out.how === 'original' && $('#phWhite').checked ? 'Background could not be removed automatically (busy background) — the photo is used as it is. ' : 'Photo ready. ') + 'Click “Publish photos”.', 'ok');
+      } catch (e) { phMsg(e.message, 'bad'); } };
     f.click();
   });
-  document.querySelectorAll('.phDel').forEach(b => b.onclick = () => { const P2 = Object.assign({}, IDX.omPhotos); delete P2[b.dataset.n]; IDX.omPhotos = P2; renderPhotos(); $('#phMsg').textContent = 'Removed — click “Save & publish photos”.'; });
+  document.querySelectorAll('.phDel').forEach(b => b.onclick = () => { delete PH.map[b.dataset.k]; PH.src[b.dataset.k] = { manual: Date.now() }; renderPhotoBox(); phMsg('Removed — click “Publish photos”.'); });
 }
-$('#phSave').onclick = async () => {
-  const m = $('#phMsg'); m.className = 'mut'; m.textContent = 'Publishing photos…';
-  try {
-    const cur = (await ghRead('index.json')) || { v: 1, months: [], latest: '' };
-    cur.omPhotos = IDX.omPhotos || {};
-    await ghPut('index.json', cur, 'Update OM photos');
-    m.className = 'ok'; m.textContent = 'Photos published. The site updates in 1–2 minutes.';
-  } catch (e) { m.className = 'bad'; m.textContent = e.message; }
-};
+$('#phQ').oninput = () => renderPhotoBox();
+document.querySelectorAll('#phT button').forEach(b => b.onclick = () => { phType = b.dataset.t; document.querySelectorAll('#phT button').forEach(x => x.classList.toggle('on', x === b)); renderPhotoBox(); });
+$('#phSync').onclick = async () => { $('#phSync').disabled = true; try { await phSync(); } catch (e) { phMsg('Could not sync: ' + e.message, 'bad'); } $('#phSync').disabled = false; };
+$('#phPub').onclick = async () => { try { await phLoad(); phMsg('Publishing photos…'); await ghPut('photos.json', PH, 'Update photos'); phMsg('Photos published. The site updates in 1–2 minutes.', 'ok'); } catch (e) { phMsg(e.message, 'bad'); } };
 /* =====================================================================
    লগইন ট্র্যাকিং
    ===================================================================== */
@@ -2006,8 +2191,29 @@ function doPost(e) {
 function doGet(e) {
   const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
   if (!e.parameter.key || e.parameter.key !== KEY) return out({ error: 'Wrong key' });
+  const a = e.parameter.action || 'logins';
+  if (a === 'photolist') {                       // Google Form: Login ID + photo link
+    const sh = formSheet_(); if (!sh) return out({ photos: [] });
+    const v = sh.getDataRange().getDisplayValues(), h = v[0].map(String);
+    let ci = h.findIndex(x => /wallet|ওয়ালেট|DSO|login|whatsapp/i.test(x) && !/photo|ছবি|time/i.test(x)), cp = h.findIndex(x => /photo|ছবি|image/i.test(x));
+    if (ci < 0) ci = 1; if (cp < 0) cp = 2;
+    return out({ photos: v.slice(1).filter(r => r[ci] && r[cp]).map(r => [r[0], r[ci], r[cp]]) });
+  }
+  if (a === 'photo') {                           // one photo, small size
+    const id = e.parameter.id; let blob = null;
+    try {
+      const r = UrlFetchApp.fetch('https://drive.google.com/thumbnail?id=' + id + '&sz=w640', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() }, muteHttpExceptions: true });
+      if (r.getResponseCode() === 200 && String(r.getBlob().getContentType()).indexOf('image') === 0) blob = r.getBlob();
+    } catch (x) { }
+    if (!blob) { const f = DriveApp.getFileById(id); blob = f.getSize() < 4000000 ? f.getBlob() : f.getThumbnail(); }
+    return out({ mime: blob.getContentType(), b64: Utilities.base64Encode(blob.getBytes()) });
+  }
   const v = sheet_().getDataRange().getDisplayValues();
   return out({ rows: v.slice(1) });
+}
+function formSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  return ss.getSheets().find(s => /form/i.test(s.getName())) || null;
 }`;
 $('#logCode').value = LOG_CODE;
 $('#logCopy').onclick = () => { $('#logCode').select(); try { navigator.clipboard.writeText(LOG_CODE); } catch (e) { document.execCommand('copy'); } $('#logMsg').textContent = 'Code copied.'; };
