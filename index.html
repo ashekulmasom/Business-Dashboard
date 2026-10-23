@@ -831,6 +831,19 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .tph.sm .tph-l{right:-10px;bottom:-8px}.tph.sm .tph-l .tlogo{width:38px;height:38px}
 .tac.big .tph{margin:6px auto 10px}
 @media (max-width:600px){.tph.big .tph-p{width:104px;height:104px}.tph.sm .tph-p{width:64px;height:64px}.tph.sm .tph-l .tlogo{width:30px;height:30px}}
+/* title: ACHIEVERS’ CLUB bold, লিডারবোর্ড smaller */
+.hero h1 b{font-weight:800;letter-spacing:.01em}
+.hero h1 .h1s{font-size:.62em;font-weight:600;opacity:.92;vertical-align:baseline}
+/* DSO podium: photo + team logo badge + medal */
+.pdp{position:relative;display:inline-block}
+.tph.pod .tph-p{width:66px;height:66px;border-width:3px;box-shadow:0 0 0 3px rgba(255,194,14,.2),0 6px 14px rgba(122,12,67,.22)}
+.p1 .tph.pod .tph-p{width:84px;height:84px}
+.tph.pod .tph-l{right:-10px;bottom:-6px}.tph.pod .tph-l .tlogo{width:30px;height:30px}
+.p1 .tph.pod .tph-l .tlogo{width:36px;height:36px}
+.pdp .pm{position:absolute;left:-10px;top:-6px;font-size:24px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+@media (max-width:600px){.tph.pod .tph-p{width:50px;height:50px}.p1 .tph.pod .tph-p{width:62px;height:62px}.tph.pod .tph-l .tlogo{width:22px;height:22px}.pdp .pm{font-size:18px}}
+.podium{padding-top:16px;overflow:visible}
+.p1 .pdp .pm{left:-26px;top:-10px}
 </style>
 </head>
 <body>
@@ -867,7 +880,7 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
       <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
     </div>
     <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll desk"><table id="tdh"></table></div><div class="mob" id="tdhm"></div></div>
-    <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওজন অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
+    <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওয়েটেজ অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
     <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
   </div>
   </div>
@@ -886,8 +899,8 @@ const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MED = ['🥇', '🥈', '🥉'];
 
-/* ---------- Achievers' Club ওজন ---------- */
-/* [key, নাম, MTD/TTL, ওজন, ক্যাপ] — MTD: MTD টার্গেটের বিপরীতে, TTL: মোট মাসিক টার্গেটের বিপরীতে
+/* ---------- Achievers' Club ওয়েটেজ ---------- */
+/* [key, নাম, MTD/TTL, ওয়েটেজ, ক্যাপ] — MTD: MTD টার্গেটের বিপরীতে, TTL: মোট মাসিক টার্গেটের বিপরীতে
    ক্যাপ: অর্জন % এর বেশি হলেও পয়েন্ট এই সীমা পর্যন্ত (KPI Wise Weightage and Capping শিট অনুযায়ী); N = ক্যাপ নেই */
 const N_ = Infinity;
 const LV = {
@@ -969,7 +982,7 @@ function frac(D, rec, lv, p, basis) {
   const { day, dim } = dayInfo(D, p, lv);
   return (ach || 0) / (basis === 'MTD' ? trg * day / dim : trg);
 }
-/* স্কোর = Σ ওজন × min(অর্জন %, KPI ক্যাপ) — ১০০-এর বেশি হতে পারে */
+/* স্কোর = Σ ওয়েটেজ × min(অর্জন %, KPI ক্যাপ) — ১০০-এর বেশি হতে পারে */
 function compute(D) {
   const run = (rec, lv) => { let s = 0; LV[lv].ps.forEach(([p, , b, w, cap]) => { const f = frac(D, rec, lv, p, b); rec[p] = f; s += w * Math.min(f, cap); }); rec.score = s; };
   const rankIn = (arr, key, set) => [...new Set(arr.map(key))].forEach(g => arr.filter(x => key(x) === g).sort((a, b) => b.score - a.score).forEach((x, i) => x[set] = i + 1));
@@ -1048,7 +1061,7 @@ function header(o) {
   <header class="hero">
     <span class="sp" style="top:10px;left:46%">✦</span><span class="sp" style="top:54px;left:58%;animation-delay:.7s;font-size:14px">★</span><span class="sp" style="bottom:12px;left:40%;animation-delay:1.3s">✦</span>
     <div class="badge"><img src="logo.jpg" alt="Achievers’ Club"></div>
-    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>${esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
+    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>${/\s+লিডারবোর্ড$/.test(o.title) ? `<b>${esc(o.title.replace(/\s+লিডারবোর্ড$/, ''))}</b> <small class="h1s">লিডারবোর্ড</small>` : esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
     <div class="side">
       <div class="whoh"><span class="chip">${esc(roleLab)}</span>${name ? `<span>${esc(name)}</span>` : ''}</div>
       ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
@@ -1253,7 +1266,7 @@ let PHM = {};
 const phKey = (kind, x) => kind === 'dso' ? 'dso:' + String(x.wallet || '').replace(/\D/g, '').slice(-10) : kind === 'dss' ? 'dss:' + (x.dh + '|' + x.dss).trim().toUpperCase() : 'om:' + x.name;
 const photoOf = (kind, x) => PHM[phKey(kind, x)] || (kind === 'om' ? GC.omPhoto(IDX, x.name) : GC.OMAV);
 const phWrap = (kind, x, team, cls) => `<div class="tph ${cls}"><img class="tph-p" src="${photoOf(kind, x)}" alt="">${team ? `<span class="tph-l">${GC.logo(team)}</span>` : ''}</div>`;
-async function loadPhotos() { if (!(who && (who.role === 'om' || who.role === 'admin'))) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; if ($('#mine .tapage')) drawMine(); } }
+async function loadPhotos() { if (!who) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; try { draw(); if ($('#mine .tapage')) drawMine(); } catch (e) { } } }
 function topHTML() {
   const T = [...D.teams].sort((a, b) => a.rank - b.rank)[0], DH = [...D.dh].sort((a, b) => a.rank - b.rank);
   const ring = (v, cls) => `<div class="ring ${cls || ''}" style="--p:${Math.min(100, v).toFixed(1)}"><div><b>${v.toFixed(1)}</b><small>পয়েন্ট</small></div></div>`;
@@ -1363,7 +1376,7 @@ function setup() {
   const best = top ? `<div class="card cc best"><div class="ic">⭐</div><div class="cm"><div class="mut ck">${who.role === 'admin' ? 'টেরিটরির' : 'হাউজের'} সেরা ডিএসও</div><div class="omn">${esc(tc(top.name))}</div><div class="cs2">${GC.tierChip(1)}</div></div><div class="cr"><b class="big">${top.score.toFixed(1)}</b><span class="mut">পয়েন্ট</span></div></div>` : '';
   $('#cards').innerHTML = best + (isDSO() ? '' : (who.role === 'admin' ? c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*')) : '')
     + [...D.dh].sort((a, b) => a.rank - b.rank).map(d => c(d.rank === 1 ? '🏆🥇' : '🏢', esc(d.name) + (d === who.myDH ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank + (d.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''), d === who.myDH ? 'me' : '', hOM(d.name), d.om)).join(''));
-  $('#rlh').innerHTML = canRace() ? `<div class="panel rlaunch" style="margin-top:12px"><div class="ph"><h2>🏁 রেস লাইন — মিটিং-এ দেখান</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>` : '';
+  $('#rlh').innerHTML = canRace() ? `<div class="panel rlaunch" style="margin-top:12px"><div class="ph"><h2>🏁 রেস লাইন</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>` : '';
   $('#omP').hidden = $('#dssP').hidden = isDSO();
   $('#fdhW').hidden = isDSO();
   champs(); battle(); daysToast(di.left);
@@ -1450,7 +1463,7 @@ function showcase() {
   /* ৫. টেরিটরি পালস — KPI রিং */
   const pulse = `<div class="panel"><div class="ph"><h2>💓 টেরিটরি পালস</h2><span class="mut">টেরিটরির সামগ্রিক অর্জন · স্কোর ${D.territory.score.toFixed(1)}</span></div><div class="pulse">
     ${LV.om.ps.map(([k, name]) => { const v = Math.round((D.territory[k] || 0) * 100); return `<div class="pr"><div class="pr-r ${v >= 100 ? 'ok' : v < 70 ? 'lo' : ''}" style="--p:${Math.min(100, v)}"><div><b data-count="${v}" data-dec="0">0</b><small>%</small></div></div><span>${name.replace(' (A2M+D2C)', '')}</span></div>`; }).join('')}</div></div>`;
-  const rl = `<div class="panel rlaunch"><div class="ph"><h2>🏁 রেস লাইন — মিটিং-এ দেখান</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>`;
+  const rl = `<div class="panel rlaunch"><div class="ph"><h2>🏁 রেস লাইন</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>`;
   $('#showcase').innerHTML = stage + rl + spot + `<div class="sc-grid"><div>${race}</div><div>${fame}${pulse}</div></div>`;
   countUp($('#showcase'));
   /* স্পটলাইট ঘোরানো */
@@ -1534,10 +1547,10 @@ function gapTable(lv, me, other, oname, colTitle, mname) {
       const add = Math.min(of, p.cap) - p.mf, pts = p.w * add; behindPts += pts;
       how = `<span class="tag lo">পিছিয়ে</span> আরও <b>${fmtU(p.k, add * p.base)}</b> করলে সমান <small class="mut">(${pc(p.mf, of)} → ${pc(p.mf + add)} · +${GC.nd(Math.max(pts, 0.1))} পয়েন্ট)</small>`;
     } else how = '<span class="tag hi">এগিয়ে ✅</span> বাড়তি এচিভ করে স্পিড বাড়াও';
-    mob += `<div class="mc"><div class="mc-h"><b>${p.name}</b><span class="mut">ওজন ${p.w} · ${GC.capTxt(p.cap)}</span></div>
+    mob += `<div class="mc"><div class="mc-h"><b>${p.name}</b><span class="mut">ওয়েটেজ ${p.w} · ${GC.capTxt(p.cap)}</span></div>
       <div class="mc-g"><div><span>${mname ? esc(mname) : 'অর্জন'}</span><b>${pc(p.mf)}</b></div><div><span>${esc(oname)}</span><b>${pc(of)}</b></div><div><span>পয়েন্ট পার্থক্য</span><b class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</b></div></div>
       <div class="mc-l"><span>${lead ? 'দূরত্ব বাড়াতে' : CT}:</span> ${how}</div></div>`;
-    return `<tr><td class="l"><b>${p.name}</b><small>ওজন ${p.w} · ${GC.capTxt(p.cap)}</small></td><td>${pc(p.mf, of)}</td><td>${pc(of, p.mf)}</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</td><td class="l">${how}</td></tr>`;
+    return `<tr><td class="l"><b>${p.name}</b><small>ওয়েটেজ ${p.w} · ${GC.capTxt(p.cap)}</small></td><td>${pc(p.mf, of)}</td><td>${pc(of, p.mf)}</td><td>${GC.nd(mp)}</td><td>${GC.nd(op)}</td><td class="${d >= 0 ? 'hi' : 'lo'}">${dpt(d)}</td><td class="l">${how}</td></tr>`;
   }).join('');
   const note = lead ? `<div class="mut" style="margin-top:8px">🏆 আপনি এগিয়ে — ওপরের যেকোনো প্যারামিটারে বাড়তি করলে ${esc(oname)}-এর থেকে দূরত্ব আরও বাড়বে।</div>`
     : `<div class="mut" style="margin-top:8px">💡 পিছিয়ে থাকা প্যারামিটারগুলোতে ${esc(oname)}-এর সমান হলেই +${GC.nd(behindPts)} পয়েন্ট পাবেন — দরকার ${GC.nd(need)} পয়েন্ট। এগিয়ে থাকা প্যারামিটারে বাড়তি করলে কাজটা আরও সহজ হবে।</div>`;
@@ -1576,7 +1589,7 @@ const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine, kind) {
   if (list.length < 3) return '';
   const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${DSO_MSG}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
-  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${kind === 'dss' && x.team ? `<span class="pdl">${GC.logo(x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
+  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${kind === 'dso' ? `<span class="pdp">${phWrap('dso', x, x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : kind === 'dss' && x.team ? `<span class="pdl">${GC.logo(x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
 /* মোবাইল: টেবিলের বদলে ছোট কার্ড-সারি */
 const pills = (x, lv) => LV[lv].ps.map(p => { const v = Math.round((x[p[0]] || 0) * 100); return `<span class="pl ${v >= 100 ? 'hi' : v < 50 ? 'lo' : ''}">${p[1].replace(' (A2M+D2C)', '').replace('SAV-', '')} ${v}%</span>`; }).join('');
@@ -1656,7 +1669,7 @@ function renderDetail(lv, rec, title, sub) {
   const mobBody = rows.map(r => {
     const miss = r.trg == null;
     return `<div class="mc"><div class="mc-h"><b>${r.name}</b><span class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}" style="font:800 20px var(--fh)">${Math.round(r.pct)}%</span></div>
-      <div class="mut" style="font-size:12px">${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট টার্গেটের বিপরীতে'} · ওজন ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</div>
+      <div class="mut" style="font-size:12px">${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট টার্গেটের বিপরীতে'} · ওয়েটেজ ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</div>
       ${r.p === 'a' && lv === 'om' ? `<div class="mut" style="font-size:12px">A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)}</div>` : ''}
       <div class="mc-g"><div><span>মাসিক টার্গেট</span><b>${nf(r.trg)}</b></div><div><span>MTD টার্গেট</span><b>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</b></div><div><span>MTD অর্জন</span><b>${nf(r.ach)}</b></div>
         <div><span>বাকি</span><b>${miss ? '—' : nf(r.rem)}</b></div><div><span>প্রতিদিন প্রয়োজন</span><b class="need">${miss ? '—' : nd(r.per)}</b></div><div><span>পয়েন্ট</span><b>${nd(r.pts)}${isFinite(r.cap) ? '/' + nd(r.w * r.cap) : ''}</b></div>
@@ -1665,7 +1678,7 @@ function renderDetail(lv, rec, title, sub) {
   const body = rows.map(r => {
     const miss = r.trg == null;
     const extra = r.p === 'a' && lv === 'om' ? `<small>অর্জন: A2M ${nf(r.V.a2m)} + D2C ${nf(r.V.d2c)} · ${r.V.bzpSet ? 'BZP টার্গেট অ্যাডমিন সেটিংস থেকে' : 'BZP টার্গেট দেওয়া নেই — A2M টার্গেট ধরা হয়েছে'}</small>` : '';
-    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওজন ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
+    return `<tr><td class="l"><b>${r.name}</b><small>${r.basis === 'MTD' ? 'MTD টার্গেটের বিপরীতে' : 'মোট (TTL) টার্গেটের বিপরীতে'} · ওয়েটেজ ${r.w} · ${GC.capTxt(r.cap)} · Till ${GC.fmtTill(r.till)}</small>${extra}</td>
       <td>${nf(r.trg)}</td><td>${r.basis === 'MTD' ? nf(r.mtd) : '—'}</td><td>${nf(r.ach)}</td>
       <td class="${r.pct >= 100 ? 'hi' : r.pct < 50 ? 'lo' : ''}"><b>${Math.round(r.pct)}%</b></td>
       <td>${r.lm == null ? '—' : nf(r.lm)}</td><td class="${r.gr == null ? '' : r.gr >= 0 ? 'hi' : 'lo'}">${r.gr == null ? '—' : (r.gr >= 0 ? '▲ ' : '▼ ') + nd(Math.abs(r.gr)) + '%'}</td>
@@ -1691,7 +1704,7 @@ function renderDetail(lv, rec, title, sub) {
         <li><b>MTD টার্গেট:</b> মাসের শুরু থেকে রিপোর্টের তারিখ পর্যন্ত যতটা অর্জন করার কথা।</li>
         <li><b>MTD অর্জন %:</b> TRX, REG, UBP${lv === 'dso' ? '' : lv === 'dss' ? ', A2M' : ', BZP'}-এর % MTD টার্গেটের বিপরীতে; SAV-VOL ও SAV-CNT-এর % মোট (TTL) টার্গেটের বিপরীতে।</li>
         <li><b>LMTD ও MoM গ্রোথ:</b> গত মাসের একই তারিখ পর্যন্ত অর্জন এবং তার তুলনায় এ মাসে কত বেশি/কম (TRX ও UBP)।</li>
-        <li><b>পয়েন্ট:</b> ওজন × অর্জন %, প্রতিটি KPI-র নিজস্ব ক্যাপ পর্যন্ত (যেমন ডিএসও-র TRX ১৩০%, REG ১৫০%)। তাই মোট স্কোর ১০০-এর বেশিও হতে পারে। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
+        <li><b>পয়েন্ট:</b> ওয়েটেজ × অর্জন %, প্রতিটি KPI-র নিজস্ব ক্যাপ পর্যন্ত (যেমন ডিএসও-র TRX ১৩০%, REG ১৫০%)। তাই মোট স্কোর ১০০-এর বেশিও হতে পারে। <b>প্রতিদিন প্রয়োজন:</b> বাকি দিনগুলোতে প্রতিদিন গড়ে যতটা করতে হবে।</li>
       </ul></div>
     ${noAch ? '<div class="msg" style="color:var(--low)">⚠️ এই পাতার জন্য প্রয়োজনীয় রিপোর্ট এখনও আপলোড হয়নি।</div>' : ''}
     <div class="mob">${mobBody}</div>
@@ -1808,5 +1821,4 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
-</html>
 </html>
