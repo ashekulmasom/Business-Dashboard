@@ -806,6 +806,31 @@ body.present #hdr .hero,body.present .qbar{display:none!important}
 .tp-scroll tr:first-child th{position:sticky;top:0;z-index:5;background:#FDE4EF!important;box-shadow:0 2px 0 #F0C2D6}
 .tp-scroll td{font-size:15px}
 body.tp-on{overflow:hidden}
+/* ===== days-left popup: centre of the screen + blinking ===== */
+.toast{top:50%!important;bottom:auto!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:1500!important;padding:18px 20px 18px 22px!important;border-radius:22px!important;
+  border:3px solid var(--gold)!important;box-shadow:0 0 0 9999px rgba(43,16,32,.28),0 20px 50px rgba(122,12,67,.45)!important;animation:tblink 1.1s ease-in-out 0s 6!important}
+.toast .ti{font-size:38px!important}
+.toast b{font-size:22px!important}.toast small{font-size:15px!important}
+.toast.out{opacity:0!important;transform:translate(-50%,-50%) scale(.92)!important;transition:all .35s!important}
+@keyframes tblink{0%,100%{opacity:1;filter:none}50%{opacity:.55;filter:brightness(1.25) drop-shadow(0 0 18px rgba(255,194,14,.9))}}
+@media (max-width:600px){.toast{width:calc(100% - 40px);box-sizing:border-box}.toast b{font-size:18px!important}}
+/* admin: photo manager */
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+.phc{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff}
+.phc img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #FFC20E;background:#fff;flex:0 0 auto}
+.phc b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!important}
+#phT button{min-height:34px;padding:4px 12px;font-size:13px}#phT button.on{background:var(--pink);color:#fff}
+/* TOP ACHIEVERS: photo + team logo badge */
+.tph{position:relative;flex:0 0 auto;margin:0 auto}
+.tph-p{display:block;border-radius:50%;object-fit:cover;background:#fff;border:4px solid var(--gold);box-shadow:0 0 0 5px rgba(255,194,14,.22),0 8px 20px rgba(0,0,0,.3)}
+.tph.big .tph-p{width:128px;height:128px}
+.tph.sm .tph-p{width:84px;height:84px;border-width:3px;box-shadow:0 0 0 3px rgba(255,194,14,.22),0 6px 14px rgba(0,0,0,.28)}
+.tph-l{position:absolute;right:-12px;bottom:-6px;display:grid;place-items:center}
+.tph.big .tph-l .tlogo{width:60px;height:60px}
+.tph.sm .tph-l{right:-10px;bottom:-8px}.tph.sm .tph-l .tlogo{width:38px;height:38px}
+.tac.big .tph{margin:6px auto 10px}
+@media (max-width:600px){.tph.big .tph-p{width:104px;height:104px}.tph.sm .tph-p{width:64px;height:64px}.tph.sm .tph-l .tlogo{width:30px;height:30px}}
 </style>
 </head>
 <body>
@@ -1177,7 +1202,7 @@ const scopeDH = () => isDSO() ? (who.me ? [who.me.dh] : []) : [...new Set(D.ra.m
 function start(fresh) {
   $('#gate').hidden = true; $('#app').hidden = false;
   GC.header({ IDX, D, who, page: 'ac', title: 'ACHIEVERS’ CLUB লিডারবোর্ড', onMonth });
-  setup(); route();
+  setup(); route(); loadPhotos();
   if (fresh) { const r = focus(); if (r) GC.confetti(r.rank <= 3 ? 90 : 40); }
 }
 
@@ -1223,18 +1248,24 @@ function admNav(F) {
   return `<div class="adnav"><nav class="rchips">${admOpts().map(([k, l]) => `<a href="javascript:void 0" data-k="${esc(k)}" class="${st.k === k ? 'on' : ''}">${esc(l)}</a>`).join('')}</nav>
     ${n > 1 && i >= 0 ? `<div class="stepper"><button type="button" class="ghost" data-s="-1" ${i <= 0 ? 'disabled' : ''}>◀ আগের</button><span><b>${i + 1}</b> / ${n} · ${esc(F.nameOf(F.rec))}</span><button type="button" class="ghost" data-s="1" ${i >= n - 1 ? 'disabled' : ''}>পরের ▶</button></div>` : ''}</div>`;
 }
+/* ছবি (photos.json — অ্যাডমিন থেকে প্রকাশিত) */
+let PHM = {};
+const phKey = (kind, x) => kind === 'dso' ? 'dso:' + String(x.wallet || '').replace(/\D/g, '').slice(-10) : kind === 'dss' ? 'dss:' + (x.dh + '|' + x.dss).trim().toUpperCase() : 'om:' + x.name;
+const photoOf = (kind, x) => PHM[phKey(kind, x)] || (kind === 'om' ? GC.omPhoto(IDX, x.name) : GC.OMAV);
+const phWrap = (kind, x, team, cls) => `<div class="tph ${cls}"><img class="tph-p" src="${photoOf(kind, x)}" alt="">${team ? `<span class="tph-l">${GC.logo(team)}</span>` : ''}</div>`;
+async function loadPhotos() { if (!(who && (who.role === 'om' || who.role === 'admin'))) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; if ($('#mine .tapage')) drawMine(); } }
 function topHTML() {
   const T = [...D.teams].sort((a, b) => a.rank - b.rank)[0], DH = [...D.dh].sort((a, b) => a.rank - b.rank);
   const ring = (v, cls) => `<div class="ring ${cls || ''}" style="--p:${Math.min(100, v).toFixed(1)}"><div><b>${v.toFixed(1)}</b><small>পয়েন্ট</small></div></div>`;
   const dso = d => { const m = D.ra.filter(x => x.dh === d.name).sort((a, b) => a.dhRank - b.dhRank)[0]; if (!m) return ''; const t = GC.tier(1);
     return `<a class="tac sm" href="javascript:void 0" data-go="dso:${esc(d.name)}"><div class="tac-k">🥇 টপ ডিএসও · ${esc(d.name)}</div>
-      <div class="tac-row">${m.team ? GC.logo(m.team, 'md') : ''}<div class="tac-m"><div class="tac-n">${esc(tc(m.name))}</div><div class="tac-s">${esc(m.team || '')}${m.team ? ' · ' : ''}${esc(tc(m.dss))}</div><span class="tier leader">${t.i} ${t.n} — ${t.note}</span></div>${ring(m.score, 'sm')}</div></a>`; };
+      <div class="tac-row">${phWrap('dso', m, m.team, 'sm')}<div class="tac-m"><div class="tac-n">${esc(tc(m.name))}</div><div class="tac-s">${esc(m.team || '')}${m.team ? ' · ' : ''}${esc(tc(m.dss))}</div><span class="tier leader">${t.i} ${t.n} — ${t.note}</span></div>${ring(m.score, 'sm')}</div></a>`; };
   const om = DH[0];
   return `<div class="panel tapage"><div class="ph"><h2>⭐ TOP ACHIEVERS</h2><span class="mut">${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)} · কার্ডে চাপুন — র‍্যাঙ্ক অনুযায়ী সবাইকে দেখুন</span></div>
   <div class="ta-grid">
-    ${T ? `<a class="tac big" href="javascript:void 0" data-go="dss"><div class="tac-k">🏆 টপ টিম (ডিএসএস)</div>${GC.logo(T.team, 'xl')}<div class="tac-n">${esc(GC.tn(T))}</div><div class="tac-s">ডিএসএস ${esc(tc(T.dss))} · ${esc(T.dh)}</div>${ring(T.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
+    ${T ? `<a class="tac big" href="javascript:void 0" data-go="dss"><div class="tac-k">🏆 টপ টিম (ডিএসএস)</div>${phWrap('dss', T, T.team, 'big')}<div class="tac-n">${esc(GC.tn(T))}</div><div class="tac-s">ডিএসএস ${esc(tc(T.dss))} · ${esc(T.dh)}</div>${ring(T.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
     <div class="ta-col">${DH.map(dso).join('')}</div>
-    ${om ? `<a class="tac big" href="javascript:void 0" data-go="om"><div class="tac-k">🏅 টপ ওএম</div><div class="tac-ph"><img src="${GC.omPhoto(IDX, om.name)}" alt="${esc(om.om || om.name)}"><span>🏆</span></div><div class="tac-n">${esc(om.om || om.name)}</div><div class="tac-s">${esc(om.name)}</div>${ring(om.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
+    ${om ? `<a class="tac big" href="javascript:void 0" data-go="om"><div class="tac-k">🏅 টপ ওএম</div><div class="tac-ph"><img src="${photoOf('om', om)}" alt="${esc(om.om || om.name)}"><span>🏆</span></div><div class="tac-n">${esc(om.om || om.name)}</div><div class="tac-s">${esc(om.name)}</div>${ring(om.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
   </div></div>`;
 }
 function drawMine() {
@@ -1308,7 +1339,7 @@ function mineHTML(F) {
   else if (!F.rank) msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
   const bds = GC.badges(r, F.lv, F.rank || 99);
   return `<div class="panel"><div class="mine-grid">
-    <div class="scorebox">${F.lv === 'dss' && r.team ? GC.logo(r.team, 'xl') : F.lv === 'dso' && r.team ? GC.logo(r.team, 'md') : F.lv === 'om' && r !== D.territory && r.name ? `<div class="tac-ph"><img src="${GC.omPhoto(IDX, r.name)}" alt="${esc(F.title)}">${F.rank === 1 ? '<span>🏆</span>' : ''}</div>` : ''}<div class="kick">${esc(F.sub)}</div><div class="sb-name ${F.om ? 'om' : ''}">${esc(F.title)}</div>
+    <div class="scorebox">${F.lv === 'dss' && r.team ? GC.logo(r.team, 'xl') : F.lv === 'dso' && r.team ? GC.logo(r.team, 'md') : F.lv === 'om' && r !== D.territory && r.name ? `<div class="tac-ph"><img src="${photoOf('om', r)}" alt="${esc(F.title)}">${F.rank === 1 ? '<span>🏆</span>' : ''}</div>` : ''}<div class="kick">${esc(F.sub)}</div><div class="sb-name ${F.om ? 'om' : ''}">${esc(F.title)}</div>
       <div class="ring" style="--p:${Math.min(100, r.score).toFixed(1)}"><div><b>${r.score.toFixed(1)}</b><small>পয়েন্ট</small></div></div>
       ${F.rank ? `<span class="tier ${labelCls(F.lv, F.rank)}">${label(F.lv, F.rank)}</span>` : ''}
       <div class="kpis"><div><b>${F.rank ? F.rank + '/' + F.list.length : D.dh.length}</b><span>${F.rankLab}</span></div><div><b>${F.extra[1]}</b><span>${F.extra[0]}</span></div><div><b>${proj.toFixed(0)}</b><span>মাস শেষে (এই গতিতে)</span></div></div>
@@ -1449,7 +1480,7 @@ function daysToast(left) {
   t.innerHTML = `<span class="ti">⏳</span><div><b>মাস শেষ হতে বাকি ${left} দিন</b><small>প্রতিটি দিন গুরুত্বপূর্ণ — আজই এগিয়ে যান!</small></div><button type="button" aria-label="বন্ধ করুন">✕</button>`;
   document.body.appendChild(t);
   const close = () => { t.classList.add('out'); setTimeout(() => t.remove(), 400); };
-  t.querySelector('button').onclick = close; setTimeout(close, 7000);
+  t.querySelector('button').onclick = close; t.addEventListener('click', e => { if (e.target === t) close(); }); setTimeout(close, 9000);
 }
 function champs() {
   const hs = house();
