@@ -915,7 +915,9 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
 </section>
 
 <section class="panel">
-  <h2>4. Report Status (data till)</h2>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 style="margin:0">4. Report Status (data till)</h2>
+    <button type="button" class="ghost sm" id="rmToggle" style="margin-left:auto">🗑️ Remove a report…</button></div>
+  <div id="rmNote" class="tiny" hidden style="margin:8px 0;padding:8px 12px;border-radius:10px;background:#FFF5F8;border:1px dashed #E2A6C1">Click <b>Remove</b> next to a report to delete its data for this month, then upload the correct file and click <b>Publish to GitHub</b>. Tip: a new <b>RA-DSS Target File</b> can simply be uploaded again — it replaces the old mapping and keeps the achievements; remove it only if you want to start the month from zero.</div>
   <div class="scroll"><table id="slots"></table></div>
 </section>
 
@@ -1655,6 +1657,21 @@ function agents(S) {
   fieldSet.forEach((v, k) => fields.push({ f: k, vals: [...v] }));
   return { A, fields };
 }
+/* একটি রিপোর্ট সরানো (অ্যাডমিন থেকে) — ওই রিপোর্টের সব মান মুছে আবার হিসাব */
+function clearSlot(S, id) {
+  const W = S.W, del = (p, f) => W.ra.forEach(x => { if (x.v && x.v[p]) delete x.v[p][f]; });
+  const delX = (...keys) => W.dh.forEach(d => { if (d.x) keys.forEach(k => delete d.x[k]); });
+  if (id === 'target') { W.ra = []; W.teams = []; W.dh = []; W.tills = {}; S.src = {}; S.AM = new Map(); S.amDate = ''; S.svc = null; S.dirty.am = true; S.dirty.svc = true; S.dirty.data = true; return; }
+  const P = { dtr: [['t', 'ach']], lmdtr: [['t', 'lm']], reg: [['r', 'ach']], ubp: [['u', 'ach'], ['u', 'lm']], sav: [['vo', 'ach'], ['c', 'ach']], a2m: [['a2m', 'ach']] }[id] || [];
+  P.forEach(([p, f]) => { del(p, f); delX(p + '.' + f); });
+  if (id === 'sav') W.dh.forEach(d => { if (d.tt) delete d.tt.c; });
+  if (id === 'd2c') W.dh.forEach(d => { d.d2cAch = null; });
+  delete W.tills[id];
+  if (S.src && S.src[id]) delete S.src[id];
+  if (['r78', 'b2bid', 'agentx', 'dtr', 'reg', 'ubp'].includes(id)) { try { computeService(S); } catch (e) { } S.dirty.svc = true; }
+  if (W.ra.length) aggregate(S);
+  S.dirty.data = true;
+}
 function computeService(S) {
   const { A, fields } = agents(S);
   S.fields = fields;
@@ -1732,7 +1749,7 @@ async function parseMSSheets(S, wb, fileName) {
 
 root.Engine = {
   SLOTS, OPS, CALC, N, w11, up, toNum, parseDate, dateFromName, monthFromName, prevMonth, endOfMonth, ym, today, addDays, fmt,
-  parseMSSheets, read, detect, detectAs, newState, fixW, classify, run, aggregate, finalize, computeService, defaultCrit, describe, test, agents
+  parseMSSheets, read, detect, detectAs, newState, fixW, classify, run, aggregate, finalize, computeService, clearSlot, defaultCrit, describe, test, agents
 };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -1885,19 +1902,31 @@ function renderFiles() {
     };
   });
 }
+let rmOpen = false;
+$('#rmToggle').onclick = () => { rmOpen = !rmOpen; $('#rmToggle').textContent = rmOpen ? '✕ Done' : '🗑️ Remove a report…'; $('#rmNote').hidden = !rmOpen; renderSlots(); };
 function renderSlots() {
   if (!S) return;
   const T = S.W.tills, main = T.dtr || '';
   const day = s => Math.round((new Date(main + 'T00:00:00Z') - new Date(s + 'T00:00:00Z')) / 864e5);
-  $('#slots').innerHTML = '<tr><th>Report</th><th>When to upload</th><th>Data till</th><th>Status</th></tr>' + E.SLOTS.map(s => {
+  $('#slots').innerHTML = '<tr><th>Report</th><th>When to upload</th><th>Data till</th><th>Status</th>' + (rmOpen ? '<th></th>' : '') + '</tr>' + E.SLOTS.map(s => {
     const t = s.id === 'target' ? (S.W.ra.length ? 'loaded' : '') : (T[s.id] || '');
     let b = '<span class="b n">Not yet</span>';
     if (t) {
       if (s.id === 'target' || s.id === 'lmdtr' || s.svc || !main) b = '<span class="b g">✓ Loaded</span>';
       else { const d = day(t); b = d <= 0 ? '<span class="b g">✓ Latest</span>' : `<span class="b y">${d} day(s) old</span>`; }
     }
-    return `<tr><td>${esc(s.label)}</td><td class="mut">${esc(s.freq)}</td><td>${esc(s.id === 'target' ? '' : T[s.id] || '')}</td><td>${b}</td></tr>`;
+    return `<tr><td>${esc(s.label)}</td><td class="mut">${esc(s.freq)}</td><td>${esc(s.id === 'target' ? '' : T[s.id] || '')}</td><td>${b}</td>${rmOpen ? `<td>${t ? `<button type="button" class="ghost sm rmSlot" data-id="${s.id}">Remove</button>` : ''}</td>` : ''}</tr>`;
   }).join('');
+  document.querySelectorAll('.rmSlot').forEach(b => b.onclick = () => {
+    const sl = E.SLOTS.find(x => x.id === b.dataset.id);
+    const warn = sl.id === 'target' ? '⚠️ This removes the target file AND all achievement data of ' + monLabel(S.month) + '. You will have to upload every report again.\n\nTo change one RA\'s DSS you can simply upload the new target file instead (it keeps achievements).\n\nRemove anyway?' : 'Remove "' + sl.label + '" data for ' + monLabel(S.month) + '?';
+    if (!confirm(warn)) return;
+    E.clearSlot(S, sl.id);
+    jobs = jobs.filter(j => j.slot !== sl.id);
+    IDB.set('src:' + S.month, S.src);
+    renderAll();
+    $('#msg').className = 'warn'; $('#msg').textContent = `"${sl.label}" removed. Upload the correct file, then click "Publish to GitHub" to update the site.`;
+  });
 }
 function renderCfg() {
   if (!S) return;
