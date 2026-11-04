@@ -845,6 +845,25 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 @media (max-width:600px){.tph.pod .tph-p{width:50px;height:50px}.p1 .tph.pod .tph-p{width:62px;height:62px}.tph.pod .tph-l .tlogo{width:22px;height:22px}.pdp .pm{font-size:18px}}
 .podium{padding-top:16px;overflow:visible}
 .p1 .pdp .pm{left:-26px;top:-10px}
+/* ===== month-end celebration ===== */
+.qbar.win{background:linear-gradient(90deg,#FFF3C4,#FFE1EE)!important;border:1.5px solid var(--gold)!important}
+.qbar.win .qt{color:#7E0040!important;font-weight:800!important}
+.celeb{margin-top:12px;position:relative;overflow:hidden;background:linear-gradient(135deg,#FFF8E1,#FFF0F6 60%,#fff)!important;border:2px solid var(--gold)!important}
+.cel-h h2{margin:2px 0 10px;font-size:22px;color:#7E0040}
+.cel-k{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:#B07800;text-transform:uppercase}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.wc{background:#fff;border:1px solid #F3D6E4;border-radius:16px;padding:12px 8px 10px;text-align:center;box-shadow:0 4px 12px rgba(122,12,67,.06)}
+.wc .tph{margin:0 auto 6px}
+.wc-k{font-size:11.5px;font-weight:800;color:#B07800}
+.wc-n{font:800 15px/1.25 var(--fh);color:var(--plum);margin-top:2px}
+.wc-s{font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc-p{font:800 18px var(--fh);color:var(--pink);margin-top:2px}.wc-p small{font-size:11px;color:var(--mut);font-weight:600}
+.cel-m{margin-top:12px;padding:10px 14px;border-radius:14px;background:linear-gradient(90deg,#C50059,#E3147A);color:#fff;font:700 15.5px/1.5 var(--fh);text-align:center}
+@media (max-width:600px){.wgrid{grid-template-columns:repeat(2,1fr)}.cel-m{font-size:14px}}
+/* share as image button */
+.shbtn{min-height:30px!important;padding:2px 12px!important;margin-left:8px;border-radius:999px!important;border:1.5px solid var(--pink)!important;background:#fff!important;color:var(--pink)!important;font:700 13px var(--fb)!important;vertical-align:middle;cursor:pointer;white-space:nowrap}
+.shbtn:hover{background:#FFF0F6!important}.shbtn:disabled{opacity:.6}
+.dhh .shbtn{margin-left:auto}.dhh .shbtn+.tpres{margin-left:8px}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -890,6 +909,11 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
   <h2>2. Which month are you preparing?</h2>
   <div class="row"><div><label for="mon">Report month</label><select id="mon"></select></div></div>
   <p class="mut" id="mst" style="margin-top:8px"></p>
+  <div class="row" style="margin-top:10px;align-items:flex-end;padding:10px 12px;border:1px dashed #E2A6C1;border-radius:12px;background:#FFF8FB">
+    <div style="flex:1 1 280px"><label for="showM">Month shown on the site (DSO · DSS · OM see this)</label><select id="showM"></select></div>
+    <div class="btns" style="margin:0"><button type="button" id="showSave">Save &amp; publish</button></div>
+    <div id="showMsg" class="tiny" style="flex:1 1 100%"></div>
+  </div>
   <p class="tiny">Example: to prepare September’s final report in October, choose “Sep”, then upload September’s files. The site reads the TRX report date to tell which file is this month and which is last month (LMTD).</p>
 </section>
 
@@ -1811,7 +1835,22 @@ $('#con').onclick = async () => {
 };
 
 /* ---------- মাস ---------- */
+function renderShow() {
+  const ms = (IDX.months || []).slice().sort().reverse();
+  $('#showM').innerHTML = `<option value="">Latest month (automatic)${IDX.latest ? ' — now ' + monLabel(IDX.latest) : ''}</option>` + ms.map(m => `<option value="${m}" ${IDX.show === m ? 'selected' : ''}>${monLabel(m)}</option>`).join('');
+  $('#showMsg').textContent = IDX.show ? `Everyone currently sees ${monLabel(IDX.show)}.` : 'Everyone sees the latest published month.';
+}
+$('#showSave').onclick = async () => {
+  const v = $('#showM').value, m = $('#showMsg'); m.className = 'tiny'; m.textContent = 'Publishing…';
+  try {
+    const cur = (await ghRead('index.json')) || { v: 1, months: [], latest: '' };
+    cur.show = v; IDX.show = v;
+    await ghPut('index.json', cur, 'Set month shown on the site');
+    m.className = 'tiny ok'; m.textContent = (v ? `Done — DSO, DSS and OM will see ${monLabel(v)}.` : 'Done — everyone will see the latest month.') + ' The site updates in 1–2 minutes.';
+  } catch (e) { m.className = 'tiny bad'; m.textContent = e.message; }
+};
 function monthOptions() {
+  renderShow();
   const cur = E.ym(E.addDays(E.today(), -1));
   const set = new Set(IDX.months);
   let m = E.ym(E.today()); for (let i = 0; i < 13; i++) { set.add(m); m = E.prevMonth(m); }
@@ -2471,5 +2510,4 @@ $('#csave').onclick = () => {
 })();
 </script>
 </body>
-</html>
 </html>
