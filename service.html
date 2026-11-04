@@ -845,6 +845,25 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 @media (max-width:600px){.tph.pod .tph-p{width:50px;height:50px}.p1 .tph.pod .tph-p{width:62px;height:62px}.tph.pod .tph-l .tlogo{width:22px;height:22px}.pdp .pm{font-size:18px}}
 .podium{padding-top:16px;overflow:visible}
 .p1 .pdp .pm{left:-26px;top:-10px}
+/* ===== month-end celebration ===== */
+.qbar.win{background:linear-gradient(90deg,#FFF3C4,#FFE1EE)!important;border:1.5px solid var(--gold)!important}
+.qbar.win .qt{color:#7E0040!important;font-weight:800!important}
+.celeb{margin-top:12px;position:relative;overflow:hidden;background:linear-gradient(135deg,#FFF8E1,#FFF0F6 60%,#fff)!important;border:2px solid var(--gold)!important}
+.cel-h h2{margin:2px 0 10px;font-size:22px;color:#7E0040}
+.cel-k{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:#B07800;text-transform:uppercase}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.wc{background:#fff;border:1px solid #F3D6E4;border-radius:16px;padding:12px 8px 10px;text-align:center;box-shadow:0 4px 12px rgba(122,12,67,.06)}
+.wc .tph{margin:0 auto 6px}
+.wc-k{font-size:11.5px;font-weight:800;color:#B07800}
+.wc-n{font:800 15px/1.25 var(--fh);color:var(--plum);margin-top:2px}
+.wc-s{font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc-p{font:800 18px var(--fh);color:var(--pink);margin-top:2px}.wc-p small{font-size:11px;color:var(--mut);font-weight:600}
+.cel-m{margin-top:12px;padding:10px 14px;border-radius:14px;background:linear-gradient(90deg,#C50059,#E3147A);color:#fff;font:700 15.5px/1.5 var(--fh);text-align:center}
+@media (max-width:600px){.wgrid{grid-template-columns:repeat(2,1fr)}.cel-m{font-size:14px}}
+/* share as image button */
+.shbtn{min-height:30px!important;padding:2px 12px!important;margin-left:8px;border-radius:999px!important;border:1.5px solid var(--pink)!important;background:#fff!important;color:var(--pink)!important;font:700 13px var(--fb)!important;vertical-align:middle;cursor:pointer;white-space:nowrap}
+.shbtn:hover{background:#FFF0F6!important}.shbtn:disabled{opacity:.6}
+.dhh .shbtn{margin-left:auto}.dhh .shbtn+.tpres{margin-left:8px}
 </style>
 </head>
 <body>
@@ -933,7 +952,10 @@ async function loadIndex() {
 }
 function pickMonth(IDX) {
   const q = new URLSearchParams(location.search).get('m');
-  let m = q || ss('gcd_m') || IDX.latest || IDX.months[0];
+  const se = (() => { try { return JSON.parse(ss('gcd_s') || 'null'); } catch (e) { return null; } })();
+  const adm = ss('gcd_admin') === '1' || (se && se.role === 'admin');
+  const show = IDX.show && IDX.months.includes(IDX.show) ? IDX.show : '';
+  let m = adm ? (q || ss('gcd_m') || show || IDX.latest || IDX.months[0]) : (show || q || ss('gcd_m') || IDX.latest || IDX.months[0]);
   if (!IDX.months.includes(m)) m = IDX.latest || IDX.months[0];
   return m;
 }
@@ -1060,7 +1082,7 @@ function header(o) {
     <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>${/\s+লিডারবোর্ড$/.test(o.title) ? `<b>${esc(o.title.replace(/\s+লিডারবোর্ড$/, ''))}</b> <small class="h1s">লিডারবোর্ড</small>` : esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
     <div class="side">
       <div class="whoh"><span class="chip">${esc(roleLab)}</span>${name ? `<span>${esc(name)}</span>` : ''}</div>
-      ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
+      ${months.length > 1 && (o.who.role === 'admin' || !(o.IDX.show && months.includes(o.IDX.show))) ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
       <div class="outw"><button class="ghost" id="out" type="button">সাইন আউট</button>
       <div class="kro">${o.who.role === 'om' || o.who.role === 'admin' ? `<button type="button" class="kbtn pbtn" id="pbtn" title="প্রেজেন্ট মোড (মিটিং)" aria-label="প্রেজেন্ট মোড">⛶</button>` : ''}
       ${tabs.length > 1 ? `<div class="kmenu"><button type="button" class="kbtn" id="kbtn" aria-label="মেনু" aria-haspopup="true" aria-expanded="false">⋮</button><div class="kdrop" id="kdrop" hidden>${tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</div></div>` : ''}</div></div>
@@ -1068,7 +1090,7 @@ function header(o) {
   </header>
 
   <div class="qbar" role="status" aria-live="polite"><span class="qi">💬</span><span class="qt" id="qt"></span><span class="qd" id="qd"></span></div>`;
-  ticker(o.IDX);
+  ticker(o.IDX, o.wins);
   $('#out').onclick = signOut;
   const kb = $('#kbtn'), kd = $('#kdrop');
   if (kb) { kb.onclick = e => { e.stopPropagation(); kd.hidden = !kd.hidden; kb.setAttribute('aria-expanded', String(!kd.hidden)); }; document.addEventListener('click', e => { if (!e.target.closest('.kmenu')) { kd.hidden = true; kb.setAttribute('aria-expanded', 'false'); } }); }
@@ -1125,10 +1147,11 @@ const QUOTES = [
 const quote = D => QUOTES[(dt(D.tillDate || D.updated).getDate() || 0) % QUOTES.length];
 /* উক্তি ঘোরানো: অ্যাডমিনের দেওয়া উক্তি (না থাকলে ডিফল্ট), প্রতি ৫ সেকেন্ডে পরেরটি */
 let _qTimer = null;
-function ticker(IDX) {
-  const list = (IDX && Array.isArray(IDX.quotes) && IDX.quotes.filter(Boolean).length ? IDX.quotes.filter(Boolean) : QUOTES);
+function ticker(IDX, wins) {
+  const qb = document.querySelector('.qbar'); if (qb) qb.classList.toggle('win', !!(wins && wins.length));
+  const list = wins && wins.length ? wins : (IDX && Array.isArray(IDX.quotes) && IDX.quotes.filter(Boolean).length ? IDX.quotes.filter(Boolean) : QUOTES);
   const el = $('#qt'), dots = $('#qd'); if (!el) return;
-  let i = new Date().getDate() % list.length;
+  let i = wins && wins.length ? 0 : new Date().getDate() % list.length;
   const show = () => { el.textContent = list[i]; if (dots) dots.innerHTML = list.length <= 15 ? list.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('') : ''; };
   show();
   clearInterval(_qTimer);
@@ -1137,9 +1160,9 @@ function ticker(IDX) {
 }
 /* লেভেল শুধু শীর্ষ ৩ জনের: ১ম প্লাটিনাম (পুরস্কৃত হবেন), ২য় গোল্ড, ৩য় সিলভার */
 function tier(rank) {
-  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎', note: 'পুরস্কৃত হবেন' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : null;
+  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎', note: 'পুরস্কৃত হবেন' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇', note: 'পুরস্কৃত হবেন' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈', note: 'পুরস্কৃত হবেন' } : null;
 }
-const tierChip = rank => { const t = rank === 1 ? tier(1) : null;   // টেবিলে শুধু ১ম-এর প্লাটিনাম
+const tierChip = rank => { const t = rank >= 1 && rank <= 3 ? tier(rank) : null;   // ডিএসও: ১ম প্লাটিনাম, ২য় গোল্ড, ৩য় সিলভার
    return t ? `<span class="tchip ${t.c}">${t.i} ${t.n}${t.note ? ' · ' + t.note : ''}</span>` : ''; };
 const omName = d => (d && d.om) || '';
 /* এই গতিতে চললে মাস শেষে স্কোর */
@@ -1371,4 +1394,5 @@ $('#xl').onclick = () => {
 })();
 </script>
 </body>
+</html>
 </html>
