@@ -844,6 +844,25 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 @media (max-width:600px){.tph.pod .tph-p{width:50px;height:50px}.p1 .tph.pod .tph-p{width:62px;height:62px}.tph.pod .tph-l .tlogo{width:22px;height:22px}.pdp .pm{font-size:18px}}
 .podium{padding-top:16px;overflow:visible}
 .p1 .pdp .pm{left:-26px;top:-10px}
+/* ===== month-end celebration ===== */
+.qbar.win{background:linear-gradient(90deg,#FFF3C4,#FFE1EE)!important;border:1.5px solid var(--gold)!important}
+.qbar.win .qt{color:#7E0040!important;font-weight:800!important}
+.celeb{margin-top:12px;position:relative;overflow:hidden;background:linear-gradient(135deg,#FFF8E1,#FFF0F6 60%,#fff)!important;border:2px solid var(--gold)!important}
+.cel-h h2{margin:2px 0 10px;font-size:22px;color:#7E0040}
+.cel-k{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:#B07800;text-transform:uppercase}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.wc{background:#fff;border:1px solid #F3D6E4;border-radius:16px;padding:12px 8px 10px;text-align:center;box-shadow:0 4px 12px rgba(122,12,67,.06)}
+.wc .tph{margin:0 auto 6px}
+.wc-k{font-size:11.5px;font-weight:800;color:#B07800}
+.wc-n{font:800 15px/1.25 var(--fh);color:var(--plum);margin-top:2px}
+.wc-s{font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc-p{font:800 18px var(--fh);color:var(--pink);margin-top:2px}.wc-p small{font-size:11px;color:var(--mut);font-weight:600}
+.cel-m{margin-top:12px;padding:10px 14px;border-radius:14px;background:linear-gradient(90deg,#C50059,#E3147A);color:#fff;font:700 15.5px/1.5 var(--fh);text-align:center}
+@media (max-width:600px){.wgrid{grid-template-columns:repeat(2,1fr)}.cel-m{font-size:14px}}
+/* share as image button */
+.shbtn{min-height:30px!important;padding:2px 12px!important;margin-left:8px;border-radius:999px!important;border:1.5px solid var(--pink)!important;background:#fff!important;color:var(--pink)!important;font:700 13px var(--fb)!important;vertical-align:middle;cursor:pointer;white-space:nowrap}
+.shbtn:hover{background:#FFF0F6!important}.shbtn:disabled{opacity:.6}
+.dhh .shbtn{margin-left:auto}.dhh .shbtn+.tpres{margin-left:8px}
 </style>
 </head>
 <body>
@@ -880,8 +899,8 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
       <div style="flex:0 0 auto"><button class="ghost" id="rs" type="button">ফিল্টার রিসেট</button></div>
     </div>
     <div class="panel" id="omP"><div class="ph"><h2>📊 অপারেশন ম্যানেজার স্কোর</h2><span class="mut">ওএম-এর A2M-এর বদলে BZP (A2M + D2C)</span></div><div class="scroll desk"><table id="tdh"></table></div><div class="mob" id="tdhm"></div></div>
-    <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2><span class="mut">সব ডিএসএস এক তালিকায়, ওয়েটেজ অনুযায়ী স্কোরে র‍্যাঙ্ক</span></div><div id="tt"></div></div>
-    <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ-এর ভেতরে র‍্যাঙ্ক · সবুজ = টার্গেট পূর্ণ · বাদামী = অর্ধেকের কম · সারিতে ক্লিক করলে বিস্তারিত</span></div><div id="tr"></div></div>
+    <div class="panel" id="dssP"><div class="ph"><h2>⚡ টিম পারফরম্যান্স</h2></div><div id="tt"></div></div>
+    <div class="panel"><div class="ph"><h2>🏅 ডিএসও লিডারবোর্ড</h2><span class="mut">ডিএইচ এর মধ্যে র‍্যাংক। বিস্তারিত দেখতে সারিতে ক্লিক করুন।</span></div><div id="tr"></div></div>
   </div>
   </div>
   <div id="detail" hidden></div>
@@ -937,7 +956,10 @@ async function loadIndex() {
 }
 function pickMonth(IDX) {
   const q = new URLSearchParams(location.search).get('m');
-  let m = q || ss('gcd_m') || IDX.latest || IDX.months[0];
+  const se = (() => { try { return JSON.parse(ss('gcd_s') || 'null'); } catch (e) { return null; } })();
+  const adm = ss('gcd_admin') === '1' || (se && se.role === 'admin');
+  const show = IDX.show && IDX.months.includes(IDX.show) ? IDX.show : '';
+  let m = adm ? (q || ss('gcd_m') || show || IDX.latest || IDX.months[0]) : (show || q || ss('gcd_m') || IDX.latest || IDX.months[0]);
   if (!IDX.months.includes(m)) m = IDX.latest || IDX.months[0];
   return m;
 }
@@ -1064,7 +1086,7 @@ function header(o) {
     <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>${/\s+লিডারবোর্ড$/.test(o.title) ? `<b>${esc(o.title.replace(/\s+লিডারবোর্ড$/, ''))}</b> <small class="h1s">লিডারবোর্ড</small>` : esc(o.title)}</h1><span class="till">${esc(monLabel(o.D.month))} · Till ${esc(fmtTill(o.till || o.D.tillDate))}</span></div>
     <div class="side">
       <div class="whoh"><span class="chip">${esc(roleLab)}</span>${name ? `<span>${esc(name)}</span>` : ''}</div>
-      ${months.length > 1 ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
+      ${months.length > 1 && (o.who.role === 'admin' || !(o.IDX.show && months.includes(o.IDX.show))) ? `<label class="mut" for="msel" style="color:#fff;margin:0">মাস</label><select id="msel" aria-label="মাস বেছে নিন">${months.map(m => `<option value="${m}" ${m === o.D.month ? 'selected' : ''}>${monLabel(m)}</option>`).join('')}</select>` : ''}
       <div class="outw"><button class="ghost" id="out" type="button">সাইন আউট</button>
       <div class="kro">${o.who.role === 'om' || o.who.role === 'admin' ? `<button type="button" class="kbtn pbtn" id="pbtn" title="প্রেজেন্ট মোড (মিটিং)" aria-label="প্রেজেন্ট মোড">⛶</button>` : ''}
       ${tabs.length > 1 ? `<div class="kmenu"><button type="button" class="kbtn" id="kbtn" aria-label="মেনু" aria-haspopup="true" aria-expanded="false">⋮</button><div class="kdrop" id="kdrop" hidden>${tabs.map(([h, l, k]) => `<a href="${h}" class="${o.page === k ? 'on' : ''}">${l}</a>`).join('')}</div></div>` : ''}</div></div>
@@ -1072,7 +1094,7 @@ function header(o) {
   </header>
 
   <div class="qbar" role="status" aria-live="polite"><span class="qi">💬</span><span class="qt" id="qt"></span><span class="qd" id="qd"></span></div>`;
-  ticker(o.IDX);
+  ticker(o.IDX, o.wins);
   $('#out').onclick = signOut;
   const kb = $('#kbtn'), kd = $('#kdrop');
   if (kb) { kb.onclick = e => { e.stopPropagation(); kd.hidden = !kd.hidden; kb.setAttribute('aria-expanded', String(!kd.hidden)); }; document.addEventListener('click', e => { if (!e.target.closest('.kmenu')) { kd.hidden = true; kb.setAttribute('aria-expanded', 'false'); } }); }
@@ -1129,10 +1151,11 @@ const QUOTES = [
 const quote = D => QUOTES[(dt(D.tillDate || D.updated).getDate() || 0) % QUOTES.length];
 /* উক্তি ঘোরানো: অ্যাডমিনের দেওয়া উক্তি (না থাকলে ডিফল্ট), প্রতি ৫ সেকেন্ডে পরেরটি */
 let _qTimer = null;
-function ticker(IDX) {
-  const list = (IDX && Array.isArray(IDX.quotes) && IDX.quotes.filter(Boolean).length ? IDX.quotes.filter(Boolean) : QUOTES);
+function ticker(IDX, wins) {
+  const qb = document.querySelector('.qbar'); if (qb) qb.classList.toggle('win', !!(wins && wins.length));
+  const list = wins && wins.length ? wins : (IDX && Array.isArray(IDX.quotes) && IDX.quotes.filter(Boolean).length ? IDX.quotes.filter(Boolean) : QUOTES);
   const el = $('#qt'), dots = $('#qd'); if (!el) return;
-  let i = new Date().getDate() % list.length;
+  let i = wins && wins.length ? 0 : new Date().getDate() % list.length;
   const show = () => { el.textContent = list[i]; if (dots) dots.innerHTML = list.length <= 15 ? list.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('') : ''; };
   show();
   clearInterval(_qTimer);
@@ -1141,9 +1164,9 @@ function ticker(IDX) {
 }
 /* লেভেল শুধু শীর্ষ ৩ জনের: ১ম প্লাটিনাম (পুরস্কৃত হবেন), ২য় গোল্ড, ৩য় সিলভার */
 function tier(rank) {
-  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎', note: 'পুরস্কৃত হবেন' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : null;
+  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎', note: 'পুরস্কৃত হবেন' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇', note: 'পুরস্কৃত হবেন' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈', note: 'পুরস্কৃত হবেন' } : null;
 }
-const tierChip = rank => { const t = rank === 1 ? tier(1) : null;   // টেবিলে শুধু ১ম-এর প্লাটিনাম
+const tierChip = rank => { const t = rank >= 1 && rank <= 3 ? tier(rank) : null;   // ডিএসও: ১ম প্লাটিনাম, ২য় গোল্ড, ৩য় সিলভার
    return t ? `<span class="tchip ${t.c}">${t.i} ${t.n}${t.note ? ' · ' + t.note : ''}</span>` : ''; };
 const omName = d => (d && d.om) || '';
 /* এই গতিতে চললে মাস শেষে স্কোর */
@@ -1214,7 +1237,7 @@ const scopeDH = () => isDSO() ? (who.me ? [who.me.dh] : []) : [...new Set(D.ra.m
 
 function start(fresh) {
   $('#gate').hidden = true; $('#app').hidden = false;
-  GC.header({ IDX, D, who, page: 'ac', title: 'ACHIEVERS’ CLUB লিডারবোর্ড', onMonth });
+  GC.header({ IDX, D, who, page: 'ac', title: 'ACHIEVERS’ CLUB লিডারবোর্ড', onMonth, wins: winMsgs() });
   setup(); route(); loadPhotos();
   if (fresh) { const r = focus(); if (r) GC.confetti(r.rank <= 3 ? 90 : 40); }
 }
@@ -1266,19 +1289,158 @@ let PHM = {};
 const phKey = (kind, x) => kind === 'dso' ? 'dso:' + String(x.wallet || '').replace(/\D/g, '').slice(-10) : kind === 'dss' ? 'dss:' + (x.dh + '|' + x.dss).trim().toUpperCase() : 'om:' + x.name;
 const photoOf = (kind, x) => PHM[phKey(kind, x)] || (kind === 'om' ? GC.omPhoto(IDX, x.name) : GC.OMAV);
 const phWrap = (kind, x, team, cls) => `<div class="tph ${cls}"><img class="tph-p" src="${photoOf(kind, x)}" alt="">${team ? `<span class="tph-l">${GC.logo(team)}</span>` : ''}</div>`;
-async function loadPhotos() { if (!who) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; try { draw(); if ($('#mine .tapage')) drawMine(); } catch (e) { } } }
+async function loadPhotos() { if (!who) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; try { draw(); if ($('#mine .tapage')) drawMine(); if ($('#mot .celeb')) $('#mot').innerHTML = celebrateHTML(); } catch (e) { } } }
+/* =====================================================================
+   ছবি হিসেবে শেয়ার (WhatsApp) — ক্যানভাসে আঁকা, উচ্চ রেজোলিউশন
+   ===================================================================== */
+const SH = (() => {
+  const W = 1080, SC = 2;
+  const FONT = () => getComputedStyle(document.body).fontFamily || 'sans-serif';
+  const C = { plum: '#3A0620', pink: '#C50059', deep: '#7E0040', gold: '#FFC20E', gold2: '#FFE27A', ink: '#2B1020', mut: '#7A6170', line: '#F3D6E4', ok: '#0E8A5F', lo: '#B5651D', zebra: '#FFF7FA', top: '#FFF6D6' };
+  const load = src => new Promise(r => { if (!src) return r(null); const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; });
+  const logoSrc = team => { const m = (GC.logo(team) || '').match(/src="([^"]+)"/); return m ? m[1] : ''; };
+  const f = (w, s) => `${w} ${s}px ${FONT()}`;
+  function fit(g, t, mw) { t = String(t == null ? '' : t); if (g.measureText(t).width <= mw) return t; while (t.length > 1 && g.measureText(t + '…').width > mw) t = t.slice(0, -1); return t + '…'; }
+  function rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function circ(g, im, cx, cy, r, ring) {
+    g.save(); g.beginPath(); g.arc(cx, cy, r + (ring ? 5 : 0), 0, 7); g.fillStyle = ring || '#fff'; g.fill();
+    g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fillStyle = '#fff'; g.fill(); g.clip();
+    if (im) { const s = Math.min(im.width, im.height); g.drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, cx - r, cy - r, r * 2, r * 2); }
+    g.restore();
+  }
+  function logoAt(g, im, cx, cy, s) { if (!im) return; const k = Math.min(s / im.width, s / im.height); g.drawImage(im, cx - im.width * k / 2, cy - im.height * k / 2, im.width * k, im.height * k); }
+  const pcCol = v => v >= 100 ? C.ok : v < 50 ? C.lo : C.ink;
+  async function header(g, H, title, sub) {
+    const gr = g.createLinearGradient(0, 0, W, 190); gr.addColorStop(0, '#3A0620'); gr.addColorStop(.4, '#7E0040'); gr.addColorStop(.75, '#B0004F'); gr.addColorStop(1, '#E3147A');
+    g.fillStyle = gr; g.fillRect(0, 0, W, 190);
+    g.save(); g.globalAlpha = .06; g.strokeStyle = '#fff'; g.lineWidth = 2; for (let x = -200; x < W; x += 18) { g.beginPath(); g.moveTo(x, 190); g.lineTo(x + 190, 0); g.stroke(); } g.restore();
+    const lg = await load('logo.jpg'); g.save(); rr(g, 36, 36, 150, 118, 22); g.fillStyle = '#fff'; g.fill(); g.clip(); if (lg) logoAt(g, lg, 111, 95, 134); g.restore();
+    g.fillStyle = '#FFE27A'; g.font = f(700, 20); g.fillText('গাজীপুর সেন্ট্রাল টেরিটরি', 214, 62);
+    g.fillStyle = '#fff'; g.font = f(800, 42); g.fillText(fit(g, title, W - 250), 214, 112);
+    g.font = f(600, 22); g.fillStyle = 'rgba(255,255,255,.9)'; g.fillText(fit(g, sub, W - 250), 214, 152);
+    g.fillStyle = '#fff'; g.fillRect(0, H - 54, W, 54); g.fillStyle = C.mut; g.font = f(600, 18);
+    g.fillText(`Achievers’ Club · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}`, 36, H - 22);
+  }
+  function canvas(H) { const cv = document.createElement('canvas'); cv.width = W * SC; cv.height = H * SC; const g = cv.getContext('2d'); g.scale(SC, SC); g.fillStyle = '#FFF7FA'; g.fillRect(0, 0, W, H); g.textBaseline = 'alphabetic'; return [cv, g]; }
+  /* টেবিল */
+  function table(g, y, cols, rows) {
+    g.fillStyle = '#FDE4EF'; g.fillRect(24, y, W - 48, 46);
+    g.fillStyle = C.deep; g.font = f(800, 17);
+    cols.forEach(c => { g.textAlign = c.al || 'left'; g.fillText(c.h, c.al === 'center' ? c.x + c.w / 2 : c.al === 'right' ? c.x + c.w : c.x, y + 30); });
+    g.textAlign = 'left'; y += 46;
+    rows.forEach((r, i) => {
+      g.fillStyle = r.top ? C.top : i % 2 ? C.zebra : '#fff'; g.fillRect(24, y, W - 48, r.h);
+      g.fillStyle = C.line; g.fillRect(24, y + r.h - 1, W - 48, 1);
+      r.draw(y); y += r.h;
+    });
+    return y;
+  }
+  async function dso(dh) {
+    const L = D.ra.filter(x => x.dh === dh).sort((a, b) => a.dhRank - b.dhRank), ps = GC.LV.dso.ps, top3 = L.slice(0, 3);
+    const rowH = 58, H = 190 + 330 + 46 + L.length * rowH + 30 + 54;
+    const [cv, g] = canvas(H);
+    await header(g, H, 'ডিএসও লিডারবোর্ড', dh);
+    /* পোডিয়াম */
+    const ims = await Promise.all(top3.map(x => load(photoOf('dso', x)))), lgs = await Promise.all(top3.map(x => load(logoSrc(x.team))));
+    const pos = [[W / 2, 290, 74, 0], [W / 2 - 330, 310, 62, 1], [W / 2 + 330, 310, 62, 2]];
+    pos.forEach(([cx, cy, r, i]) => { const x = top3[i]; if (!x) return; const t = GC.tier(i + 1);
+      circ(g, ims[i], cx, cy, r, i === 0 ? C.gold : i === 1 ? '#E9C46A' : '#C8CDD6');
+      if (lgs[i]) { g.beginPath(); g.arc(cx + r * .78, cy + r * .72, 25, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lgs[i], cx + r * .78, cy + r * .72, 44); }
+      g.textAlign = 'center'; g.font = f(400, 34); g.fillText(['🏆', '🥇', '🥈'][i], cx - r * .9, cy - r * .7);
+      g.fillStyle = C.ink; g.font = f(800, 22); g.fillText(fit(g, GC.tc(x.name), 300), cx, cy + r + 36);
+      g.fillStyle = C.pink; g.font = f(800, 30); g.fillText(x.score.toFixed(1), cx, cy + r + 72);
+      const tt = `${t.i} ${t.n}${i ? ' ডিএসও' : ''} · পুরস্কৃত হবেন`; g.font = f(800, 16); const tw = g.measureText(tt).width + 28;
+      rr(g, cx - tw / 2, cy + r + 84, tw, 30, 15); g.fillStyle = C.gold; g.fill(); g.fillStyle = C.plum; g.fillText(tt, cx, cy + r + 105);
+      g.textAlign = 'left'; });
+    const lgAll = new Map(); for (const x of L) if (x.team && !lgAll.has(x.team)) lgAll.set(x.team, await load(logoSrc(x.team)));
+    const cols = [{ h: '#', x: 40, w: 40, al: 'center' }, { h: 'ডিএসও', x: 92 }, { h: 'টিম', x: 360 }].concat(ps.map((p, k) => ({ h: p[1], x: 600 + k * 74, w: 74, al: 'center' }))).concat([{ h: 'স্কোর', x: 975, w: 80, al: 'right' }]);
+    table(g, 520, cols, L.map((x, i) => ({ h: rowH, top: i < 3, draw: y => {
+      g.textAlign = 'center'; g.fillStyle = C.ink; g.font = f(800, 19); g.fillText(i < 3 ? ['🏆', '🥇', '🥈'][i] : String(i + 1), 60, y + 36);
+      g.textAlign = 'left'; g.font = f(700, 18); g.fillText(fit(g, GC.tc(x.name), 255), 92, y + 36);
+      if (lgAll.get(x.team)) logoAt(g, lgAll.get(x.team), 378, y + rowH / 2, 34);
+      g.font = f(700, 14); g.fillStyle = C.ink; g.fillText(fit(g, x.team || '', 200), 402, y + 28); g.font = f(500, 13); g.fillStyle = C.mut; g.fillText(fit(g, GC.tc(x.dss), 200), 402, y + 47);
+      g.textAlign = 'center'; ps.forEach((p, k) => { const v = Math.round((x[p[0]] || 0) * 100); g.fillStyle = pcCol(v); g.font = f(700, 17); g.fillText(v + '%', 637 + k * 74, y + 36); });
+      g.textAlign = 'right'; g.fillStyle = C.pink; g.font = f(800, 21); g.fillText(x.score.toFixed(1), 1055, y + 32);
+      g.fillStyle = '#F6DCE8'; g.fillRect(985, y + 40, 70, 6); g.fillStyle = x.score >= 100 ? '#12B76A' : '#D92D20'; g.fillRect(985, y + 40, Math.min(70, 70 * x.score / 120), 6);
+      g.textAlign = 'left'; } })));
+    return [cv, 'DSO_Leaderboard_' + dh.replace(/\W+/g, '_')];
+  }
+  async function dss() {
+    const L = [...D.teams].sort((a, b) => a.rank - b.rank), ps = GC.LV.dss.ps, rowH = 74, H = 190 + 40 + 46 + L.length * rowH + 30 + 54;
+    const [cv, g] = canvas(H);
+    await header(g, H, 'টিম পারফরম্যান্স', '🎁 সেরা ৩ ডিএসএস পাবেন পুরস্কার!');
+    const lgs = await Promise.all(L.map(t => load(logoSrc(t.team))));
+    const cols = [{ h: '#', x: 40, w: 40, al: 'center' }, { h: 'টিম (ডিএসএস)', x: 96 }].concat(ps.map((p, k) => ({ h: p[1].replace(' (A2M+D2C)', ''), x: 470 + k * 82, w: 82, al: 'center' }))).concat([{ h: 'স্কোর', x: 975, w: 80, al: 'right' }]);
+    table(g, 230, cols, L.map((t, i) => ({ h: rowH, top: i < 3, draw: y => {
+      g.textAlign = 'center'; g.fillStyle = C.ink; g.font = f(800, 22); g.fillText(i < 3 ? ['🏆', '🥈', '🥉'][i] : String(i + 1), 60, y + 45);
+      if (lgs[i]) logoAt(g, lgs[i], 122, y + rowH / 2, 56);
+      g.textAlign = 'left'; g.fillStyle = C.ink; g.font = f(800, 19); g.fillText(fit(g, GC.tn(t), 300), 160, y + 32);
+      g.font = f(500, 14); g.fillStyle = C.mut; g.fillText(fit(g, GC.tc(t.dss) + ' · ' + t.dh.replace('FIROZA GLOBAL TRADING LTD', 'FIROZA'), 300), 160, y + 54);
+      g.textAlign = 'center'; ps.forEach((p, k) => { const v = Math.round((t[p[0]] || 0) * 100); g.fillStyle = pcCol(v); g.font = f(700, 17); g.fillText(v + '%', 511 + k * 82, y + 44); });
+      g.textAlign = 'right'; g.fillStyle = C.pink; g.font = f(800, 23); g.fillText(t.score.toFixed(1), 1055, y + 40);
+      const bw = 70, sc = Math.min(1, t.score / 120); g.fillStyle = '#F6DCE8'; g.fillRect(985, y + 50, bw, 6); g.fillStyle = i < 3 ? '#12B76A' : '#D92D20'; g.fillRect(985, y + 50, bw * sc, 6);
+      g.textAlign = 'left'; } })));
+    return [cv, 'Team_Performance'];
+  }
+  async function top() {
+    const T = [...D.teams].sort((a, b) => a.rank - b.rank)[0], DH = [...D.dh].sort((a, b) => a.rank - b.rank), om = DH[0];
+    const tops = DH.map(d => ({ d, x: D.ra.filter(x => x.dh === d.name).sort((a, b) => a.dhRank - b.dhRank)[0] })).filter(o => o.x);
+    const cards = [];
+    if (T) cards.push({ k: '🏆 টপ টিম (ডিএসএস)', n: GC.tn(T), s: 'ডিএসএস ' + GC.tc(T.dss), sc: T.score, ph: photoOf('dss', T), lg: logoSrc(T.team), tag: LEADER });
+    tops.forEach(o => cards.push({ k: '💎 টপ অ্যাচিভার · ' + o.d.name, n: GC.tc(o.x.name), s: (o.x.team || '') + ' · ' + GC.tc(o.x.dss), sc: o.x.score, ph: photoOf('dso', o.x), lg: logoSrc(o.x.team), tag: '💎 প্লাটিনাম · পুরস্কৃত হবেন' }));
+    if (om) cards.push({ k: '🏅 টপ ওএম', n: om.om || om.name, s: om.name, sc: om.score, ph: photoOf('om', om), lg: '', tag: CAPTAIN });
+    const cw = (W - 48 - 24) / 2, ch = 420, rows = Math.ceil(cards.length / 2), H = 190 + 30 + rows * (ch + 24) + 20 + 54;
+    const [cv, g] = canvas(H);
+    await header(g, H, '⭐ TOP ACHIEVERS', GC.monLabel(D.month) + ' — মাসের সেরারা');
+    for (let i = 0; i < cards.length; i++) {
+      const c = cards[i], x = 24 + (i % 2) * (cw + 24), y = 220 + Math.floor(i / 2) * (ch + 24);
+      const gr = g.createLinearGradient(x, y, x + cw, y + ch); gr.addColorStop(0, '#3A0620'); gr.addColorStop(.45, '#8E0047'); gr.addColorStop(1, '#E3147A');
+      g.save(); rr(g, x, y, cw, ch, 26); g.fillStyle = gr; g.fill(); g.clip(); g.globalAlpha = .06; g.strokeStyle = '#fff'; g.lineWidth = 2; for (let k = -ch; k < cw; k += 18) { g.beginPath(); g.moveTo(x + k, y + ch); g.lineTo(x + k + ch, y); g.stroke(); } g.restore();
+      const cx = x + cw / 2; g.textAlign = 'center';
+      g.fillStyle = '#FFE27A'; g.font = f(800, 17); g.fillText(fit(g, c.k, cw - 30), cx, y + 38);
+      const [im, lg] = await Promise.all([load(c.ph), load(c.lg)]);
+      circ(g, im, cx, y + 130, 72, C.gold);
+      if (lg) { g.beginPath(); g.arc(cx + 58, y + 182, 30, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lg, cx + 58, y + 182, 54); }
+      g.fillStyle = '#FFE27A'; g.font = f(800, 27); g.fillText(fit(g, c.n, cw - 40), cx, y + 250);
+      g.fillStyle = 'rgba(255,255,255,.88)'; g.font = f(500, 16); g.fillText(fit(g, c.s, cw - 40), cx, y + 278);
+      g.fillStyle = '#fff'; g.font = f(800, 46); g.fillText(c.sc.toFixed(1), cx, y + 336); g.font = f(500, 15); g.fillStyle = 'rgba(255,255,255,.8)'; g.fillText('পয়েন্ট', cx, y + 358);
+      g.font = f(800, 16); const tw = g.measureText(c.tag).width + 30; rr(g, cx - tw / 2, y + 372, tw, 32, 16); g.fillStyle = C.gold; g.fill(); g.fillStyle = C.plum; g.fillText(c.tag, cx, y + 394);
+      g.textAlign = 'left';
+    }
+    return [cv, 'Top_Achievers'];
+  }
+  async function make(kind) {
+    try { await document.fonts.ready; } catch (e) { }
+    const [cv, name] = kind === 'dss' ? await dss() : kind === 'top' ? await top() : await dso(kind.slice(4));
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+    const file = new File([blob], `${name}_${D.month}.png`, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && matchMedia('(pointer:coarse)').matches) {
+      try { await navigator.share({ files: [file], title: 'Achievers’ Club' }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  return { make };
+})();
+const canShareImg = () => who && (who.role === 'dss' || who.role === 'om' || who.role === 'admin');
+const shBtn = k => canShareImg() ? `<button type="button" class="shbtn" data-sh="${esc(k)}" title="ছবি হিসেবে ডাউনলোড / শেয়ার (WhatsApp)">📷 ছবি</button>` : '';
+document.addEventListener('click', async e => {
+  const b = e.target.closest && e.target.closest('.shbtn'); if (!b) return;
+  e.preventDefault(); e.stopPropagation(); const t = b.innerHTML; b.disabled = true; b.textContent = '⏳ তৈরি হচ্ছে…';
+  try { await SH.make(b.dataset.sh); } catch (err) { console.error(err); alert('ছবি তৈরি করা যায়নি: ' + err.message); }
+  b.disabled = false; b.innerHTML = t;
+}, true);
 function topHTML() {
   const T = [...D.teams].sort((a, b) => a.rank - b.rank)[0], DH = [...D.dh].sort((a, b) => a.rank - b.rank);
   const ring = (v, cls) => `<div class="ring ${cls || ''}" style="--p:${Math.min(100, v).toFixed(1)}"><div><b>${v.toFixed(1)}</b><small>পয়েন্ট</small></div></div>`;
   const dso = d => { const m = D.ra.filter(x => x.dh === d.name).sort((a, b) => a.dhRank - b.dhRank)[0]; if (!m) return ''; const t = GC.tier(1);
-    return `<a class="tac sm" href="javascript:void 0" data-go="dso:${esc(d.name)}"><div class="tac-k">🥇 টপ ডিএসও · ${esc(d.name)}</div>
+    return `<a class="tac sm" href="javascript:void 0" data-go="dso:${esc(d.name)}"><div class="tac-k">🥇 টপ অ্যাচিভার · ${esc(d.name)}</div>
       <div class="tac-row">${phWrap('dso', m, m.team, 'sm')}<div class="tac-m"><div class="tac-n">${esc(tc(m.name))}</div><div class="tac-s">${esc(m.team || '')}${m.team ? ' · ' : ''}${esc(tc(m.dss))}</div><span class="tier leader">${t.i} ${t.n} — ${t.note}</span></div>${ring(m.score, 'sm')}</div></a>`; };
   const om = DH[0];
-  return `<div class="panel tapage"><div class="ph"><h2>⭐ TOP ACHIEVERS</h2><span class="mut">${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)} · কার্ডে চাপুন — র‍্যাঙ্ক অনুযায়ী সবাইকে দেখুন</span></div>
+  return `<div class="panel tapage"><div class="ph"><h2>⭐ TOP ACHIEVERS ${shBtn('top')}</h2><span class="mut">${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)} · কার্ডে চাপুন — র‍্যাঙ্ক অনুযায়ী সবাইকে দেখুন</span></div>
   <div class="ta-grid">
     ${T ? `<a class="tac big" href="javascript:void 0" data-go="dss"><div class="tac-k">🏆 টপ টিম (ডিএসএস)</div>${phWrap('dss', T, T.team, 'big')}<div class="tac-n">${esc(GC.tn(T))}</div><div class="tac-s">ডিএসএস ${esc(tc(T.dss))} · ${esc(T.dh)}</div>${ring(T.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
     <div class="ta-col">${DH.map(dso).join('')}</div>
-    ${om ? `<a class="tac big" href="javascript:void 0" data-go="om"><div class="tac-k">🏅 টপ ওএম</div><div class="tac-ph"><img src="${photoOf('om', om)}" alt="${esc(om.om || om.name)}"><span>🏆</span></div><div class="tac-n">${esc(om.om || om.name)}</div><div class="tac-s">${esc(om.name)}</div>${ring(om.score)}<span class="tier leader">${LEADER}</span></a>` : ''}
+    ${om ? `<a class="tac big" href="javascript:void 0" data-go="om"><div class="tac-k">🏅 টপ ওএম</div><div class="tac-ph"><img src="${photoOf('om', om)}" alt="${esc(om.om || om.name)}"><span>🏆</span></div><div class="tac-n">${esc(om.om || om.name)}</div><div class="tac-s">${esc(om.name)}</div>${ring(om.score)}<span class="tier leader">${CAPTAIN}</span></a>` : ''}
   </div></div>`;
 }
 function drawMine() {
@@ -1348,7 +1510,7 @@ function mineHTML(F) {
   const r = F.rec, proj = GC.projected(D, r, F.lv);
   let msg = '';
   if (F.rank === 1) msg = F.third ? '🏆🥇 এখন এক নম্বরে!' : '🏆🥇 অভিনন্দন! আপনি এখন এক নম্বরে!';
-  else if (F.rank > 1 && F.lv === 'dso' && F.rank <= 3) msg = `${RK_ICON[F.rank - 1]} ${DSO_MSG}`;
+  else if (F.rank > 1 && F.lv === 'dso' && F.rank <= 3) msg = F.third ? `${GC.tier(F.rank).i} ${GC.tier(F.rank).n} ডিএসও — পুরস্কৃত হবেন` : `🎉 অভিনন্দন! আপনি ${GC.tier(F.rank).n} ডিএসও — পুরস্কৃত হবেন। এবার লক্ষ্য প্লাটিনাম!`;
   else if (!F.rank) msg = '📈 টেরিটরির সামগ্রিক অবস্থা';
   const bds = GC.badges(r, F.lv, F.rank || 99);
   return `<div class="panel"><div class="mine-grid">
@@ -1366,18 +1528,61 @@ function mineHTML(F) {
     </div>
   </div></div>`;
 }
+/* ---------- মাস শেষ: বিজয়ীদের অভিনন্দন ---------- */
+const monthDone = () => { const t = String(D.tillDate || ''); if (t.slice(0, 7) !== D.month) return t > D.month; const [y, mo] = D.month.split('-').map(Number); return +t.slice(8, 10) >= new Date(y, mo, 0).getDate(); };
+const monthPast = () => { const n = new Date(); return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') > D.month; };
+const isOver = () => monthDone() || monthPast();
+function winners() {
+  const DH = [...D.dh].sort((a, b) => a.rank - b.rank);
+  return {
+    dso: DH.map(d => ({ d, x: D.ra.filter(x => x.dh === d.name).sort((a, b) => a.dhRank - b.dhRank)[0] })).filter(o => o.x),
+    dso3: DH.map(d => ({ d, L: D.ra.filter(x => x.dh === d.name).sort((a, b) => a.dhRank - b.dhRank).slice(1, 3) })),
+    dss: [...D.teams].sort((a, b) => a.rank - b.rank).slice(0, 3),
+    om: DH[0]
+  };
+}
+function winMsgs() {
+  if (!isOver()) return null;
+  const W = winners(), ML = GC.monLabel(D.month), pos = ['১ম', '২য়', '৩য়'];
+  const L = [`🏆 ${ML} — সকল বিজয়ীকে প্রাণঢালা অভিনন্দন! আপনাদের পরিশ্রমেই এগিয়ে গাজীপুর সেন্ট্রাল।`];
+  W.dso.forEach(o => L.push(`💎 অভিনন্দন ${tc(o.x.name)}! ${o.d.name}-এর টপ অ্যাচিভার (প্লাটিনাম) — ${o.x.score.toFixed(1)} পয়েন্ট। দারুণ পারফরম্যান্স!`));
+  W.dso3.forEach(o => o.L.forEach((x, i) => L.push(`${i ? '🥈' : '🥇'} অভিনন্দন ${tc(x.name)}! ${o.d.name}-এর ${i ? 'সিলভার' : 'গোল্ড'} ডিএসও — ${x.score.toFixed(1)} পয়েন্ট। চমৎকার!`)));
+  W.dss.forEach((t, i) => L.push(`${['🏆', '🥈', '🥉'][i]} অভিনন্দন ${GC.tn(t)} — ডিএসএস ${tc(t.dss)}! টেরিটরিতে ${pos[i]} (${t.score.toFixed(1)} পয়েন্ট)। চমৎকার টিমওয়ার্ক!`));
+  if (W.om) L.push(`⭐ অভিনন্দন ${W.om.om || W.om.name}! ${ML}-এর সেরা ক্যাপ্টেন — অসাধারণ নেতৃত্ব!`);
+  L.push('💪 এবার যারা পারেননি — নতুন মাস, নতুন সুযোগ। পরের মাসে বিজয়ীর তালিকায় থাকুক আপনার নাম!');
+  return L;
+}
+function celebrateHTML() {
+  if (!isOver()) return '';
+  const W = winners(), ML = GC.monLabel(D.month), pos = ['১ম', '২য়', '৩য়'];
+  const me = ((W.dso.some(o => o.x === who.me) || W.dso3.some(o => o.L.includes(who.me))) && 'dso') || (W.dss.includes(who.myTeam) && 'dss') || (who.myDH && who.myDH === W.om && 'om') || '';
+  const msg = who.role === 'admin' ? '👏 সবাইকে অভিনন্দন — নতুন মাসে আরও বড় লক্ষ্যে একসাথে এগিয়ে চলি!'
+    : me ? '🎉 অভিনন্দন! আপনি এ মাসের বিজয়ী — পরের মাসেও মুকুট ধরে রাখুন, সবার জন্য দৃষ্টান্ত হোন!'
+    : '💪 এবার হয়নি তো কী! নতুন মাস, নতুন সুযোগ — প্রতিদিনের লক্ষ্য পূরণ করুন, পরের মাসে বিজয়ীর তালিকায় থাকবে আপনার নাম।';
+  const card = (ph, k, n, s, sc) => `<div class="wc">${ph}<div class="wc-k">${k}</div><div class="wc-n">${esc(n)}</div><div class="wc-s">${esc(s)}</div><div class="wc-p">${sc.toFixed(1)} <small>পয়েন্ট</small></div></div>`;
+  return `<div class="panel celeb"><div class="cel-h"><div><div class="cel-k">${ML} · ${monthDone() ? 'চূড়ান্ত ফলাফল' : 'মাস শেষ'}</div><h2>🏆 অভিনন্দন বিজয়ীদের!</h2></div></div>
+    <div class="wgrid">
+      ${W.dso.map(o => card(phWrap('dso', o.x, o.x.team, 'pod'), '💎 টপ অ্যাচিভার · প্লাটিনাম', tc(o.x.name), o.d.name, o.x.score)
+        + W.dso3.filter(z => z.d === o.d).flatMap(z => z.L).map((x, i) => card(phWrap('dso', x, x.team, 'pod'), i ? '🥈 সিলভার ডিএসও' : '🥇 গোল্ড ডিএসও', tc(x.name), o.d.name, x.score)).join('')).join('')}
+      ${W.dss.map((t, i) => card(phWrap('dss', t, t.team, 'pod'), `${['🏆', '🥈', '🥉'][i]} ${pos[i]} সেরা টিম`, GC.tn(t), 'ডিএসএস ' + tc(t.dss), t.score)).join('')}
+      ${W.om ? card(`<div class="tph pod"><img class="tph-p" src="${photoOf('om', W.om)}" alt=""></div>`, '⭐ সেরা ক্যাপ্টেন', W.om.om || W.om.name, W.om.name, W.om.score) : ''}
+    </div>
+    <div class="cel-m">${msg}</div></div>`;
+}
 function setup() {
   drawMine();
   const di = GC.dayInfo(D, 't', 'dso');
   const top = D.ra.filter(x => house().includes(x.dh)).slice().sort((a, b) => b.score - a.score)[0];
-  $('#mot').innerHTML = '';
+  $('#mot').innerHTML = celebrateHTML();
+  if (celebrateHTML() && !GC.ss('gcd_cel_' + D.month)) { GC.ss('gcd_cel_' + D.month, '1'); setTimeout(() => GC.confetti(140), 300); }
   /* ডিএইচ কার্ড — ডিএসও দেখবে না */
   const c = (ic, k, v, s, cls, href, om) => `<a href="${href}" class="card cc ${cls || ''}"><div class="ic">${ic}</div><div class="cm">${om ? `<div class="omn">${esc(om)}</div>` : ''}<div class="mut ck">${k}</div><div class="mut cs2">${s}</div></div><div class="cr"><b class="big">${v}</b><span class="more">বিস্তারিত →</span></div></a>`;
   const best = top ? `<div class="card cc best"><div class="ic">⭐</div><div class="cm"><div class="mut ck">${who.role === 'admin' ? 'টেরিটরির' : 'হাউজের'} সেরা ডিএসও</div><div class="omn">${esc(tc(top.name))}</div><div class="cs2">${GC.tierChip(1)}</div></div><div class="cr"><b class="big">${top.score.toFixed(1)}</b><span class="mut">পয়েন্ট</span></div></div>` : '';
   $('#cards').innerHTML = best + (isDSO() ? '' : (who.role === 'admin' ? c('🏆', 'টেরিটরি স্কোর', D.territory.score.toFixed(1), 'গাজীপুর সেন্ট্রাল', '', hOM('*')) : '')
     + [...D.dh].sort((a, b) => a.rank - b.rank).map(d => c(d.rank === 1 ? '🏆🥇' : '🏢', esc(d.name) + (d === who.myDH ? ' (আপনার)' : ''), d.score.toFixed(1), 'ডিস্ট্রিবিউটর র‍্যাঙ্ক ' + d.rank + (d.rank === 1 ? ' <span class="tchip pt">💎 প্লাটিনাম · পুরস্কৃত হবেন</span>' : ''), d === who.myDH ? 'me' : '', hOM(d.name), d.om)).join(''));
-  $('#rlh').innerHTML = canRace() ? `<div class="panel rlaunch" style="margin-top:12px"><div class="ph"><h2>🏁 রেস লাইন</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>` : '';
+  $('#rlh').innerHTML = canRace() ? `<div class="panel rlaunch" style="margin-top:12px"><div class="ph"><h2>🏁 রেস লাইন</h2></div>${raceChips()}</div>` : '';
   $('#omP').hidden = $('#dssP').hidden = isDSO();
+  { const h = $('#dssP .ph h2'); if (h && !h.querySelector('.shbtn')) h.insertAdjacentHTML('beforeend', ' ' + shBtn('dss')); }
   $('#fdhW').hidden = isDSO();
   champs(); battle(); daysToast(di.left);
   $('#fdh').innerHTML = '<option value="">সব ডিস্ট্রিবিউটর</option>' + scopeDH().map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
@@ -1463,7 +1668,7 @@ function showcase() {
   /* ৫. টেরিটরি পালস — KPI রিং */
   const pulse = `<div class="panel"><div class="ph"><h2>💓 টেরিটরি পালস</h2><span class="mut">টেরিটরির সামগ্রিক অর্জন · স্কোর ${D.territory.score.toFixed(1)}</span></div><div class="pulse">
     ${LV.om.ps.map(([k, name]) => { const v = Math.round((D.territory[k] || 0) * 100); return `<div class="pr"><div class="pr-r ${v >= 100 ? 'ok' : v < 70 ? 'lo' : ''}" style="--p:${Math.min(100, v)}"><div><b data-count="${v}" data-dec="0">0</b><small>%</small></div></div><span>${name.replace(' (A2M+D2C)', '')}</span></div>`; }).join('')}</div></div>`;
-  const rl = `<div class="panel rlaunch"><div class="ph"><h2>🏁 রেস লাইন</h2><span class="mut">লোগো ও পয়েন্টসহ সবার অবস্থান এক লাইনে</span></div>${raceChips()}</div>`;
+  const rl = `<div class="panel rlaunch"><div class="ph"><h2>🏁 রেস লাইন</h2></div>${raceChips()}</div>`;
   $('#showcase').innerHTML = stage + rl + spot + `<div class="sc-grid"><div>${race}</div><div>${fame}${pulse}</div></div>`;
   countUp($('#showcase'));
   /* স্পটলাইট ঘোরানো */
@@ -1517,8 +1722,10 @@ const RK_ICON = ['🏆🥇', '🥈', '🥉'];
 const rk = n => n <= 3 ? `<span class="rk">${RK_ICON[n - 1]}</span>` : n;
 const DSO_MSG = 'শুভকামনা, এগিয়ে যাও। পারবে তুমিও।';
 const LEADER = '⭐ সেরাদের সেরা-লিডার';
+const CAPTAIN = 'সেরা ক্যাপ্টেন ⭐';
 const label = (lv, rank) => {
-  if (lv === 'dso') { if (rank === 1) { const t = GC.tier(1); return `${t.i} ${t.n} — ${t.note}`; } return rank <= 3 ? '🚀 শীর্ষ ১-এ ওঠার দৌড়ে' : '💪 থামিস না ভাই, যেতে হবে বহুদূর'; }
+  if (lv === 'om' && rank === 1) return CAPTAIN;
+  if (lv === 'dso') { if (rank <= 3) { const t = GC.tier(rank); return `${t.i} ${t.n}${rank > 1 ? ' ডিএসও' : ''} — ${t.note}`; } return '💪 থামিস না ভাই, যেতে হবে বহুদূর'; }
   return rank === 1 ? LEADER : rank <= 3 ? '🚀 সেরাদের সেরা হওয়ার দৌড়ে' : '💪 থামিস না ভাই, যেতে হবে বহুদূর';
 };
 const labelCls = (lv, rank) => rank === 1 ? 'leader' : lv === 'dso' && rank <= 3 ? 'medal' : '';
@@ -1588,7 +1795,7 @@ const cols = lv => LV[lv].ps.map(p => th(p[1], p[2] + ' · ' + p[3] + (isFinite(
 const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine, kind) {
   if (list.length < 3) return '';
-  const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${DSO_MSG}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
+  const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${GC.tierChip(i + 1)}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
   return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${kind === 'dso' ? `<span class="pdp">${phWrap('dso', x, x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : kind === 'dss' && x.team ? `<span class="pdl">${GC.logo(x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
 /* মোবাইল: টেবিলের বদলে ছোট কার্ড-সারি */
@@ -1620,12 +1827,12 @@ function draw() {
     list.forEach(x => {
       if (ss && x.dss !== ss) return; n++;
       const myTeam = mt && mt.dh === x.dh && mt.dss === x.dss;
-      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.dhRank)}${x.dhRank === 2 || x.dhRank === 3 ? `<small>${DSO_MSG}</small>` : ''}</td><td class="l">${x.team ? '<div class="tcell">' + GC.logo(x.team, 'xs') + '<div><b>' + esc(x.team) + '</b><small>' + esc(tc(x.dss)) + '</small></div></div>' : esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
-      mob += mrow(hDSO(x), rk(x.dhRank), `${esc(tc(x.name))}${x === me ? ' <span class="chip">আপনি</span>' : ''} ${GC.tierChip(x.dhRank)}`, (x.team ? esc(x.team) + ' · ' : '') + esc(tc(x.dss)) + ' · টিমে #' + x.teamRank, x, 'dso', (x.dhRank <= 3 ? 'top ' : '') + (x === me || myTeam ? 'mine' : ''), x.dhRank === 2 || x.dhRank === 3 ? `<div class="mr-s" style="color:var(--deep)">${DSO_MSG}</div>` : '');
+      tb2 += `<tr class="go ${x.dhRank <= 3 ? 'top' : ''} ${x === me || myTeam ? 'mine' : ''}" data-h="${hDSO(x)}"><td>${rk(x.dhRank)}</td><td class="l"><a href="${hDSO(x)}">${esc(tc(x.name))}</a>${x === me ? ' <span class="chip">আপনি</span>' : ''}${GC.tierChip(x.dhRank)}</td><td class="l">${x.team ? '<div class="tcell">' + GC.logo(x.team, 'xs') + '<div><b>' + esc(x.team) + '</b><small>' + esc(tc(x.dss)) + '</small></div></div>' : esc(tc(x.dss))}</td>${keys('dso').map(k => GC.pcCell(x[k])).join('')}<td><b>${x.score.toFixed(1)}</b>${bar(x.score)}</td><td>${x.teamRank}</td></tr>`;
+      mob += mrow(hDSO(x), rk(x.dhRank), `${esc(tc(x.name))}${x === me ? ' <span class="chip">আপনি</span>' : ''} ${GC.tierChip(x.dhRank)}`, (x.team ? esc(x.team) + ' · ' : '') + esc(tc(x.dss)) + ' · টিমে #' + x.teamRank, x, 'dso', (x.dhRank <= 3 ? 'top ' : '') + (x === me || myTeam ? 'mine' : ''), '');
     });
     if (!n) return;
     const canP = who.role === 'om' || who.role === 'admin';
-    r += `<div class="dhgrp"><div class="dhh">🏢 ${esc(g)}${canP ? `<button type="button" class="tpres" title="প্রেজেন্ট মোড — হেডার ফ্রিজ করে দেখান" aria-label="প্রেজেন্ট মোড">⛶</button>` : ''}</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div></div>`;
+    r += `<div class="dhgrp"><div class="dhh">🏢 ${esc(g)}${shBtn('dso:' + g) + (canP ? `<button type="button" class="tpres" title="প্রেজেন্ট মোড — হেডার ফ্রিজ করে দেখান" aria-label="প্রেজেন্ট মোড">⛶</button>` : '')}</div>${ss ? '' : podium(list, x => tc(x.name), me, 'dso')}<div class="scroll desk"><table>${tb2}</table></div><div class="mob">${mob}</div></div>`;
   });
   $('#tr').innerHTML = r;
 }
@@ -1633,7 +1840,7 @@ function draw() {
 function tablePresent(grp) {
   closeTP();
   const ov = document.createElement('div'); ov.id = 'tpov'; ov.className = 'tpov';
-  const h = grp.querySelector('.dhh').cloneNode(true); h.querySelectorAll('.tpres').forEach(b => b.remove());
+  const h = grp.querySelector('.dhh').cloneNode(true); h.querySelectorAll('.tpres,.shbtn').forEach(b => b.remove());
   const pod = grp.querySelector('.podium'), tb = grp.querySelector('.scroll.desk table');
   ov.innerHTML = `<div class="tp-top"><div class="tp-bar">${h.outerHTML}<span class="tp-sub">${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span><button type="button" class="tp-x" id="tpx">✕ বন্ধ</button></div>${pod ? pod.outerHTML : ''}</div><div class="tp-scroll"><table>${tb ? tb.innerHTML : ''}</table></div>`;
   document.body.appendChild(ov); document.body.classList.add('tp-on');
