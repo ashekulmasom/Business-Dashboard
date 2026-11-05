@@ -864,6 +864,13 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .shbtn{min-height:30px!important;padding:2px 12px!important;margin-left:8px;border-radius:999px!important;border:1.5px solid var(--pink)!important;background:#fff!important;color:var(--pink)!important;font:700 13px var(--fb)!important;vertical-align:middle;cursor:pointer;white-space:nowrap}
 .shbtn:hover{background:#FFF0F6!important}.shbtn:disabled{opacity:.6}
 .dhh .shbtn{margin-left:auto}.dhh .shbtn+.tpres{margin-left:8px}
+/* celebration: DH-wise DSO boxes + Leaders */
+.wdh{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.wbox{background:rgba(255,255,255,.6);border:1px solid #F3D6E4;border-radius:18px;padding:10px 10px 12px}
+.wbox-h{font:800 14px var(--fh);color:#7E0040;margin:2px 4px 8px;letter-spacing:.02em}
+.wrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wrow.w4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.wdh{grid-template-columns:1fr}}
+@media (max-width:600px){.wrow.w4{grid-template-columns:repeat(2,1fr)}.wrow{gap:6px}.wc{padding:8px 4px}}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -2510,4 +2517,5 @@ $('#csave').onclick = () => {
 })();
 </script>
 </body>
+</html>
 </html>
