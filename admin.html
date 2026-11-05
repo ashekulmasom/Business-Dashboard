@@ -871,6 +871,17 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .wrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wrow.w4{grid-template-columns:repeat(4,1fr)}
 @media (max-width:900px){.wdh{grid-template-columns:1fr}}
 @media (max-width:600px){.wrow.w4{grid-template-columns:repeat(2,1fr)}.wrow{gap:6px}.wc{padding:8px 4px}}
+/* ===== share (camera) button: small, bottom-right ===== */
+.shp{position:relative}
+.panel.shp,.dhgrp.shp{padding-bottom:44px}
+.shbtn{position:absolute;right:12px;bottom:10px;width:32px;height:32px;min-height:32px!important;padding:0!important;margin:0!important;border-radius:50%!important;border:1.5px solid #F0C2D6!important;background:#fff!important;color:#C50059!important;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(197,0,89,.15);z-index:3}
+.shbtn:hover{background:#FFF0F6!important;border-color:#C50059!important}
+.shbtn.busy{animation:shb 1s linear infinite}@keyframes shb{50%{opacity:.4}}
+.dhgrp.shp .shbtn{bottom:6px;right:4px}
+.shmenu{position:absolute;z-index:3000;background:#fff;border-radius:14px;box-shadow:0 12px 30px rgba(58,6,32,.25);padding:6px;display:flex;flex-direction:column;min-width:150px}
+.shmenu button{min-height:38px!important;border:0!important;background:#fff!important;color:var(--plum)!important;text-align:left;padding:6px 12px!important;border-radius:10px!important;font:700 14px var(--fb)!important;cursor:pointer}
+.shmenu button:hover{background:#FFF0F6!important}
+.shtoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:3001;background:#3A0620;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px var(--fb);box-shadow:0 10px 24px rgba(0,0,0,.25)}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -1002,8 +1013,8 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
 
 <section class="panel">
   <details id="logBox">
-    <summary>📊 Login Tracking (who logs in, how many times)</summary>
-    <p class="mut">Every DSO, DSS and OM login is recorded with the login ID, employee type, name, DH, date and time (Bangladesh time). The records are kept in a Google Sheet that belongs to you. Download them here as an Excel file with a Summary sheet and a Details sheet.</p>
+    <summary>Login Tracking</summary>
+    <p class="mut">Every DSO, DSS and OM login is recorded with the login ID, employee type, name, DH, date and time (Bangladesh time), plus how long they stay on the site (time counted only while the page is open and in use). The records are kept in a Google Sheet that belongs to you. Download them here as an Excel file with a Summary sheet and a Details sheet.</p>
     <div class="row">
       <div style="flex:2 1 380px"><label for="logUrl">Google Apps Script Web App URL</label><input id="logUrl" placeholder="https://script.google.com/macros/s/…/exec"></div>
       <div style="flex:1 1 200px"><label for="logKey">Download key (your secret)</label><input id="logKey" placeholder="same KEY as in the script"></div>
@@ -1858,16 +1869,18 @@ $('#showSave').onclick = async () => {
 };
 function monthOptions() {
   renderShow();
-  const cur = E.ym(E.addDays(E.today(), -1));
+  let cur = E.ym(E.addDays(E.today(), -1));
   const set = new Set(IDX.months);
   let m = E.ym(E.today()); for (let i = 0; i < 13; i++) { set.add(m); m = E.prevMonth(m); }
+  const keep = store('gcd_admmon'); if (keep) set.add(keep);
   const list = [...set].sort().reverse();
+  if (keep && list.includes(keep)) cur = keep;
   $('#mon').innerHTML = list.map(x => `<option value="${x}" ${x === cur ? 'selected' : ''}>${monLabel(x)}${IDX.months.includes(x) ? ' · published' : ''}</option>`).join('');
   $('#mon').dataset.v = cur;
 }
 $('#mon').onchange = async e => {
   if (dirty() && !confirm('Changes for this month have not been published yet. Change month anyway?')) { e.target.value = e.target.dataset.v; return; }
-  e.target.dataset.v = e.target.value;
+  e.target.dataset.v = e.target.value; store('gcd_admmon', e.target.value);
   await loadMonth(e.target.value);
 };
 async function loadMonth(m) {
@@ -2271,9 +2284,26 @@ function sheet_() {
   if (!sh) { sh = ss.insertSheet(SHEET); sh.appendRow(['Saved At', 'Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Log In Date', 'Login Time', 'Page', 'Data Month']); sh.setFrozenRows(1); }
   return sh;
 }
+function timeSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName('Time');
+  if (!sh) { sh = ss.insertSheet('Time'); sh.appendRow(['Session', 'Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Date', 'Start', 'Seconds', 'Page', 'Updated']); sh.setFrozenRows(1); }
+  return sh;
+}
 function doPost(e) {
   const d = JSON.parse(e.postData.contents || '{}');
   const lock = LockService.getScriptLock(); lock.waitLock(10000);
+  if (d.kind === 'time') {
+    try {
+      const sh = timeSheet_(), cache = CacheService.getScriptCache();
+      let row = +cache.get(d.sid) || 0;
+      if (!row) { const hit = sh.getRange('A:A').createTextFinder(String(d.sid)).matchEntireCell(true).findNext(); if (hit) row = hit.getRow(); }
+      if (row) { sh.getRange(row, 8).setValue(+d.secs || 0); sh.getRange(row, 10).setValue(new Date()); }
+      else { sh.appendRow([d.sid, "'" + (d.id || ''), d.type || '', d.name || '', d.dh || '', "'" + (d.date || ''), "'" + (d.start || ''), +d.secs || 0, d.page || '', new Date()]); row = sh.getLastRow(); }
+      cache.put(String(d.sid), String(row), 21600);
+    } finally { lock.releaseLock(); }
+    return ContentService.createTextOutput('ok');
+  }
   try { sheet_().appendRow([new Date(), "'" + (d.id || ''), d.type || '', d.name || '', d.dh || '', "'" + (d.date || ''), "'" + (d.time || ''), d.page || '', d.month || '']); }
   finally { lock.releaseLock(); }
   return ContentService.createTextOutput('ok');
@@ -2282,6 +2312,8 @@ function doGet(e) {
   const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
   if (!e.parameter.key || e.parameter.key !== KEY) return out({ error: 'Wrong key' });
   const a = e.parameter.action || 'logins';
+  if (a === 'ver') return out({ v: 2 });
+  if (a === 'time') { const v = timeSheet_().getDataRange().getDisplayValues(); return out({ rows: v.slice(1) }); }
   if (a === 'photolist') {                       // Google Form: Login ID + photo link
     const sh = formSheet_(); if (!sh) return out({ photos: [] });
     const v = sh.getDataRange().getDisplayValues(), h = v[0].map(String);
@@ -2315,9 +2347,11 @@ $('#logSave').onclick = async () => {
   m.className = 'mut'; m.textContent = 'Saving…';
   try {
     const cur = (await ghRead('index.json')) || { v: 1, months: [], latest: '' };
-    cur.logUrl = u; IDX.logUrl = u;
+    let v = 1; if (u) { try { const j = await (await fetch(u + '?action=ver&key=' + encodeURIComponent($('#logKey').value.trim()))).json(); v = +j.v || 1; } catch (e) { } }
+    cur.logUrl = u; IDX.logUrl = u; cur.logV = v; IDX.logV = v;
     await ghPut('index.json', cur, 'Update login tracking URL');
-    m.className = 'ok'; m.textContent = u ? 'Saved. Logins are recorded from now on (site updates in 1–2 minutes).' : 'Tracking turned off.';
+    m.className = v >= 2 || !u ? 'ok' : 'warn';
+    m.textContent = !u ? 'Tracking turned off.' : v >= 2 ? 'Saved. Logins and time on site are recorded from now on (site updates in 1–2 minutes).' : 'Saved — logins are recorded. To also record TIME ON SITE, update the Apps Script code (One-time setup → Copy code → paste → Deploy → Manage deployments → ✏️ Edit → New version → Deploy), then click Save again.';
   } catch (e) { m.className = 'bad'; m.textContent = e.message; }
 };
 $('#logTest').onclick = async () => {
@@ -2345,17 +2379,29 @@ $('#logDl').onclick = async () => {
     const all = (j.rows || []).map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: String(x[2] || ''), name: x[3], dh: x[4], date: nd(x[5]) || nd(x[0]), time: String(x[6] || '').replace(/^'/, '') }));
     const rows = all.filter(x => x.date && (!fr || x.date >= fr) && (!to || x.date <= to))
       .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
-    makeLogXlsx(rows, fr, to);
+    let trows = [];
+    try { const tj = await (await fetch(u + (u.includes('?') ? '&' : '?') + 'action=time&key=' + encodeURIComponent(k))).json(); if (tj.rows) trows = tj.rows.map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: String(x[2] || ''), name: x[3], dh: x[4], date: nd(x[5]), secs: +x[7] || 0 })).filter(x => x.date && x.type); } catch (e) { }
+    makeLogXlsx(rows, fr, to, trows);
     m.className = rows.length ? 'ok' : 'bad';
     m.textContent = rows.length ? `Downloaded ${rows.length} login records (${all.length} in the sheet in total).` : `The Google Sheet has ${all.length} login record(s)${all.length ? ', but none in the selected dates — clear the From/To dates and try again' : ' so far. Logins are recorded only after the new site files are uploaded and someone logs in fresh (Sign out, then log in again). Use “Send test entry” to check the connection'}.`;
   } catch (e) { m.className = 'bad'; m.textContent = 'Could not download: ' + e.message + ' — check the URL, the key and that the script is deployed with access “Anyone”.'; }
 };
-function makeLogXlsx(rows, fr, to) {
-  const key = x => x.type + '|' + (x.type === 'DSO' ? x.id : x.name + '|' + x.dh);
+function makeLogXlsx(rows, fr, to, trows) {
+  trows = trows || [];
+  const key = x => x.type === 'DSO' ? 'DSO|' + String(x.id).replace(/\D/g, '').slice(-10) : x.type + '|' + String(x.name || '').toUpperCase() + '|' + x.dh;
   const P = new Map();
+  const dk = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka' }).format(new Date()), mk = dk.slice(0, 7);
+  const inP = d => (!fr || d >= fr) && (!to || d <= to);
   rows.forEach(x => { const k = key(x); let p = P.get(k); if (!p) { p = { id: x.id, type: x.type, name: x.name, dh: x.dh, n: 0, days: new Set(), first: x.date + ' ' + x.time, last: x.date + ' ' + x.time }; P.set(k, p); }
     p.n++; p.days.add(x.date); const t = x.date + ' ' + x.time; if (t < p.first) p.first = t; if (t > p.last) p.last = t; });
-  const people = [...P.values()].sort((a, b) => b.n - a.n || a.type.localeCompare(b.type));
+  /* সাইটে সময় (মিনিট) */
+  const TD = new Map();
+  trows.forEach(x => { const k = key(x); let p = P.get(k); if (!p) { p = { id: x.id, type: x.type, name: x.name, dh: x.dh, n: 0, days: new Set(), first: '', last: '' }; P.set(k, p); }
+    p.tToday = (p.tToday || 0) + (x.date === dk ? x.secs : 0); p.tMtd = (p.tMtd || 0) + (x.date.slice(0, 7) === mk && x.date <= dk ? x.secs : 0);
+    if (inP(x.date)) { p.tPer = (p.tPer || 0) + x.secs; (p.tDays = p.tDays || new Set()).add(x.date);
+      const dkk = x.date + '|' + k; const o = TD.get(dkk) || { date: x.date, id: x.id, type: x.type, name: x.name, dh: x.dh, secs: 0, v: 0 }; o.secs += x.secs; o.v++; TD.set(dkk, o); } });
+  const mn = s => Math.round((s || 0) / 6) / 10;
+  const people = [...P.values()].sort((a, b) => b.n - a.n || (b.tPer || 0) - (a.tPer || 0) || a.type.localeCompare(b.type));
   /* রোস্টার — কে একবারও ঢোকেননি */
   const roster = [];
   if (S && S.W) {
@@ -2370,14 +2416,15 @@ function makeLogXlsx(rows, fr, to) {
   A.push(['Achievers’ Club — Login Report']);
   A.push(['Period', (fr || 'Start') + ' to ' + (to || 'Today'), '', 'Generated', new Date().toLocaleString('en-GB', { timeZone: 'Asia/Dhaka' })]);
   A.push([]);
-  A.push(['EMP Type', 'Total Logins', 'People Logged In', 'Total People (roster)', 'Never Logged In', 'Avg Logins / Person']);
-  T.forEach(t => { const pl = people.filter(p => p.type === t), tot = pl.reduce((s, p) => s + p.n, 0), rs = roster.filter(p => p.type === t).length;
-    A.push([t, tot, pl.length, rs || '', rs ? never.filter(p => p.type === t).length : '', pl.length ? +(tot / pl.length).toFixed(1) : 0]); });
-  A.push(['Total', rows.length, people.length, roster.length || '', roster.length ? never.length : '', people.length ? +(rows.length / people.length).toFixed(1) : 0]);
+  A.push(['EMP Type', 'Total Logins', 'People Logged In', 'Total People (roster)', 'Never Logged In', 'Avg Logins / Person', 'Time Today (min)', 'Time MTD (min)', 'Time in Period (min)']);
+  const tsum = (pl, f) => mn(pl.reduce((s, p) => s + (p[f] || 0), 0));
+  T.forEach(t => { const pl = people.filter(p => p.type === t), lg = pl.filter(p => p.n), tot = pl.reduce((s, p) => s + p.n, 0), rs = roster.filter(p => p.type === t).length;
+    A.push([t, tot, lg.length, rs || '', rs ? never.filter(p => p.type === t).length : '', lg.length ? +(tot / lg.length).toFixed(1) : 0, tsum(pl, 'tToday'), tsum(pl, 'tMtd'), tsum(pl, 'tPer')]); });
+  { const lg = people.filter(p => p.n); A.push(['Total', rows.length, lg.length, roster.length || '', roster.length ? never.length : '', lg.length ? +(rows.length / lg.length).toFixed(1) : 0, tsum(people, 'tToday'), tsum(people, 'tMtd'), tsum(people, 'tPer')]); }
   A.push([]);
   A.push(['Logins per person (most active first)']);
-  A.push(['Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Total Logins', 'Days Active', 'First Login', 'Last Login']);
-  people.forEach(p => A.push([p.id, p.type, p.name, p.dh, p.n, p.days.size, p.first, p.last]));
+  A.push(['Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Total Logins', 'Days Active', 'First Login', 'Last Login', 'Time Today (min)', 'Time MTD (min)', 'Time in Period (min)', 'Avg / Active Day (min)']);
+  people.forEach(p => A.push([p.id, p.type, p.name, p.dh, p.n, p.days.size, p.first, p.last, mn(p.tToday), mn(p.tMtd), mn(p.tPer), p.tDays && p.tDays.size ? mn(p.tPer / p.tDays.size) : 0]));
   if (roster.length) { A.push([]); A.push(['Never logged in (' + never.length + ')']); A.push(['Login ID', 'EMP Type', 'EMP Name', 'DH Name']); never.forEach(p => A.push([p.id, p.type, p.name, p.dh])); }
   const byDay = {}; rows.forEach(x => { byDay[x.date] = byDay[x.date] || { DSO: 0, DSS: 0, OM: 0 }; byDay[x.date][x.type] = (byDay[x.date][x.type] || 0) + 1; });
   const Dd = [['Log In Date', 'DSO', 'DSS', 'OM', 'Total']].concat(Object.keys(byDay).sort().reverse().map(d => [d, byDay[d].DSO, byDay[d].DSS, byDay[d].OM, byDay[d].DSO + byDay[d].DSS + byDay[d].OM]));
@@ -2386,7 +2433,10 @@ function makeLogXlsx(rows, fr, to) {
   const s1 = XLSX.utils.aoa_to_sheet(A); s1['!cols'] = [{ wch: 18 }, { wch: 12 }, { wch: 26 }, { wch: 36 }, { wch: 14 }, { wch: 12 }, { wch: 20 }, { wch: 20 }];
   const s2 = XLSX.utils.aoa_to_sheet(Det); s2['!cols'] = [{ wch: 18 }, { wch: 10 }, { wch: 28 }, { wch: 12 }, { wch: 13 }, { wch: 38 }]; s2['!autofilter'] = { ref: 'A1:F' + Det.length };
   const s3 = XLSX.utils.aoa_to_sheet(Dd); s3['!cols'] = [{ wch: 13 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }];
-  XLSX.utils.book_append_sheet(wb, s1, 'Summary'); XLSX.utils.book_append_sheet(wb, s2, 'Details'); XLSX.utils.book_append_sheet(wb, s3, 'Daily');
+  const Tm = [['Date', 'Login ID', 'EMP Type', 'EMP Name', 'DH Name', 'Minutes on Site', 'Visits']].concat([...TD.values()].sort((a, b) => b.date.localeCompare(a.date) || b.secs - a.secs).map(o => [o.date, o.id, o.type, o.name, o.dh, mn(o.secs), o.v]));
+  const s4 = XLSX.utils.aoa_to_sheet(Tm); s4['!cols'] = [{ wch: 12 }, { wch: 18 }, { wch: 10 }, { wch: 28 }, { wch: 38 }, { wch: 15 }, { wch: 8 }]; s4['!autofilter'] = { ref: 'A1:G' + Tm.length };
+  s1['!cols'] = s1['!cols'].concat([{ wch: 16 }, { wch: 15 }, { wch: 19 }, { wch: 20 }]);
+  XLSX.utils.book_append_sheet(wb, s1, 'Summary'); XLSX.utils.book_append_sheet(wb, s2, 'Details'); XLSX.utils.book_append_sheet(wb, s3, 'Daily'); XLSX.utils.book_append_sheet(wb, s4, 'Time Spent');
   XLSX.writeFile(wb, 'Login_Report_' + new Date().toISOString().slice(0, 10) + '.xlsx');
 }
 function renderQuotes() { const q = (IDX.quotes && IDX.quotes.length) ? IDX.quotes : QUOTES; $('#qtext').value = q.join('\n'); }
