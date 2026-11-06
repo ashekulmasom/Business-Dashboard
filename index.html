@@ -1524,6 +1524,12 @@ const SH = (() => {
     const omC = om && { k: '🏅 টপ ওএম', n: om.om || om.name, s: om.name, sc: om.score, ph: photoOf('om', om), lg: '', tag: 'সেরা ক্যাপ্টেন ⭐' };
     const grad = (x, y, w, h, a, b2, c) => { const gr = g.createLinearGradient(x, y, x + w, y + h); gr.addColorStop(0, a); gr.addColorStop(.5, b2); gr.addColorStop(1, c); return gr; };
     let g;
+    /* লেখা ছোট করে পুরোটা আঁটানো (প্রয়োজনে ২ লাইন) */
+    const fitText = (t, x, y, mw, wt, sz, min) => { t = String(t || ''); let z = sz; g.font = f(wt, z); while (z > min && g.measureText(t).width > mw) { z -= .5; g.font = f(wt, z); }
+      if (g.measureText(t).width <= mw) { g.fillText(t, x, y); return 0; }
+      const w = t.split(' '); let a = '', i = 0; while (i < w.length && g.measureText((a ? a + ' ' : '') + w[i]).width <= mw) a += (a ? ' ' : '') + w[i++];
+      const b = w.slice(i).join(' '); g.fillText(a || fit(g, t, mw), x, y); g.fillText(fit(g, b, mw), x, y + z * 1.15); return z * 1.15; };
+    const fitOne = (t, x, y, mw, wt, sz, min) => { t = String(t || ''); let z = sz; g.font = f(wt, z); while (z > min && g.measureText(t).width > mw) { z -= .5; g.font = f(wt, z); } g.fillText(fit(g, t, mw), x, y); };
     const stripes = (x, y, w, h, r) => { g.save(); rr(g, x, y, w, h, r); g.clip(); g.globalAlpha = .06; g.strokeStyle = '#fff'; g.lineWidth = 2; for (let k = -h; k < w; k += 16) { g.beginPath(); g.moveTo(x + k, y + h); g.lineTo(x + k + h, y); g.stroke(); } g.restore(); };
     const pill = (t, cx, y, sz, bg, fg, al) => { g.font = f(800, sz); const tw = g.measureText(t).width + sz * 1.6, h = sz * 1.75, x = al === 'left' ? cx : cx - tw / 2; rr(g, x, y, tw, h, h / 2); g.fillStyle = bg; g.fill(); g.fillStyle = fg; g.textAlign = 'left'; g.fillText(t, x + sz * .8, y + h * .7); return tw; };
     const ptPill = (sc, cx, y, sz, al, dark) => pill(`${sc.toFixed(1)} পয়েন্ট`, cx, y, sz, dark ? 'rgba(255,255,255,.16)' : '#FFF0F6', dark ? '#fff' : C.pink, al);
@@ -1587,17 +1593,17 @@ const SH = (() => {
         g.save(); g.shadowColor = 'rgba(122,12,67,.25)'; g.shadowBlur = 24; rr(g, x, y0, half, ch, 26); g.fillStyle = '#fff'; g.fill(); g.restore();
         g.save(); rr(g, x, y0, half, 8, 4); g.fillStyle = C.gold; g.fill(); g.restore();
         const cx = x + half / 2; g.textAlign = 'center'; g.fillStyle = C.pink; g.font = f(800, 16); g.fillText('💎 টপ অ্যাচিভার', cx, y0 + 44);
-        g.fillStyle = C.mut; g.font = f(700, 13); g.fillText(fit(g, c.k, half - 30), cx, y0 + 66);
+        g.fillStyle = C.mut; fitOne(c.k, cx, y0 + 66, half - 30, 700, 13, 10);
         await photo(c, cx, y0 + 190, 100, C.gold, 60);
-        g.textAlign = 'center'; g.fillStyle = C.plum; g.font = f(800, 28); g.fillText(fit(g, c.n, half - 24), cx, y0 + 340);
-        g.fillStyle = C.mut; g.font = f(500, 14); g.fillText(fit(g, c.s, half - 24), cx, y0 + 368);
+        g.textAlign = 'center'; g.fillStyle = C.plum; const dy = fitText(c.n, cx, y0 + 340, half - 28, 800, 28, 20);
+        g.fillStyle = C.mut; fitOne(c.s, cx, y0 + 368 + dy, half - 28, 500, 14, 11);
         pill('💎 প্লাটিনাম', cx, y0 + 396, 16, C.gold, C.plum); ptPill(c.sc, cx, y0 + 450, 17); }
       for (const [i, c] of [dssC, omC].entries()) { if (!c) continue; const x = i ? W - 30 - sideW : 30, y = y0 + 60, h = ch - 60;
         g.save(); rr(g, x, y, sideW, h, 22); g.fillStyle = grad(x, y, sideW, h, '#3A0620', '#8E0047', '#E3147A'); g.fill(); g.restore(); stripes(x, y, sideW, h, 22);
         const cx = x + sideW / 2; g.textAlign = 'center'; g.fillStyle = '#FFE27A'; g.font = f(800, 14); g.fillText(c.k, cx, y + 34);
         await photo(c, cx, y + 130, 70, C.gold, 44);
-        g.textAlign = 'center'; g.fillStyle = '#FFE27A'; g.font = f(800, 21); g.fillText(fit(g, c.n, sideW - 20), cx, y + 245);
-        g.fillStyle = 'rgba(255,255,255,.85)'; g.font = f(500, 13); g.fillText(fit(g, c.s, sideW - 20), cx, y + 270);
+        g.textAlign = 'center'; g.fillStyle = '#FFE27A'; const dy2 = fitText(c.n, cx, y + 245, sideW - 24, 800, 21, 15);
+        g.fillStyle = 'rgba(255,255,255,.85)'; fitOne(c.s, cx, y + 270 + dy2, sideW - 24, 500, 13, 10);
         pill(c.tag, cx, y + 300, 13, C.gold, C.plum); ptPill(c.sc, cx, y + 346, 14, 'center', true); }
       foot(H);
     }
@@ -2380,4 +2386,5 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
+</html>
 </html>
