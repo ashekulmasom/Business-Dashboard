@@ -938,6 +938,22 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
   .tcw .tctag{font-size:12.5px}
   .tcw .tph.tcb{margin:0!important}
 }
+/* DSS: team logo main, DSS photo as badge */
+.tteam .tlgw{display:grid;place-items:center;background:#fff}
+.tteam .tlgw .tlogo{width:84%!important;height:84%!important;filter:none!important}
+.tteam .tph-mini{display:block;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);width:30px;height:30px}
+.tph.pod.tteam .tph-mini{width:32px;height:32px}.p1 .tph.pod.tteam .tph-mini{width:38px;height:38px}
+.tph.tcm.tteam .tph-mini{width:46px;height:46px}.tph.big.tteam .tph-mini{width:54px;height:54px}
+@media (max-width:600px){.tph.pod.tteam .tph-mini{width:24px;height:24px}.tph.tcm.tteam .tph-mini{width:34px;height:34px}}
+/* DSS team logo: free (no circle frame), like before */
+.tteam .tlgw{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible}
+.tteam .tlgw .tlogo{width:100%!important;height:100%!important;filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 6px 12px rgba(0,0,0,.25))!important}
+.tteam .tph-l{right:-10px;bottom:-6px}
+.tteam .tlgw{overflow:hidden!important;display:grid!important;place-items:center}
+.tteam .tlgw .tlogo{max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+.tteam .tph-l{right:-16px!important;bottom:-10px!important}
+.tph.tcm.tteam{margin-bottom:16px!important}
+.tteam .tlgw{overflow:visible!important}.tph.pod.tteam .tph-p{width:76px;height:76px}.p1 .tph.pod.tteam .tph-p{width:96px;height:96px}@media (max-width:600px){.tph.pod.tteam .tph-p{width:58px;height:58px}.p1 .tph.pod.tteam .tph-p{width:70px;height:70px}}
 </style>
 </head>
 <body>
