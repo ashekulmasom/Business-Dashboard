@@ -897,6 +897,47 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .kdrop .kmo{min-height:36px!important;border:0!important;background:#fff!important;color:var(--plum)!important;text-align:left;padding:6px 12px!important;border-radius:10px!important;font:700 14px var(--fb)!important;cursor:pointer;box-shadow:none!important}
 .kdrop .kmo:hover{background:#FFF0F6!important}.kdrop .kmo.on{background:#FDE4EF!important;color:var(--pink)!important}
 .kdrop{max-height:70vh;overflow-y:auto}
+/* ===== TOP ACHIEVERS — design C (podium wall) ===== */
+.tcwall{background:linear-gradient(180deg,#3A0620 0,#8E0047 170px,#E3147A 230px,#fff 231px)!important;border:0!important}
+.tcwall>.ph h2{color:#FFE27A}.tcwall>.ph .mut{color:rgba(255,255,255,.85)}
+.tcg{display:grid;grid-template-columns:1fr 1.15fr 1.15fr 1fr;gap:16px;align-items:end;margin-top:8px}
+.tcg a{text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;border-radius:24px;padding:18px 14px 18px;transition:transform .2s}
+.tcg a:hover{transform:translateY(-3px)}
+.tcw{background:#fff;border-top:7px solid var(--gold);box-shadow:0 14px 34px rgba(122,12,67,.22);min-height:470px}
+.tcp{background:linear-gradient(160deg,#3A0620,#8E0047 55%,#E3147A);box-shadow:0 10px 26px rgba(122,12,67,.22);min-height:400px;position:relative;overflow:hidden}
+.tcp::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 16px)}
+.tcp>*{position:relative;z-index:1}
+.tck{font:800 14px var(--fh);color:var(--pink)}.tcp .tck{color:#FFE27A}
+.tcd{font-size:12px;font-weight:700;color:var(--mut);margin-top:2px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tph.tcb{margin:14px auto 12px}.tph.tcb .tph-p{width:150px;height:150px}.tph.tcb .tph-l .tlogo{width:56px;height:56px}.tph.tcb .tph-l{right:-6px;bottom:-4px}
+.tph.tcm{margin:14px auto 12px}.tph.tcm .tph-p{width:108px;height:108px}.tph.tcm .tph-l .tlogo{width:42px;height:42px}
+.tcn{font:800 24px/1.2 var(--fh);color:var(--plum);max-width:100%}.tcp .tcn{color:#FFE27A;font-size:20px}
+.tcs{font-size:12.5px;color:var(--mut);margin:4px 0 10px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tcp .tcs{color:rgba(255,255,255,.85)}
+.tctag{display:inline-block;background:var(--gold);color:#3A0620;font:800 13.5px var(--fh);border-radius:999px;padding:3px 14px;margin-bottom:8px}
+.tcpt{display:inline-block;background:#FFF0F6;color:var(--pink);font:800 15px var(--fh);border-radius:999px;padding:3px 14px}
+.tcp .tcpt{background:rgba(255,255,255,.16);color:#fff;font-size:14px}
+@media (max-width:900px){
+  .tcwall{background:linear-gradient(180deg,#3A0620 0,#8E0047 120px,#E3147A 170px,#fff 171px)!important}
+  .tcg{grid-template-columns:1fr 1fr;gap:10px}
+  .tcw{grid-column:span 2;min-height:0;flex-direction:row!important;flex-wrap:wrap;text-align:left!important;align-items:center!important;padding:14px!important;gap:0 14px}
+  .tcw .tck,.tcw .tcd{width:100%}
+  .tcw .tph.tcb{margin:8px 0;order:2}.tcw .tph.tcb .tph-p{width:96px;height:96px}.tcw .tph.tcb .tph-l .tlogo{width:38px;height:38px}
+  .tcw>.tcn,.tcw>.tcs,.tcw>.tctag,.tcw>.tcpt{order:3}
+  .tcw{display:grid!important;grid-template-columns:110px 1fr;grid-template-areas:"k k" "d d" "p n" "p s" "p t";}
+  .tcw .tck{grid-area:k}.tcw .tcd{grid-area:d}.tcw .tph{grid-area:p;align-self:center}
+  .tcw .tcn{grid-area:n;font-size:20px;align-self:end}.tcw .tcs{grid-area:s;margin:2px 0 6px;white-space:normal}
+  .tcw .tctag,.tcw .tcpt{grid-area:t;justify-self:start;margin:0}
+  .tcw .tcpt{margin-left:110px}
+  .tcp{min-height:0;padding:12px 8px!important}.tcp .tcn{font-size:16px}.tph.tcm .tph-p{width:76px;height:76px}.tph.tcm .tph-l .tlogo{width:30px;height:30px}
+  .tcp .tctag{font-size:11.5px;padding:2px 10px}.tcp .tcpt{font-size:12.5px}
+}
+@media (max-width:900px){
+  .tcw{order:1;grid-template-areas:"k k" "d d" "p n" "p s" "p t" "p q"!important;row-gap:4px}
+  .tcp{order:2}
+  .tcw .tcpt{grid-area:q;margin:0!important;justify-self:start;font-size:14px}
+  .tcw .tctag{font-size:12.5px}
+  .tcw .tph.tcb{margin:0!important}
+}
 </style>
 </head>
 <body>
@@ -1230,7 +1271,7 @@ function ticker(IDX, wins) {
 }
 /* লেভেল শুধু শীর্ষ ৩ জনের: ১ম প্লাটিনাম (পুরস্কৃত হবেন), ২য় গোল্ড, ৩য় সিলভার */
 function tier(rank) {
-  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥇' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥈' } : null;
+  return rank === 1 ? { n: 'প্লাটিনাম', c: 'pt', i: '💎' } : rank === 2 ? { n: 'গোল্ড', c: 'gd', i: '🥈' } : rank === 3 ? { n: 'সিলভার', c: 'sv', i: '🥉' } : null;
 }
 const tierChip = rank => { const t = rank >= 1 && rank <= 3 ? tier(rank) : null;   // ডিএসও: ১ম প্লাটিনাম, ২য় গোল্ড, ৩য় সিলভার
    return t ? `<span class="tchip ${t.c}">${t.i} ${t.n}${t.note ? ' · ' + t.note : ''}</span>` : ''; };
@@ -1464,5 +1505,4 @@ $('#xl').onclick = () => {
 })();
 </script>
 </body>
-</html>
 </html>
