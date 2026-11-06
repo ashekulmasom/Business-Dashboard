@@ -937,6 +937,22 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
   .tcw .tctag{font-size:12.5px}
   .tcw .tph.tcb{margin:0!important}
 }
+/* DSS: team logo main, DSS photo as badge */
+.tteam .tlgw{display:grid;place-items:center;background:#fff}
+.tteam .tlgw .tlogo{width:84%!important;height:84%!important;filter:none!important}
+.tteam .tph-mini{display:block;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);width:30px;height:30px}
+.tph.pod.tteam .tph-mini{width:32px;height:32px}.p1 .tph.pod.tteam .tph-mini{width:38px;height:38px}
+.tph.tcm.tteam .tph-mini{width:46px;height:46px}.tph.big.tteam .tph-mini{width:54px;height:54px}
+@media (max-width:600px){.tph.pod.tteam .tph-mini{width:24px;height:24px}.tph.tcm.tteam .tph-mini{width:34px;height:34px}}
+/* DSS team logo: free (no circle frame), like before */
+.tteam .tlgw{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible}
+.tteam .tlgw .tlogo{width:100%!important;height:100%!important;filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 6px 12px rgba(0,0,0,.25))!important}
+.tteam .tph-l{right:-10px;bottom:-6px}
+.tteam .tlgw{overflow:hidden!important;display:grid!important;place-items:center}
+.tteam .tlgw .tlogo{max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+.tteam .tph-l{right:-16px!important;bottom:-10px!important}
+.tph.tcm.tteam{margin-bottom:16px!important}
+.tteam .tlgw{overflow:visible!important}.tph.pod.tteam .tph-p{width:76px;height:76px}.p1 .tph.pod.tteam .tph-p{width:96px;height:96px}@media (max-width:600px){.tph.pod.tteam .tph-p{width:58px;height:58px}.p1 .tph.pod.tteam .tph-p{width:70px;height:70px}}
 </style>
 </head>
 <body>
@@ -1400,6 +1416,7 @@ let PHM = {};
 const phKey = (kind, x) => kind === 'dso' ? 'dso:' + String(x.wallet || '').replace(/\D/g, '').slice(-10) : kind === 'dss' ? 'dss:' + (x.dh + '|' + x.dss).trim().toUpperCase() : 'om:' + x.name;
 const photoOf = (kind, x) => PHM[phKey(kind, x)] || (kind === 'om' ? GC.omPhoto(IDX, x.name) : GC.OMAV);
 const phWrap = (kind, x, team, cls) => `<div class="tph ${cls}"><img class="tph-p" src="${photoOf(kind, x)}" alt="">${team ? `<span class="tph-l">${GC.logo(team)}</span>` : ''}</div>`;
+const teamWrap = (x, cls) => x.team ? `<div class="tph ${cls} tteam"><div class="tph-p tlgw">${GC.logo(x.team)}</div><span class="tph-l"><img class="tph-mini" src="${photoOf('dss', x)}" alt=""></span></div>` : phWrap('dss', x, x.team, cls);
 async function loadPhotos() { if (!who) return; const j = await GC.getJSON('photos.json'); if (j && j.map) { PHM = j.map; try { draw(); if ($('#mine .tapage')) drawMine(); if ($('#mot .celeb')) $('#mot').innerHTML = celebrateHTML(); } catch (e) { } } }
 /* =====================================================================
    ছবি হিসেবে শেয়ার (WhatsApp) — ক্যানভাসে আঁকা, উচ্চ রেজোলিউশন
@@ -1418,6 +1435,11 @@ const SH = (() => {
     g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fillStyle = '#fff'; g.fill(); g.clip();
     if (im) { const s = Math.min(im.width, im.height); g.drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, cx - r, cy - r, r * 2, r * 2); }
     g.restore();
+  }
+  /* টিম: বড় লোগো + ছোট ডিএসএস ছবি ব্যাজ */
+  function teamAt(g, lg, im, cx, cy, r, ring, bs) {
+    if (lg) { g.save(); g.shadowColor = 'rgba(0,0,0,.28)'; g.shadowBlur = 14; g.shadowOffsetY = 5; logoAt(g, lg, cx, cy, r * 2.15); g.restore(); }
+    const bx = cx + r * .98, by = cy + r * .9, br = (bs || r * .36) * .85; circ(g, im, bx, by, br, '#fff');
   }
   function logoAt(g, im, cx, cy, s) { if (!im) return; const k = Math.min(s / im.width, s / im.height); g.drawImage(im, cx - im.width * k / 2, cy - im.height * k / 2, im.width * k, im.height * k); }
   const pcCol = v => v >= 100 ? C.ok : v < 50 ? C.lo : C.ink;
@@ -1505,7 +1527,7 @@ const SH = (() => {
     const stripes = (x, y, w, h, r) => { g.save(); rr(g, x, y, w, h, r); g.clip(); g.globalAlpha = .06; g.strokeStyle = '#fff'; g.lineWidth = 2; for (let k = -h; k < w; k += 16) { g.beginPath(); g.moveTo(x + k, y + h); g.lineTo(x + k + h, y); g.stroke(); } g.restore(); };
     const pill = (t, cx, y, sz, bg, fg, al) => { g.font = f(800, sz); const tw = g.measureText(t).width + sz * 1.6, h = sz * 1.75, x = al === 'left' ? cx : cx - tw / 2; rr(g, x, y, tw, h, h / 2); g.fillStyle = bg; g.fill(); g.fillStyle = fg; g.textAlign = 'left'; g.fillText(t, x + sz * .8, y + h * .7); return tw; };
     const ptPill = (sc, cx, y, sz, al, dark) => pill(`${sc.toFixed(1)} পয়েন্ট`, cx, y, sz, dark ? 'rgba(255,255,255,.16)' : '#FFF0F6', dark ? '#fff' : C.pink, al);
-    const photo = async (c, cx, cy, r, ring, lgS) => { const [im, lg] = await Promise.all([load(c.ph), load(c.lg)]); circ(g, im, cx, cy, r, ring); if (lg) { const s = lgS || r * .62; g.beginPath(); g.arc(cx + r * .74, cy + r * .74, s * .56, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lg, cx + r * .74, cy + r * .74, s); } };
+    const photo = async (c, cx, cy, r, ring, lgS) => { const [im, lg] = await Promise.all([load(c.ph), load(c.lg)]); if (c.team) { teamAt(g, lg, im, cx, cy, r, ring, (lgS || r * .62) * .56); return; } circ(g, im, cx, cy, r, ring); if (lg) { const s = lgS || r * .62; g.beginPath(); g.arc(cx + r * .74, cy + r * .74, s * .56, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lg, cx + r * .74, cy + r * .74, s); } };
     const head = async (Wd, dark) => { const lg0 = await load('logo.jpg'); if (lg0) { g.save(); rr(g, 30, 26, 104, 76, 16); g.fillStyle = '#fff'; g.fill(); g.clip(); logoAt(g, lg0, 82, 64, 94); g.restore(); }
       g.textAlign = 'left'; g.fillStyle = dark ? '#FFE27A' : C.plum; g.font = f(800, 34); g.fillText('⭐ TOP ACHIEVERS', 152, 66);
       g.fillStyle = dark ? 'rgba(255,255,255,.85)' : C.mut; g.font = f(600, 17); g.fillText(`গাজীপুর সেন্ট্রাল · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}`, 152, 94); };
@@ -1626,7 +1648,7 @@ const SH = (() => {
   async function win() {
     const Wn = winners(), ML = GC.monLabel(D.month), pos = ['১ম', '২য়', '৩য়'], nm = ['💎 প্লাটিনাম', '🥈 গোল্ড', '🥉 সিলভার'];
     const groups = Wn.dso.map(o => ({ d: o.d, L: [o.x].concat((Wn.dso3.find(z => z.d === o.d) || { L: [] }).L) }));
-    const lead = Wn.dss.map((t, i) => ({ k: `${['🏆', '🥈', '🥉'][i]} ${pos[i]} সেরা টিম`, n: GC.tn(t), s: 'ডিএসএস ' + GC.tc(t.dss), sc: t.score, ph: photoOf('dss', t), lg: logoSrc(t.team) }));
+    const lead = Wn.dss.map((t, i) => ({ team: 1, k: `${['🏆', '🥈', '🥉'][i]} ${pos[i]} সেরা টিম`, n: GC.tn(t), s: 'ডিএসএস ' + GC.tc(t.dss), sc: t.score, ph: photoOf('dss', t), lg: logoSrc(t.team) }));
     if (Wn.om) lead.push({ k: '⭐ সেরা ক্যাপ্টেন', n: Wn.om.om || Wn.om.name, s: Wn.om.name, sc: Wn.om.score, ph: photoOf('om', Wn.om), lg: '' });
     const cardH = 250, perRow = 2, dhRows = Math.ceil(groups.length / perRow), H = 190 + 70 + dhRows * (cardH + 70) + (cardH + 70) + 90 + 54;
     const [cv, g] = canvas(H);
@@ -1634,8 +1656,8 @@ const SH = (() => {
     const card = async (x, y, w, c) => {
       g.save(); rr(g, x, y, w, cardH, 18); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = C.line; g.lineWidth = 1.5; g.stroke(); g.restore();
       const cx = x + w / 2, [im, lg] = await Promise.all([load(c.ph), load(c.lg)]);
-      circ(g, im, cx, y + 70, 48, C.gold);
-      if (lg) { g.beginPath(); g.arc(cx + 42, y + 104, 19, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lg, cx + 42, y + 104, 34); }
+      if (c.team) teamAt(g, lg, im, cx, y + 70, 48, C.gold, 20); else circ(g, im, cx, y + 70, 48, C.gold);
+      if (lg && !c.team) { g.beginPath(); g.arc(cx + 42, y + 104, 19, 0, 7); g.fillStyle = '#fff'; g.fill(); logoAt(g, lg, cx + 42, y + 104, 34); }
       g.textAlign = 'center'; g.fillStyle = '#B07800'; g.font = f(800, 15); g.fillText(fit(g, c.k, w - 16), cx, y + 148);
       g.fillStyle = C.ink; g.font = f(800, 18); g.fillText(fit(g, c.n, w - 16), cx, y + 175);
       g.fillStyle = C.mut; g.font = f(500, 13); g.fillText(fit(g, c.s, w - 16), cx, y + 197);
@@ -1885,7 +1907,7 @@ function celebrateHTML() {
   return `<div class="panel celeb shp"><div class="cel-h"><div><div class="cel-k">${ML} · ${monthDone() ? 'চূড়ান্ত ফলাফল' : 'মাস শেষ'}</div><h2>🏆 অভিনন্দন বিজয়ীদের!</h2></div></div>
     <div class="wdh">${W.dso.map(dhBox).join('')}</div>
     <div class="wbox"><div class="wbox-h">⭐ Leaders</div><div class="wrow w4">
-      ${W.dss.map((t, i) => card(phWrap('dss', t, t.team, 'pod'), `${['🏆', '🥈', '🥉'][i]} ${pos[i]} সেরা টিম`, GC.tn(t), 'ডিএসএস ' + tc(t.dss), t.score)).join('')}
+      ${W.dss.map((t, i) => card(teamWrap(t, 'pod'), `${['🏆', '🥈', '🥉'][i]} ${pos[i]} সেরা টিম`, GC.tn(t), 'ডিএসএস ' + tc(t.dss), t.score)).join('')}
       ${W.om ? card(`<div class="tph pod"><img class="tph-p" src="${photoOf('om', W.om)}" alt=""></div>`, '⭐ সেরা ক্যাপ্টেন', W.om.om || W.om.name, W.om.name, W.om.score) : ''}
     </div></div>
     <div class="cel-m">${msg}</div>${shBtn('win')}</div>`;
@@ -2125,7 +2147,7 @@ const keys = lv => LV[lv].ps.map(p => p[0]);
 function podium(list, nameOf, mine, kind) {
   if (list.length < 3) return '';
   const note = i => kind === 'dso' && i > 0 ? `<div class="pnote">${GC.tierChip(i + 1)}</div>` : kind === 'dss' ? '<div class="pnote">🎁 পুরস্কার</div>' : '';
-  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${kind === 'dso' || kind === 'dss' ? `<span class="pdp">${phWrap(kind, x, x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : kind === 'dss' && x.team ? `<span class="pdl">${GC.logo(x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
+  return `<div class="podium">${[1, 0, 2].map(i => { const x = list[i]; return `<div class="pd p${i + 1} ${x === mine ? 'mine' : ''}"><div class="medal">${kind === 'dso' || kind === 'dss' ? `<span class="pdp">${kind === 'dss' ? teamWrap(x, 'pod') : phWrap(kind, x, x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : kind === 'dss' && x.team ? `<span class="pdl">${GC.logo(x.team, 'pod')}<span class="pm">${RK_ICON[i]}</span></span>` : RK_ICON[i]}</div><div class="pn">${esc(nameOf(x))}${x === mine ? ' (আপনি)' : ''}</div><div class="ps">${x.score.toFixed(1)}</div>${note(i)}<div class="step">${i + 1}</div></div>`; }).join('')}</div>`;
 }
 /* মোবাইল: টেবিলের বদলে ছোট কার্ড-সারি */
 const pills = (x, lv) => LV[lv].ps.map(p => { const v = Math.round((x[p[0]] || 0) * 100); return `<span class="pl ${v >= 100 ? 'hi' : v < 50 ? 'lo' : ''}">${p[1].replace(' (A2M+D2C)', '').replace('SAV-', '')} ${v}%</span>`; }).join('');
@@ -2358,5 +2380,4 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
-</html>
 </html>
