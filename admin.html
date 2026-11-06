@@ -889,6 +889,8 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .dsoP .dhgrp .dhh{margin-top:0}
 .dsoP .dhgrp.shp .shbtn{bottom:12px;right:14px}
 @media (max-width:600px){.dsoP .dhgrp{padding:14px 10px 48px!important;border-radius:18px}}
+.lvt{width:auto;min-width:520px}.lvt td,.lvt th{padding:4px 6px;text-align:center}.lvt td.l,.lvt th.l{text-align:left;white-space:nowrap}
+.lvt input{min-height:36px;width:84px;padding:4px 8px;text-align:center}
 </style>
 <style>
 .wrap{max-width:980px}
@@ -984,7 +986,10 @@ details>summary{cursor:pointer;font-weight:700;color:var(--pink);font-size:17px}
     <h3 style="margin-top:16px">DSS Team Names & Login</h3>
     <div class="tiny">Team name is shown on the leaderboards (e.g. CHOWRASTA TIGERS). DSS can log in with their DSS ID (from the target file); optionally enter a wallet number so they can log in with it too. If DSS IDs are not shown, upload this month’s target file once more.</div>
     <div class="row" id="dssIn"></div>
-  </details>
+    <h3 style="margin-top:16px">Weightage &amp; Cap — DSO · DSS · OM</h3>
+    <div class="tiny">Score = Σ weightage × min(achievement %, cap). Leave cap empty for “no cap”. Saved for this month and carried to the next months until you change it. Click <b>Publish</b> to apply.</div>
+    <div id="lvIn"></div>
+    <div class="btns" style="margin-top:6px"><button type="button" class="ghost sm" id="lvDef">Reset to default</button></div>
 </section>
 
 <section class="panel">
@@ -1907,6 +1912,7 @@ async function loadMonth(m) {
     const src = await IDB.get('src:' + m);
     if (src) { S.src = src; S.fields = E.agents(S).fields; }
     S.dirty = { data: false, am: false, svc: false }; idxDirty = false;
+    applyGlobal();
     $('#mst').innerHTML = W ? `<span class="ok">Published data for ${monLabel(m)} loaded:</span> TRX till ${esc(S.W.tills.dtr || '—')} · ${S.W.ra.length} DSOs · ${S.W.dh.length} DHs.${src ? ' Agent-wise reports are also saved on this computer.' : ''}` : `<span class="warn">No data published for ${monLabel(m)} yet.</span> Upload this month’s RA-DSS Target File first.`;
   } catch (e) { $('#mst').innerHTML = `<span class="bad">${esc(e.message)}</span>`; }
   renderAll();
@@ -1934,6 +1940,7 @@ async function handle(files) {
   }
   E.classify(S, batch);
   for (const j of batch) { await E.run(S, j); renderFiles(); }
+  applyGlobal();
   await IDB.set('src:' + S.month, S.src);
   renderAll();
 }
@@ -2004,8 +2011,9 @@ function renderCfg() {
   document.querySelectorAll('.omname').forEach(i => i.onchange = () => { S.W.cfg.om[i.dataset.n] = i.value.trim(); S.dirty.data = true; });
   renderPhotoBox();
   $('#dssIn').innerHTML = S.W.teams.map((t, i) => `<div style="flex:1 1 300px;border:1px solid var(--line);border-radius:12px;padding:10px"><label>${esc(t.dss)} <span class="tiny">· ${esc(t.dh)}${t.id ? ' · ID ' + esc(t.id) : ''}</span></label><input class="dsst" data-i="${i}" value="${esc(t.team || '')}" placeholder="Team name" style="margin-bottom:6px"><input inputmode="numeric" class="dssw" data-i="${i}" value="${esc(t.w || '')}" placeholder="Login wallet 01XXXXXXXXX (optional)"></div>`).join('') || '<div class="mut">DSS list appears after the target file is uploaded.</div>';
-  document.querySelectorAll('.dsst').forEach(i => i.onchange = () => { S.W.teams[+i.dataset.i].team = i.value.trim().toUpperCase(); i.value = S.W.teams[+i.dataset.i].team; S.dirty.data = true; });
-  document.querySelectorAll('.dssw').forEach(i => i.onchange = () => { const w = E.w11(i.value); S.W.teams[+i.dataset.i].w = w; i.value = w; S.dirty.data = true; });
+  document.querySelectorAll('.dsst').forEach(i => i.onchange = () => { const t = S.W.teams[+i.dataset.i]; t.team = i.value.trim().toUpperCase(); i.value = t.team; IDX.teamN = IDX.teamN || {}; IDX.teamN[tkey(t)] = t.team; idxDirty = true; S.dirty.data = true; });
+  renderLV();
+  document.querySelectorAll('.dssw').forEach(i => i.onchange = () => { const w = E.w11(i.value), t = S.W.teams[+i.dataset.i]; t.w = w; i.value = w; IDX.dssW = IDX.dssW || {}; if (w) IDX.dssW[tkey(t)] = w; else delete IDX.dssW[tkey(t)]; idxDirty = true; S.dirty.data = true; });
 }
 $('#savCnt').onchange = e => { S.W.cfg.savCnt = +e.target.value || 0; if (S.W.ra.length) E.aggregate(S); S.dirty.data = true; };
 
@@ -2446,6 +2454,39 @@ function makeLogXlsx(rows, fr, to, trows) {
   XLSX.utils.book_append_sheet(wb, s1, 'Summary'); XLSX.utils.book_append_sheet(wb, s2, 'Details'); XLSX.utils.book_append_sheet(wb, s3, 'Daily'); XLSX.utils.book_append_sheet(wb, s4, 'Time Spent');
   XLSX.writeFile(wb, 'Login_Report_' + new Date().toISOString().slice(0, 10) + '.xlsx');
 }
+/* ডিএসএস লগইন ওয়ালেট ও টিমের নাম — সব মাসে একই (index.json) */
+const tkey = t => String(t.dh || '').trim().toUpperCase() + '|' + String(t.dss || '').replace(/\s+/g, ' ').trim().toUpperCase();
+function applyGlobal() {
+  if (!S || !S.W || !S.W.teams) return;
+  const W0 = IDX.dssW || {}, N0 = IDX.teamN || {};
+  S.W.teams.forEach(t => { const k = tkey(t);
+    if (W0[k] && !t.w) { t.w = W0[k]; S.dirty.data = true; } else if (t.w && !W0[k]) { IDX.dssW = Object.assign({}, IDX.dssW, { [k]: t.w }); idxDirty = true; }
+    if (N0[k] && t.team !== N0[k]) { t.team = N0[k]; S.dirty.data = true; } });
+}
+/* ওয়েটেজ ও ক্যাপ */
+const LVD = {
+  dso: [['TRX', 30, 1.3], ['REG', 30, 1.5], ['SAV-VOL', 10, 2], ['SAV-CNT', 10, 2], ['UBP', 20, 2]],
+  dss: [['TRX', 30, null], ['REG', 20, null], ['SAV-VOL', 10, 1.3], ['SAV-CNT', 10, 2.2], ['UBP', 25, null], ['A2M', 5, 1.1]],
+  om: [['TRX', 30, null], ['REG', 20, null], ['SAV-VOL', 5, 1.1], ['SAV-CNT', 5, 1.5], ['UBP', 20, null], ['BZP (A2M+D2C)', 20, null]]
+};
+function renderLV() {
+  if (!S || !S.W) return; const cfg = S.W.cfg = S.W.cfg || {}, o = cfg.lv || {};
+  const get = (l, i) => { const x = o[l] && o[l][i], d = LVD[l][i]; return x ? [x[0], x[1]] : [d[1], d[2]]; };
+  $('#lvIn').innerHTML = [['dso', 'DSO'], ['dss', 'DSS'], ['om', 'OM']].map(([l, lab]) => {
+    const tot = LVD[l].reduce((s, _, i) => s + (+get(l, i)[0] || 0), 0);
+    return `<div style="margin-top:10px"><b>${lab}</b> <span class="tiny">· total weightage ${tot}${tot !== 100 ? ' ⚠️ (not 100)' : ''}</span>
+    <div class="scroll"><table class="lvt"><tr><th class="l">KPI</th>${LVD[l].map(d => `<th>${d[0]}</th>`).join('')}</tr>
+    <tr><td class="l">Weightage</td>${LVD[l].map((_, i) => `<td><input class="lvi" type="number" min="0" step="0.5" data-l="${l}" data-i="${i}" data-k="0" value="${get(l, i)[0]}"></td>`).join('')}</tr>
+    <tr><td class="l">Cap %</td>${LVD[l].map((_, i) => { const c = get(l, i)[1]; return `<td><input class="lvi" type="number" min="0" step="1" placeholder="no cap" data-l="${l}" data-i="${i}" data-k="1" value="${c == null || c === '' ? '' : Math.round(c * 100)}"></td>`; }).join('')}</tr></table></div></div>`;
+  }).join('');
+  document.querySelectorAll('.lvi').forEach(inp => inp.onchange = () => {
+    const l = inp.dataset.l, i = +inp.dataset.i, k = +inp.dataset.k;
+    cfg.lv = cfg.lv || {}; cfg.lv[l] = cfg.lv[l] || LVD[l].map((d, j) => get(l, j).slice());
+    const v = inp.value.trim(); cfg.lv[l][i][k] = k === 0 ? (+v || 0) : (v === '' ? null : (+v) / 100);
+    S.dirty.data = true; renderLV();
+  });
+}
+$('#lvDef').onclick = () => { if (!S || !S.W) return; delete S.W.cfg.lv; S.dirty.data = true; renderLV(); };
 function renderQuotes() { const q = (IDX.quotes && IDX.quotes.length) ? IDX.quotes : QUOTES; $('#qtext').value = q.join('\n'); }
 $('#qdef').onclick = () => { $('#qtext').value = QUOTES.join('\n'); };
 $('#qsave').onclick = async () => {
