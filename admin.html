@@ -2458,8 +2458,10 @@ $('#logDl').onclick = async () => {
     const rows = all.filter(x => x.date && (!fr || x.date >= fr) && (!to || x.date <= to))
       .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
     let trows = [];
-    try { const tj = await (await fetch(u + (u.includes('?') ? '&' : '?') + 'action=time&key=' + encodeURIComponent(k))).json(); if (tj.rows) trows = tj.rows.map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: String(x[2] || ''), name: x[3], dh: x[4], date: nd(x[5]), secs: +x[7] || 0 })).filter(x => x.date && x.type); } catch (e) { }
+    let ver = 1; try { ver = +(await (await fetch(u + (u.includes('?') ? '&' : '?') + 'action=ver&key=' + encodeURIComponent(k))).json()).v || 1; } catch (e) { }
+    if (ver >= 2) try { const tj = await (await fetch(u + (u.includes('?') ? '&' : '?') + 'action=time&key=' + encodeURIComponent(k))).json(); if (tj.rows) trows = tj.rows.map(x => ({ id: String(x[1] || '').replace(/^'/, ''), type: String(x[2] || ''), name: x[3], dh: x[4], date: nd(x[5]), secs: +x[7] || 0 })).filter(x => x.date && x.type); } catch (e) { }
     makeLogXlsx(rows, fr, to, trows);
+    if (ver < 2) { m.className = 'bad'; m.textContent = 'Logins downloaded, but TIME ON SITE is not recorded yet: your Google Apps Script is still the old version. Open Login Tracking → One-time setup → Copy code → paste into Apps Script (keep your key) → Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy, then click “Save URL & start tracking”.'; return; }
     m.className = rows.length ? 'ok' : 'bad';
     m.textContent = rows.length ? `Downloaded ${rows.length} login records (${all.length} in the sheet in total).` : `The Google Sheet has ${all.length} login record(s)${all.length ? ', but none in the selected dates — clear the From/To dates and try again' : ' so far. Logins are recorded only after the new site files are uploaded and someone logs in fresh (Sign out, then log in again). Use “Send test entry” to check the connection'}.`;
   } catch (e) { m.className = 'bad'; m.textContent = 'Could not download: ' + e.message + ' — check the URL, the key and that the script is deployed with access “Anyone”.'; }
