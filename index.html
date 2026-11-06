@@ -888,6 +888,8 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
 .dsoP .dhgrp .dhh{margin-top:0}
 .dsoP .dhgrp.shp .shbtn{bottom:12px;right:14px}
 @media (max-width:600px){.dsoP .dhgrp{padding:14px 10px 48px!important;border-radius:18px}}
+.lvt{width:auto;min-width:520px}.lvt td,.lvt th{padding:4px 6px;text-align:center}.lvt td.l,.lvt th.l{text-align:left;white-space:nowrap}
+.lvt input{min-height:36px;width:84px;padding:4px 8px;text-align:center}
 </style>
 </head>
 <body>
@@ -896,7 +898,7 @@ button.sm{min-height:30px!important;padding:2px 12px!important;font-size:12.5px!
   <div class="hero" style="flex-direction:column;align-items:flex-start;gap:14px">
     <span class="sp" style="top:14px;right:24px">✦</span><span class="sp" style="top:62px;right:72px;animation-delay:.8s;font-size:13px">✦</span><span class="sp" style="bottom:18px;right:34px;animation-delay:1.4s">★</span>
     <div class="badge"><img src="logo.jpg" alt="Achievers’ Club" style="height:88px"></div>
-    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>আপনার স্কোর, র‍্যাঙ্ক আর আজকের লক্ষ্য — এক জায়গায়</p></div>
+    <div><div class="kick">গাজীপুর সেন্ট্রাল টেরিটরি</div><h1>চলুন, শীর্ষে পৌঁছাই! 🏆</h1><p>আপনার পারফরম্যান্স, স্কোর আর র‍্যাঙ্ক — এক জায়গায়</p></div>
   </div>
   <form id="f" class="panel">
     <label for="w" id="wl">Login ID</label>
@@ -952,6 +954,14 @@ const LV = {
   dss: { lab: 'ডিএসএস', ps: [['t', 'TRX', 'MTD', 30, N_], ['r', 'REG', 'MTD', 20, N_], ['vo', 'SAV-VOL', 'TTL', 10, 1.3], ['c', 'SAV-CNT', 'TTL', 10, 2.2], ['u', 'UBP', 'MTD', 25, N_], ['a', 'A2M', 'MTD', 5, 1.1]] },
   om: { lab: 'অপারেশন ম্যানেজার', ps: [['t', 'TRX', 'MTD', 30, N_], ['r', 'REG', 'MTD', 20, N_], ['vo', 'SAV-VOL', 'TTL', 5, 1.1], ['c', 'SAV-CNT', 'TTL', 5, 1.5], ['u', 'UBP', 'MTD', 20, N_], ['a', 'BZP (A2M+D2C)', 'MTD', 20, N_]] }
 };
+/* অ্যাডমিন থেকে মাসভিত্তিক ওয়েটেজ ও ক্যাপ (D.cfg.lv) — না থাকলে ডিফল্ট */
+const LV_DEF = JSON.parse(JSON.stringify(LV, (k, v) => v === Infinity ? null : v));
+function applyLV(D) {
+  const o = (D && D.cfg && D.cfg.lv) || {};
+  Object.keys(LV).forEach(l => LV[l].ps.forEach((p, i) => { const d = LV_DEF[l].ps[i], x = o[l] && o[l][i];
+    p[3] = x && isFinite(+x[0]) && x[0] !== '' && x[0] != null ? +x[0] : d[3];
+    const c = x ? x[1] : d[4]; p[4] = c == null || c === '' || !(+c > 0) ? Infinity : +c; }));
+}
 const capTxt = c => isFinite(c) ? Math.round(c * 100) + '% ক্যাপ' : 'ক্যাপ নেই';
 
 /* ---------- টিমের নাম (ডিফল্ট; অ্যাডমিন সেটিংসে বদলানো যায়) ---------- */
@@ -1044,6 +1054,7 @@ function compute(D) {
   [...D.dh].sort((a, b) => b.score - a.score).forEach((x, i) => x.rank = i + 1);
 }
 function prep(D) {
+  applyLV(D);
   D.ra = D.ra || []; D.teams = D.teams || []; D.dh = D.dh || []; D.tills = D.tills || {};
   D.ra.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
   D.teams.forEach(x => { x.dh = up(x.dh); x.dss = String(x.dss).replace(/\s+/g, ' ').trim(); });
