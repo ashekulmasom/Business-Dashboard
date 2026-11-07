@@ -1732,9 +1732,43 @@ const SH = (() => {
     });
     return [cv, (title || 'Report').replace(/[^\wঀ-৿]+/g, '_').slice(0, 40)];
   }
+  /* রেস লাইন ছবি */
+  async function race() {
+    const F = window._raceF; if (!F) throw new Error('no race');
+    const r = F.rec, L = F.list, first = L[0], n = L.length, lg = F.lv === 'dss';
+    const sc = L.map(x => x.score), lo = Math.max(0, Math.min(...sc) - 6), hi = Math.max(...sc) + 4;
+    const x0 = 70, x1 = W - 70, px = s => x0 + (s - lo) / (hi - lo) * (x1 - x0);
+    const items = L.map((x, i) => ({ x, i, p: px(x.score) })).sort((a, b) => a.p - b.p);
+    const LW = 124, last = { up: [], dn: [] }; let mt = 0;
+    items.forEach(it => { const fitT = A => { let t = 0; while (A[t] != null && it.p - A[t] < LW + 6) t++; return t; };
+      const tu = fitT(last.up), td = fitT(last.dn); it.side = tu <= td ? 'up' : 'dn'; it.tier = Math.min(it.side === 'up' ? tu : td, 7); (it.side === 'up' ? last.up : last.dn)[it.tier] = it.p; mt = Math.max(mt, it.tier); });
+    const step = 74, half = 40 + (mt + 1) * step, top0 = 190 + 30 + 70, laneY = top0 + half, H = laneY + half + 60 + 54;
+    const [cv, g] = canvas(H);
+    await header(g, H, '🏁 ' + (F.ttl || 'রেস লাইন'), `${n} জন · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}`);
+    const s2 = L[1], hint = r && r !== first ? `১ম হতে ${F.nameOf(r)}-এর আর মাত্র ${GC.nd(first.score - r.score + 0.05)} পয়েন্ট` : `🏆 শীর্ষে ${F.nameOf(first)} · ${first.score.toFixed(1)} পয়েন্ট${s2 ? ` — ২য় ${F.nameOf(s2)} পিছিয়ে ${GC.nd(first.score - s2.score)} পয়েন্ট` : ''}`;
+    rr(g, 24, 214, W - 48, 54, 16); g.fillStyle = '#FDE4EF'; g.fill(); g.fillStyle = C.deep; g.font = f(700, 18); g.textAlign = 'left'; g.fillText(fit(g, hint, W - 80), 44, 248);
+    rr(g, 24, top0 - 10, W - 48, H - top0 - 64, 20); g.fillStyle = '#FFF0F6'; g.fill();
+    const lgr = g.createLinearGradient(x0, 0, x1, 0); lgr.addColorStop(0, '#F6A9C9'); lgr.addColorStop(.55, '#FFB566'); lgr.addColorStop(1, C.gold);
+    rr(g, x0 - 20, laneY - 7, x1 - x0 + 40, 14, 7); g.fillStyle = '#F6CFDF'; g.fill(); rr(g, x0 - 20, laneY - 7, px((r || first).score) - x0 + 20, 14, 7); g.fillStyle = lgr; g.fill();
+    const imgs = await Promise.all(items.map(it => lg ? load(logoSrc(it.x.team)) : load(photoOf('dso', it.x))));
+    /* কাঠি আগে, লেবেল পরে (কাঠি লেবেলের নিচে ঢাকা পড়বে) */
+    g.globalAlpha = .55; items.forEach(it => { const st = 34 + it.tier * step, ly = it.side === 'up' ? laneY - st - 58 : laneY + st;
+      g.fillStyle = '#E7B3CB'; g.fillRect(it.p - 1, it.side === 'up' ? ly + 58 : laneY, 2, it.side === 'up' ? laneY - ly - 58 : ly - laneY); }); g.globalAlpha = 1;
+    items.forEach(it => { const st = 34 + it.tier * step, ly = it.side === 'up' ? laneY - st - 58 : laneY + st, cx = Math.min(W - 30 - LW / 2, Math.max(30 + LW / 2, it.p));
+      const me = it.x === r, f1 = it.i === 0; rr(g, cx - LW / 2, ly, LW, 58, 10); g.fillStyle = '#fff'; g.fill(); g.lineWidth = me || f1 ? 2.5 : 1.2; g.strokeStyle = f1 ? C.gold : me ? C.pink : C.line; g.stroke();
+      g.textAlign = 'center'; g.fillStyle = f1 ? '#B07800' : C.pink; g.font = f(800, 17); g.fillText(it.x.score.toFixed(1) + (f1 ? ' 🏆' : me ? ' · আপনি' : ''), cx, ly + 21);
+      g.fillStyle = C.plum; g.font = f(700, 12); g.fillText(fit(g, F.nameOf(it.x), LW - 10), cx, ly + 38); g.fillStyle = C.mut; g.font = f(600, 11); g.fillText('#' + (it.i + 1), cx, ly + 52); });
+    /* মার্কার */
+    items.forEach((it, k) => { const f1 = it.i === 0, me = it.x === r, rad = f1 ? 30 : me ? 28 : 22;
+      g.beginPath(); g.arc(it.p, laneY, rad + 3, 0, 7); g.fillStyle = f1 ? C.gold : me ? C.pink : '#fff'; g.fill();
+      if (lg) { g.beginPath(); g.arc(it.p, laneY, rad, 0, 7); g.fillStyle = '#fff'; g.fill(); if (imgs[k]) logoAt(g, imgs[k], it.p, laneY, rad * 1.8); }
+      else circ(g, imgs[k], it.p, laneY, rad, null); });
+    g.textAlign = 'center'; g.fillStyle = C.mut; g.font = f(600, 14); g.fillText('← কম পয়েন্ট · বেশি পয়েন্ট → (ডানে ১ নম্বর)', W / 2, H - 76); g.textAlign = 'left';
+    return [cv, lg ? 'Team_Race' : 'DSO_Race'];
+  }
   async function make(kind, el) {
     try { await document.fonts.ready; } catch (e) { }
-    const [cv, name] = kind === 'dss' ? await dss() : kind === 'top' ? await topV('C') : kind === 'win' ? await win() : kind === 'tbl' ? await tbl(el) : await dso(kind.slice(4));
+    const [cv, name] = kind === 'dss' ? await dss() : kind === 'top' ? await topV('C') : kind === 'win' ? await win() : kind === 'tbl' ? await tbl(el) : kind === 'race' ? await race() : await dso(kind.slice(4));
     const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
     return { blob, name: `${name}_${D.month}.png` };
   }
@@ -2312,10 +2346,11 @@ function raceDetail(F) {
   const chips = raceChips();
   $('#detail').innerHTML = `<div class="rtop"><a class="btn ghost" href="#">← ফিরে যান</a>${chips ? `<button type="button" class="ghost" id="rpres">⛶ প্রেজেন্ট মোড</button>` : ''}</div>
   ${chips}
-  <div class="panel rpage"><div class="ph"><h2>🏁 ${F.ttl ? esc(F.ttl) : '১ নম্বরের দৌড় — সবার অবস্থান'}</h2><span class="mut">${rk ? esc(F.rankLab) + ' ' + rk + '/' + n + ' · ' : n + ' জন · '}${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span></div>
+  <div class="panel rpage shp"><div class="ph"><h2>🏁 ${F.ttl ? esc(F.ttl) : '১ নম্বরের দৌড় — সবার অবস্থান'}</h2><span class="mut">${rk ? esc(F.rankLab) + ' ' + rk + '/' + n + ' · ' : n + ' জন · '}${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}</span></div>
   ${!r ? `<div class="rhint">🏆 শীর্ষে <b style="font-size:17px">${esc(F.nameOf(first))}</b> · ${first.score.toFixed(1)} পয়েন্ট${s2 ? ` — ২য় ${esc(F.nameOf(s2))} পিছিয়ে <b>${GC.nd(first.score - s2.score)}</b> পয়েন্ট` : ''}</div>` : rk > 1 ? `<div class="rhint">১ম হতে আর মাত্র <b>${GC.nd(first.score - r.score + 0.05)}</b> পয়েন্ট — <a href="${F.href}">কোন প্যারামিটারে কত লাগবে দেখুন →</a></div>` : `<div class="rhint">👑 আপনি ১ নম্বরে — শিরোপা ধরে রাখুন!</div>`}
   <div class="rbig-wrap" id="rbw"><div class="rbig-t" id="rbt"></div></div>
-  <div class="mut" style="text-align:center;font-size:12.5px;margin-top:6px">← কম পয়েন্ট &nbsp;·&nbsp; বেশি পয়েন্ট → &nbsp; (ডানে ১ নম্বর)</div></div>`;
+  <div class="mut" style="text-align:center;font-size:12.5px;margin-top:6px">← কম পয়েন্ট &nbsp;·&nbsp; বেশি পয়েন্ট → &nbsp; (ডানে ১ নম্বর)</div>${shBtn('race')}</div>`;
+  window._raceF = F;
   const w = $('#rbw'), t = $('#rbt');
   const W = Math.max(w.clientWidth - 70, n * 72), L = lay(W);
   t.style.width = W + 'px'; t.style.height = (2 * (22 + L.mt * 66 + 26 + 92) + 10) + 'px';
