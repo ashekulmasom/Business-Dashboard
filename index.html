@@ -1452,7 +1452,7 @@ const SH = (() => {
     g.save(); g.globalAlpha = .06; g.strokeStyle = '#fff'; g.lineWidth = 2; for (let x = -200; x < W; x += 18) { g.beginPath(); g.moveTo(x, 190); g.lineTo(x + 190, 0); g.stroke(); } g.restore();
     const lg = await load('logo.jpg'); g.save(); rr(g, 36, 36, 150, 118, 22); g.fillStyle = '#fff'; g.fill(); g.clip(); if (lg) logoAt(g, lg, 111, 95, 134); g.restore();
     g.fillStyle = '#FFE27A'; g.font = f(700, 20); g.fillText('গাজীপুর সেন্ট্রাল টেরিটরি', 214, 62);
-    g.fillStyle = '#fff'; g.font = f(800, 42); g.fillText(fit(g, title, W - 250), 214, 112);
+    g.fillStyle = '#fff'; { let z = 42; g.font = f(800, z); while (z > 22 && g.measureText(title).width > W - 250) { z -= 1; g.font = f(800, z); } g.fillText(fit(g, title, W - 250), 214, 112); }
     g.font = f(600, 22); g.fillStyle = 'rgba(255,255,255,.9)'; g.fillText(fit(g, sub, W - 250), 214, 152);
     g.fillStyle = '#fff'; g.fillRect(0, H - 54, W, 54); g.fillStyle = C.mut; g.font = f(600, 18);
     g.fillText(`Achievers’ Club · ${GC.monLabel(D.month)} · Till ${GC.fmtTill(D.tillDate)}`, 36, H - 22);
@@ -1750,14 +1750,14 @@ const SH = (() => {
     rr(g, 24, top0 - 10, W - 48, H - top0 - 64, 20); g.fillStyle = '#FFF0F6'; g.fill();
     const lgr = g.createLinearGradient(x0, 0, x1, 0); lgr.addColorStop(0, '#F6A9C9'); lgr.addColorStop(.55, '#FFB566'); lgr.addColorStop(1, C.gold);
     rr(g, x0 - 20, laneY - 7, x1 - x0 + 40, 14, 7); g.fillStyle = '#F6CFDF'; g.fill(); rr(g, x0 - 20, laneY - 7, px((r || first).score) - x0 + 20, 14, 7); g.fillStyle = lgr; g.fill();
-    const imgs = await Promise.all(items.map(it => lg ? load(logoSrc(it.x.team)) : load(photoOf('dso', it.x))));
+    const imgs = await Promise.all(items.map(it => lg ? load(logoSrc(it.x.team)) : load(photoOf(F.lv === 'om' ? 'om' : 'dso', it.x))));
     /* কাঠি আগে, লেবেল পরে (কাঠি লেবেলের নিচে ঢাকা পড়বে) */
     g.globalAlpha = .55; items.forEach(it => { const st = 34 + it.tier * step, ly = it.side === 'up' ? laneY - st - 58 : laneY + st;
       g.fillStyle = '#E7B3CB'; g.fillRect(it.p - 1, it.side === 'up' ? ly + 58 : laneY, 2, it.side === 'up' ? laneY - ly - 58 : ly - laneY); }); g.globalAlpha = 1;
     items.forEach(it => { const st = 34 + it.tier * step, ly = it.side === 'up' ? laneY - st - 58 : laneY + st, cx = Math.min(W - 30 - LW / 2, Math.max(30 + LW / 2, it.p));
       const me = it.x === r, f1 = it.i === 0; rr(g, cx - LW / 2, ly, LW, 58, 10); g.fillStyle = '#fff'; g.fill(); g.lineWidth = me || f1 ? 2.5 : 1.2; g.strokeStyle = f1 ? C.gold : me ? C.pink : C.line; g.stroke();
       g.textAlign = 'center'; g.fillStyle = f1 ? '#B07800' : C.pink; g.font = f(800, 17); g.fillText(it.x.score.toFixed(1) + (f1 ? ' 🏆' : me ? ' · আপনি' : ''), cx, ly + 21);
-      g.fillStyle = C.plum; g.font = f(700, 12); g.fillText(fit(g, F.nameOf(it.x), LW - 10), cx, ly + 38); g.fillStyle = C.mut; g.font = f(600, 11); g.fillText('#' + (it.i + 1), cx, ly + 52); });
+      g.fillStyle = C.plum; { const nm = F.nameOf(it.x); let z = 12; g.font = f(700, z); while (z > 8 && g.measureText(nm).width > LW - 10) { z -= .25; g.font = f(700, z); } g.fillText(fit(g, nm, LW - 8), cx, ly + 38); } g.fillStyle = C.mut; g.font = f(600, 11); g.fillText('#' + (it.i + 1), cx, ly + 52); });
     /* মার্কার */
     items.forEach((it, k) => { const f1 = it.i === 0, me = it.x === r, rad = f1 ? 30 : me ? 28 : 22;
       g.beginPath(); g.arc(it.p, laneY, rad + 3, 0, 7); g.fillStyle = f1 ? C.gold : me ? C.pink : '#fff'; g.fill();
@@ -2430,5 +2430,4 @@ addEventListener('hashchange', route);
 })();
 </script>
 </body>
-</html>
 </html>
